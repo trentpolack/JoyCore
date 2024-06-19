@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "JoyCore",
+	"Description": "Useful cross-project library with common functionality, utilities, and content.",
+	"Category": "Other",
+	"CreatedBy": "Trent Polack",
+	"CreatedByURL": "https://trent-polack.com",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "JoyCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
