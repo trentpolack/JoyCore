@@ -7,59 +7,65 @@
 
 #include "GameplayTags.h"
 
-#include "SystemicRule.generated.h"
+#include "Engine/DataAsset.h"
+
+#include "SystemicRuleAsset.generated.h"
+
+// Declarations.
+class USystemicCondition;
 
 /**
- *	FSystemRule Structure Definition.
+ *	USystemicRuleAsset Class Definition.
  */
-USTRUCT(BlueprintType, ClassGroup=(JoyCore))
-struct JOYCORE_API FSystemicRule
+UCLASS(ClassGroup=(JoyCore))
+class JOYCORE_API USystemicRuleAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
+public:
 	/**
-	 *	FSystemRule. 
+	 *	USystemicRuleAsset. 
 	 */
 
 	/**
 	 *	Name of this rule, ideally unique.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rule")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
 	FName Name = NAME_None;
 
 	/**
 	 *	Gameplay tags of events that can trigger a reaction.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rule")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Rule")
 	FGameplayTagContainer TriggerEventTags;
 
 	/**
 	 *	List of conditions that must all pass to trigger a reaction.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rule")
-	TArray<TMap<ESystemicSubject, FGameplayTagQuery>> ConditionList;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Rule")
+	TArray<TObjectPtr<USystemicCondition>> ConditionList;
 	
 	/**
 	 *	Priority tag for this rule.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rule")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
 	FGameplayTag Priority;
 
 	/**
 	 *	Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rule")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
 	float Cooldown = 0.0f;
 
 	/**
 	 *	Whether this rule is enabled or not; defaults to true.
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rule")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
 	bool Enabled = true;
 
 	/**
 	 *	FSystemEvent Constructor. 
 	 */
-	FSystemicRule()
+	USystemicRuleAsset()
 	{	}
 };

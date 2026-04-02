@@ -10,7 +10,7 @@
 
 #include "ISystemicTraitProvider.generated.h"
 
-UINTERFACE(MinimalAPI, Blueprintable, ClassGroup=(JoyCore))
+UINTERFACE(MinimalAPI, Blueprintable)
 class USystemicTraitProvider : public UInterface
 {
 	GENERATED_BODY()
@@ -33,7 +33,7 @@ public:
 	 *	@param Tag Trait tag to check for.
 	 *	@returns True if the provider has the specified trait tag, false otherwise. 
 	 */
-	UFUNCTION(BlueprintCallable, Category="JoyCore|Systems|Traits")
+	UFUNCTION(Category="JoyCore|Systems|Traits")
 	virtual bool HasTraitTag(const FGameplayTag& Tag) const
 	{
 		return(GetTraitTags().HasTag(Tag));
@@ -44,7 +44,7 @@ public:
 	 *	@param TagContainer Container of trait tags to check for.
 	 *	@returns True if the provider has all the specified trait tags, false otherwise. 
 	 */
-	UFUNCTION(BlueprintCallable, Category="JoyCore|Systems|Traits")
+	UFUNCTION(Category="JoyCore|Systems|Traits")
 	virtual bool HasTraits(const FGameplayTagContainer& TagContainer) const
 	{
 		return(GetTraitTags().HasAll(TagContainer));
@@ -55,7 +55,7 @@ public:
 	 *	@param TagQuery Query to run against the provider's trait tags.
 	 *	@returns True if the query passes, false otherwise. 
 	 */
-	UFUNCTION(BlueprintCallable, Category="JoyCore|Systems|Traits")
+	UFUNCTION(Category="JoyCore|Systems|Traits")
 	virtual bool QueryTraits(const FGameplayTagQuery& TagQuery) const
 	{
 		return(GetTraitTags().MatchesQuery((TagQuery)));
@@ -65,6 +65,6 @@ public:
 	 *	Get the tag container of the provider.
 	 *	@returns FGameplayTagContainer of the provider.
 	 */
-	UFUNCTION(BlueprintCallable, Category="JoyCore|Systems|Traits")
+	UFUNCTION(Category="JoyCore|Systems|Traits")
 	virtual const FGameplayTagContainer& GetTraitTags() const = 0;
 };

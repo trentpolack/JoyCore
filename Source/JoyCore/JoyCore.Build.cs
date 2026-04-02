@@ -9,15 +9,15 @@ public class JoyCore : ModuleRules
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
 		PublicIncludePaths.AddRange(
-			new string[] {
-				// ... add public include paths required here ...
+			new string[]
+			{
 			}
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
-			new string[] {
-				// ... add other private include paths required here ...
+			new string[]
+			{
 			}
 			);
 			
@@ -25,8 +25,9 @@ public class JoyCore : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core",
-				// ... add other public dependencies that you statically link with here ...
+				"Core", 
+				"Engine",
+				"GameplayTags",
 			}
 			);
 			
@@ -38,7 +39,7 @@ public class JoyCore : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				// ... add private dependencies that you statically link with here ...	
+				"GameplayTags",
 			}
 			);
 		
@@ -46,7 +47,6 @@ public class JoyCore : ModuleRules
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
-				// ... add any modules that your module loads dynamically here ...
 			}
 			);
 	}

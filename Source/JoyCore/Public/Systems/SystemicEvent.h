@@ -21,15 +21,15 @@ enum class ESystemicSubject : uint8
 };
 
 /**
- *	FSystemEvent Structure Definition.
+ *	FSystemicEvent Structure Definition.
  */
-USTRUCT(BlueprintType, ClassGroup=(JoyCore))
+USTRUCT(BlueprintType)
 struct JOYCORE_API FSystemicEvent
 {
 	GENERATED_BODY()
 	
 	/**
-	 *	FSystemEvent. 
+	 *	FSystemicEvent. 
 	 */
 	
 	/**
@@ -66,7 +66,7 @@ struct JOYCORE_API FSystemicEvent
 	FVector Location = FVector::ZeroVector;
 	
 	/**
-	 *	FSystemEvent Constructor. 
+	 *	FSystemicEvent Constructor. 
 	 */
 	FSystemicEvent()
 	{	}
