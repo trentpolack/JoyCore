@@ -1,23 +1,28 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "0.1",
 	"FriendlyName": "JoyCore",
-	"Description": "Useful cross-project library with common functionality, utilities, and content.",
-	"Category": "Other",
+	"Description": "Plugin with generally-useful tools and utilities as well as functionality for creating and reacting to deep gameplay systems using data-driven events, rules, traits, and reactions.",
+	"Category": "Framework",
 	"CreatedBy": "Trent Polack",
-	"CreatedByURL": "https://trent-polack.com",
-	"DocsURL": "",
+	"CreatedByURL": "https://trentpolack.com",
+	"DocsURL": "https://github.com/trentpolack/JoyCore",
 	"MarketplaceURL": "",
-	"SupportURL": "",
+	"SupportURL": "https://github.com/trentpolack/JoyCore",
 	"CanContainContent": true,
-	"IsBetaVersion": false,
+	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
 			"Name": "JoyCore",
 			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "JoyCoreEditor",
+			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
 	]
