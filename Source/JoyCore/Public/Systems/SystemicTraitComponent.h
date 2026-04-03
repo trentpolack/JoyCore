@@ -22,7 +22,7 @@ public:
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Traits")
-	FGameplayTagContainer TraitTags;
+	FGameplayTagContainer TraitTags = FGameplayTagContainer();
 
 public:
 	/**

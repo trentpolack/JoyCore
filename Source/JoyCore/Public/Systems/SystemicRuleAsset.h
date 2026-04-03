@@ -22,7 +22,7 @@ class JOYCORE_API USystemicRuleAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	/**
 	 *	USystemicRuleAsset. 
 	 */
@@ -37,7 +37,7 @@ public:
 	 *	Gameplay tags of events that can trigger a reaction.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Rule")
-	FGameplayTagContainer TriggerEventTags;
+	FGameplayTagContainer TriggerEventTags = FGameplayTagContainer();
 
 	/**
 	 *	List of conditions that must all pass to trigger a reaction.
@@ -49,7 +49,7 @@ public:
 	 *	Priority tag for this rule.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
-	FGameplayTag Priority;
+	FGameplayTag Priority = FGameplayTag();
 
 	/**
 	 *	Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
@@ -62,7 +62,8 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
 	bool bEnabled = true;
-
+	
+public:
 	/**
 	 *	FSystemEvent Constructor. 
 	 */

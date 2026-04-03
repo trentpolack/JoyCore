@@ -13,11 +13,11 @@
  *	Enum representing the subject of a systemic event.
  */
 UENUM(BlueprintType)
-enum class ESystemicSubject : uint8
+enum class ESystemicEventSubject : uint8
 {
+	SourceObject,
 	Instigator,
-	Target,
-	SourceObject
+	Target
 };
 
 /**
@@ -36,12 +36,13 @@ struct JOYCORE_API FSystemicEvent
 	 *	Gameplay tag associated with the event.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Markup")
-	FGameplayTag EventTag;
+	FGameplayTag EventTag = FGameplayTag();
+
 	/**
 	 *	Gameplay tags providing additional event context.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Markup")
-	FGameplayTagContainer ContextTags;
+	FGameplayTagContainer ContextTags = FGameplayTagContainer();
 
 	/**
 	 *	Initiator of the event.
@@ -65,9 +66,26 @@ struct JOYCORE_API FSystemicEvent
 	UPROPERTY(BlueprintReadWrite, Transient, Category = "Runtime")
 	FVector Location = FVector::ZeroVector;
 	
+public:
 	/**
 	 *	FSystemicEvent Constructor. 
 	 */
 	FSystemicEvent()
 	{	}
+	
+	/**
+	 * Get the object associated with the condition's subject.
+	 * @return The object if found, otherwise nullptr.
+	 */
+	const TWeakObjectPtr<UObject> GetObjectBySubject(const ESystemicEventSubject Subject) const
+	{
+		switch(Subject)
+		{
+			case ESystemicEventSubject::Instigator:		return(Cast<UObject>(Instigator.Get()));
+			case ESystemicEventSubject::Target:			return(Cast<UObject>(Target.Get()));
+			case ESystemicEventSubject::SourceObject:	return(Cast<UObject>(SourceObject.Get()));
+		}
+
+		return nullptr;
+	}
 };

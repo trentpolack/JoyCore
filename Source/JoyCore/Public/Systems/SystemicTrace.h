@@ -9,6 +9,47 @@
 
 #include "SystemicTrace.generated.h"
 
+// Declarations.
+class USystemicCondition;
+
+/**
+ *	FSystemicTraceEvaluatedConditionResults Structure definition.
+ */
+USTRUCT()
+struct JOYCORE_API FSystemicTraceEvaluatedConditionResult
+{
+	GENERATED_BODY()
+	
+	/**
+	 *	FSystemicTraceEvaluatedConditionResults.
+	 */
+	
+	/**
+	 *	Pointer to the evaluated condition.
+	 */
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	TWeakObjectPtr<USystemicCondition> Condition = nullptr;
+	
+	/**
+	 *	Output of the evaluation.
+	 */
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	bool bResult = true;
+	
+	/**
+	 *	Text representation of the evaluation result.
+	 */
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	TArray<FString> EvaluationLog;
+	
+public:
+	explicit FSystemicTraceEvaluatedConditionResult(const TWeakObjectPtr<USystemicCondition> ConditionIn = nullptr, const bool bResultIn = true, const FString& LogLine = FString())
+	: Condition(ConditionIn)
+	, bResult(bResultIn)
+	, EvaluationLog({LogLine})
+	{	}
+};
+
 /**
  *	FSystemicTrace Structure Definition.
  */
@@ -25,13 +66,19 @@ struct JOYCORE_API FSystemicTrace
 	 *	Event tag.
 	 */
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
-	FGameplayTag EventTag;
+	FGameplayTag EventTag = FGameplayTag();
 	
 	/**
 	 *	Name of the rule being evaluated.
 	 */
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
-	FName RuleName;
+	FName RuleName = NAME_None;
+	
+	/**
+	 *	List of condition evaluation results during the trace.
+	 */
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	TArray<FSystemicTraceEvaluatedConditionResult> EvaluatedConditionResults;
 	
 	/**
 	 *	FSystemicEvent Constructor. 
