@@ -6,7 +6,7 @@
 #include "Systems/SystemicEvent.h"
 
 // Base condition evaluation; so long as the data is valid it'll pass.
-bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
+bool USystemicCondition::Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const
 {
-	return(Event.Instigator.IsValid() || Event.Target.IsValid() || Event.SourceObject.IsValid());
+	return(bEnabled && (Event.Instigator.IsValid() || Event.Target.IsValid() || Event.SourceObject.IsValid()));
 }

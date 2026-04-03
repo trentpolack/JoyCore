@@ -61,7 +61,7 @@ public:
 	 *	Whether this rule is enabled or not; defaults to true.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
-	bool Enabled = true;
+	bool bEnabled = true;
 
 	/**
 	 *	FSystemEvent Constructor. 

@@ -17,7 +17,7 @@ struct FSystemicTrace;
 /**
  *	Object which contains a condition which can take in a systemic event and evaluate it.
  */
-UCLASS(EditInlineNew, ClassGroup=(JoyCore), meta=(BlueprintSpawnableComponent))
+UCLASS(EditInlineNew, BlueprintType, ClassGroup=(JoyCore), meta=(BlueprintSpawnableComponent))
 class JOYCORE_API USystemicCondition : public UObject
 {
 	GENERATED_BODY()
@@ -28,11 +28,30 @@ public:
 	 */
 
 	/**
-	 * Evaluate this condition given the triggering event, cached data in the rule context, and built up trace information.
+	 *	Name of this Condition; use for identification and organization. It does not affect functionality.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	FName Name = NAME_None;
+
+	/**
+	 *	Description of what this Condition is doing; useful for in-line documentation. It does not affect functionality.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	FText Description = FText();
+
+	/**
+	 *	Whether this Condition is enabled and should be evaluated.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	bool bEnabled = true;
+
+public:
+	/**
+	 * Evaluate this condition given the triggering event, cached data in the rule context, and built-up trace information.
 	 * @param Event Triggering event.
 	 * @param Context Cached data from the rule context.
 	 * @param Trace Trace information for debugging and logging.
 	 * @return True if the condition is met, false otherwise.
 	 */
-	bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
+	bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const;
 };
