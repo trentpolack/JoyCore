@@ -7,7 +7,7 @@
 
 #include "GameplayTags.h"
 
-#include "Systems/SystemicCondition.h"
+#include "Systems/Conditions/SystemicCondition.h"
 
 #include "SystemicConditionHasTraitQuery.generated.h"
 

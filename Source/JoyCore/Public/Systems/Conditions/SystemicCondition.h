@@ -4,13 +4,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SystemicTrace.h"
 #include "Animation/AnimTrace.h"
 
 #include "UObject/Object.h"
 
 #include "Systems/ISystemicTraitProvider.h"
 #include "Systems/SystemicEvent.h"
+#include "Systems/SystemicTrace.h"
 
 #include "SystemicCondition.generated.h"
 
@@ -63,17 +63,22 @@ public:
 	 *	@return Trait provider for the subject; return nullptr if the subject does not implement ISystemicTraitProvider.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Conditions")
-	const ISystemicTraitProvider* GetSubjectTraitProvider(const FSystemicEvent& Event, FSystemicTrace& Trace) const
+	TScriptInterface<ISystemicTraitProvider> GetSubjectTraitProvider(const FSystemicEvent& Event, FSystemicTrace& Trace) const
 	{
-		const ISystemicTraitProvider* pSubjectTraitProvider = Cast<ISystemicTraitProvider>(Event.GetObjectBySubject(Subject));
-		if(!pSubjectTraitProvider)
+		UObject* SubjectObject = Event.GetObjectBySubject(Subject).Get();
+		ISystemicTraitProvider* SubjectTraitProvider = Cast<ISystemicTraitProvider>(SubjectObject);
+		if(!SubjectTraitProvider)
 		{
 			// Subject does not implement ISystemicTraitProvider. Log this in the trace and return nullptr.
 			Trace.EvaluatedConditionResults.Add(FSystemicTraceEvaluatedConditionResult(const_cast<USystemicCondition*>(this), false, TEXT("Subject does not implement ISystemicTraitProvider.")));
 			return nullptr;
 		}
-		
-		return pSubjectTraitProvider;
+
+		// Set both parts of the script interface.
+		TScriptInterface<ISystemicTraitProvider> SubjectTraitProviderInterface;
+		SubjectTraitProviderInterface.SetObject(SubjectObject);
+		SubjectTraitProviderInterface.SetInterface(SubjectTraitProvider);
+		return SubjectTraitProviderInterface;
 	}
 	
 	/**
@@ -83,6 +88,6 @@ public:
 	 * @param Trace Trace information for debugging and logging.
 	 * @return True if the condition is met, false otherwise.
 	 */
-	UFUNCTION(BlueprintNativeEvent, Category="Conditions")
+	UFUNCTION(BlueprintCallable, Category="Conditions")
 	virtual bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const;
 };

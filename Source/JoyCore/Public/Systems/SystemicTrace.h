@@ -15,7 +15,7 @@ class USystemicCondition;
 /**
  *	FSystemicTraceEvaluatedConditionResults Structure definition.
  */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct JOYCORE_API FSystemicTraceEvaluatedConditionResult
 {
 	GENERATED_BODY()
