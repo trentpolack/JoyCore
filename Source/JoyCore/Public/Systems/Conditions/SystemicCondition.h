@@ -8,8 +8,8 @@
 
 #include "UObject/Object.h"
 
-#include "Systems/ISystemicTraitProvider.h"
-#include "Systems/SystemicEvent.h"
+#include "Systems/Traits/ISystemicTraitProvider.h"
+#include "Systems/Events/SystemicEvent.h"
 #include "Systems/SystemicTrace.h"
 
 #include "SystemicCondition.generated.h"

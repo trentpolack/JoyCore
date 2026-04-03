@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2026 Trent Polack. All Rights Reserved.
 // Licensed under the MIT License.
 
-#include "Systems/SystemicTraitComponent.h"
+#include "Systems/Traits/SystemicTraitComponent.h"
 
 // Constructor.
 USystemicTraitComponent::USystemicTraitComponent()

@@ -3,7 +3,7 @@
 
 #include "Systems/Conditions/SystemicCondition.h"
 
-#include "Systems/SystemicEvent.h"
+#include "Systems/Events/SystemicEvent.h"
 
 // Base condition evaluation; so long as it's enabled and the data is valid it'll pass.
 bool USystemicCondition::Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const

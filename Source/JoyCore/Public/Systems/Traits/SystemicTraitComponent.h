@@ -8,7 +8,7 @@
 
 #include "GameplayTags.h"
 
-#include "ISystemicTraitProvider.h"
+#include "Systems/Traits/ISystemicTraitProvider.h"
 
 #include "SystemicTraitComponent.generated.h"
 

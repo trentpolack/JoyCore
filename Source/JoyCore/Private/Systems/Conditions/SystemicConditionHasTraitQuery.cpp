@@ -3,7 +3,7 @@
 
 #include "Systems/Conditions/SystemicConditionHasTraitQuery.h"
 
-#include "Systems/ISystemicTraitProvider.h"
+#include "Systems/Traits/ISystemicTraitProvider.h"
 #include "Systems/SystemicTrace.h"
 
 // Evaluate the subject's traits with a tag query.
