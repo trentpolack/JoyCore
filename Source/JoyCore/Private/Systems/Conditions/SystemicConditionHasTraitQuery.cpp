@@ -22,7 +22,7 @@ bool USystemicConditionHasTraitQuery::Evaluate(const FSystemicEvent& Event, FSys
 	}
 	
 	// Get the trait provider interface.
-	TScriptInterface<ISystemicTraitProvider> pSubjectTraitProvider = GetSubjectTraitProvider(Event, Trace);
+	const TScriptInterface<ISystemicTraitProvider> pSubjectTraitProvider = GetSubjectTraitProvider(Event, Trace);
 	if(!pSubjectTraitProvider)
 	{
 		return false;

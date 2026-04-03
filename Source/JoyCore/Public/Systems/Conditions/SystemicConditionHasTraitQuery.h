@@ -12,9 +12,10 @@
 #include "SystemicConditionHasTraitQuery.generated.h"
 
 /**
- *	Object which contains a condition which can take in a systemic event and evaluate it.
+ *	USystemicConditionHasTraitQuery Class Definition.
+ *		This class evaluates an event subject with the ISystemicTraitProvider interface to determine if the subject matches a specific trait query.
  */
-UCLASS(EditInlineNew, BlueprintType, ClassGroup=(JoyCore), meta=(BlueprintSpawnableComponent))
+UCLASS()
 class JOYCORE_API USystemicConditionHasTraitQuery : public USystemicCondition
 {
 	GENERATED_BODY()
@@ -27,7 +28,7 @@ protected:
 	/**
 	 *	Name of this Condition; use for identification and organization. It does not affect functionality.
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition")
 	FGameplayTagQuery TraitQuery;
 
 	/**

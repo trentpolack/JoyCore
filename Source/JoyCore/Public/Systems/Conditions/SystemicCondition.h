@@ -21,7 +21,7 @@ struct FSystemicTrace;
 /**
  *	Object that contains a condition which can take in a systemic event and evaluate it.
  */
-UCLASS(EditInlineNew, BlueprintType, ClassGroup=(JoyCore), meta=(BlueprintSpawnableComponent))
+UCLASS(Blueprintable, BlueprintType, EditInlineNew, ClassGroup=(JoyCore))
 class JOYCORE_API USystemicCondition : public UObject
 {
 	GENERATED_BODY()
@@ -82,7 +82,7 @@ public:
 	}
 	
 	/**
-	 * Evaluate this condition given the triggering event, cached data in the rule context, and built-up trace information.
+	 * Evaluate this condition given the triggering event, cached data in the rule context, and built-up trace information. The base implementation will do a check to ensure the condition is enabled and the subject is valid (so it works as a basic null check).
 	 * @param Event Triggering event.
 	 * @param Context Cached data from the rule context.
 	 * @param Trace Trace information for debugging and logging.
