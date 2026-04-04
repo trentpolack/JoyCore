@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 
+#include "StructUtils/InstancedStruct.h"
 #include "GameplayTags.h"
 
 #include "SystemicEvent.generated.h"
@@ -12,7 +13,7 @@
 /**
  *	Enum representing the subject of a systemic event.
  */
-UENUM(BlueprintType)
+UENUM(BlueprintType, Category="Game|Systems")
 enum class ESystemicEventSubject : uint8
 {
 	SourceObject,
@@ -20,59 +21,50 @@ enum class ESystemicEventSubject : uint8
 	Target
 };
 
+USTRUCT(BlueprintType, Category="Game|Systems")
+struct FSystemicEventData
+{
+	GENERATED_BODY()
+	
+	// Location of the event, if applicable.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, Category = "Event|Data")
+	FVector Location = FVector::ZeroVector;
+	
+	// Magnitude of the event, if applicable.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, Category = "Event|Data")
+	float Magnitude = 1.0f;
+};
+
 /**
  *	FSystemicEvent Structure Definition.
  */
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Category="Game|Systems")
 struct JOYCORE_API FSystemicEvent
 {
 	GENERATED_BODY()
 	
-	/**
-	 *	FSystemicEvent. 
-	 */
-	
-	/**
-	 *	Gameplay tag associated with the event.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Markup")
+	// Gameplay tag associated with the event.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
 	FGameplayTag EventTag = FGameplayTag();
 
-	/**
-	 *	Gameplay tags providing additional event context.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Markup")
+	// Gameplay tags providing additional event context.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
 	FGameplayTagContainer ContextTags = FGameplayTagContainer();
 
-	/**
-	 *	Initiator of the event.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Initiator of the event.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TWeakObjectPtr<AActor> Instigator = nullptr;
-	/**
-	 *	Target of the event, if there is one.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Target of the event, if there is one.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TWeakObjectPtr<AActor> Target = nullptr;
-	/**
-	 *	Source object that caused the event (for general-purpose coverage beyond actors). 
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Source object that caused the event (for general-purpose coverage beyond actors). 
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
 
-	/**
-	 *	Location of the event, if applicable.
-	 */
-	UPROPERTY(BlueprintReadWrite, Transient, Category = "Runtime")
-	FVector Location = FVector::ZeroVector;
-	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Settings")
+	TInstancedStruct<FSystemicEventData> ContextData;
+
 public:
-	/**
-	 *	FSystemicEvent Constructor. 
-	 */
-	FSystemicEvent()
-	{	}
-	
 	/**
 	 * Get the object associated with the condition's subject.
 	 * @return The object if found, otherwise nullptr.
@@ -88,4 +80,10 @@ public:
 
 		return nullptr;
 	}
+
+	/**
+	 *	FSystemicEvent Constructor. 
+	 */
+	FSystemicEvent()
+	{	}
 };

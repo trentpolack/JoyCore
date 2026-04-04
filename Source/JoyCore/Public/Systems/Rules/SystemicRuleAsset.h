@@ -17,53 +17,84 @@ class USystemicCondition;
 /**
  *	USystemicRuleAsset Class Definition.
  */
-UCLASS(ClassGroup=(JoyCore))
+UCLASS(Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
 class JOYCORE_API USystemicRuleAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
 protected:
-	/**
-	 *	USystemicRuleAsset. 
-	 */
-
-	/**
-	 *	Name of this rule, ideally unique.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
+	// Name of this rule, ideally unique.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule")
 	FName Name = NAME_None;
 
-	/**
-	 *	Gameplay tags of events that can trigger a reaction.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Rule")
+	// Gameplay tags of events that can trigger a reaction.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule", meta=(GameplayTagFilter="System.Event"))
 	FGameplayTagContainer TriggerEventTags = FGameplayTagContainer();
 
-	/**
-	 *	List of conditions that must all pass to trigger a reaction.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Rule")
+	// List of conditions that must all pass to trigger a reaction.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "Rule")
 	TArray<TObjectPtr<USystemicCondition>> ConditionList;
 	
-	/**
-	 *	Priority tag for this rule.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
+	// Priority tag for this rule.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule", meta=(GameplayTagFilter="System.Event.Priority"))
 	FGameplayTag Priority = FGameplayTag();
 
-	/**
-	 *	Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
+	// Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule")
 	float Cooldown = 0.0f;
 
-	/**
-	 *	Whether this rule is enabled or not; defaults to true.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule")
+	// Whether this rule is enabled or not; defaults to true.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule")
 	bool bEnabled = true;
-	
+
 public:
+	/**
+	 * Rule name accessor.
+	 * @return Name of this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	const FName& GetRuleName() const;
+
+	/**
+	 * Get a const reference to the container of triggering event tags.
+	 * @return Container of triggering event tags.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems", meta=(GameplayTagFilter="System.Event"))
+	const FGameplayTagContainer& GetTriggerEventTags() const;
+
+	/**
+	 * Get a const reference to the list of conditions for this rule.
+	 * @return List of conditions for this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	const TArray<USystemicCondition*>& GetConditionList() const;
+
+	/**
+	 * Get the priority tag for this rule.
+	 * @return Priority tag for this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems", meta=(GameplayTagFilter="System.Event.Priority"))
+	const FGameplayTag& GetPriority() const;
+	
+	/**
+	 * Get the cooldown for this rule.
+	 * @return Cooldown for this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	const float GetCooldown() const;
+
+	/**
+	 * Get the state of this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	bool IsEnabled() const;
+
+	/**
+	 * Set the state of this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	void Enable(bool bEnabledIn = true);
+	
 	/**
 	 *	FSystemEvent Constructor. 
 	 */

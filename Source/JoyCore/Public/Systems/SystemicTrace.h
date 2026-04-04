@@ -15,69 +15,55 @@ class USystemicCondition;
 /**
  *	FSystemicTraceEvaluatedConditionResults Structure definition.
  */
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Category="Game|Systems")
 struct JOYCORE_API FSystemicTraceEvaluatedConditionResult
 {
 	GENERATED_BODY()
 	
-	/**
-	 *	FSystemicTraceEvaluatedConditionResults.
-	 */
-	
-	/**
-	 *	Pointer to the evaluated condition.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	// Pointer to the evaluated condition.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
 	TWeakObjectPtr<USystemicCondition> Condition = nullptr;
 	
-	/**
-	 *	Output of the evaluation.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	// Output of the evaluation.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
 	bool bResult = true;
 	
-	/**
-	 *	Text representation of the evaluation result.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	// Text representation of the evaluation result.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
 	TArray<FString> EvaluationLog;
 	
 public:
-	explicit FSystemicTraceEvaluatedConditionResult(const TWeakObjectPtr<USystemicCondition> ConditionIn = nullptr, const bool bResultIn = true, const FString& LogLine = FString())
+	/**
+	 * FSystemicTraceEvaluatedConditionResult Constructor.
+	 * @param ConditionIn Evaluated Condition.
+	 * @param bResultIn The result of the evaluation.
+	 * @param LogLineIn Log message from the evaluation.
+	 */
+	explicit FSystemicTraceEvaluatedConditionResult(const TWeakObjectPtr<USystemicCondition> ConditionIn = nullptr, const bool bResultIn = true, const FString& LogLineIn = FString())
 	: Condition(ConditionIn)
 	, bResult(bResultIn)
-	, EvaluationLog({LogLine})
+	, EvaluationLog({LogLineIn})
 	{	}
 };
 
 /**
  *	FSystemicTrace Structure Definition.
  */
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Category="Game|Systems")
 struct JOYCORE_API FSystemicTrace
 {
 	GENERATED_BODY()
 	
-	/**
-	 *	FSystemicTrace. 
-	 */
-	
-	/**
-	 *	Event tag.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	// Event tag.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
 	FGameplayTag EventTag = FGameplayTag();
 	
-	/**
-	 *	Name of the rule being evaluated.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	// Name of the rule being evaluated.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
 	FName RuleName = NAME_None;
 	
-	/**
-	 *	List of condition evaluation results during the trace.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Systemic Trace")
+	// List of condition evaluation results during the trace.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
 	TArray<FSystemicTraceEvaluatedConditionResult> EvaluatedConditionResults;
 	
 	/**

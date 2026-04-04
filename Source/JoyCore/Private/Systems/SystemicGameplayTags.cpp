@@ -13,6 +13,12 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Max, "System.Context.Intensi
  *	Event Tags.
  *		Events are used to trigger reactions based on a set of rules and conditions.
  */
+// Event Priority Tags.
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Priority_Default, "System.Event.Priority.Default");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Priority_Low, "System.Event.Priority.Low");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Priority_Normal, "System.Event.Priority.Normal");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Priority_High, "System.Event.Priority.High");
+
 // Lifecycle Event Tags.
 UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Created, "System.Event.Created");
 UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Destroyed, "System.Event.Destroyed");

@@ -10,41 +10,27 @@
 /**
  *	FSystemicRuleContext Structure Definition.
  */
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Category="Game|Systems")
 struct JOYCORE_API FSystemicRuleContext
 {
 	GENERATED_BODY()
 	
-	/**
-	 *	FSystemicRuleContext. 
-	 */
-
-	/**
-	 *	Initiator of the event.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Initiator of the event.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TWeakObjectPtr<AActor> Instigator = nullptr;
-	/**
-	 *	Target of the event, if there is one.
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Target of the event, if there is one.
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TWeakObjectPtr<AActor> Target = nullptr;
-	/**
-	 *	Source object that caused the event (for general-purpose coverage beyond actors). 
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Source object that caused the event (for general-purpose coverage beyond actors). 
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
 
-	/**
-	 *	Cache of named objects throughout the evaluation of a ruleset and reaction. 
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Cache of named objects throughout the evaluation of a ruleset and reaction. 
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TMap<FName, UObject*> NamedObjects;
 
-	/**
-	 *	Cache of named parameters throughout the evaluation of a ruleset and reaction. 
-	 */
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Runtime")
+	// Cache of named parameters throughout the evaluation of a ruleset and reaction. 
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
 	TMap<FName, float> NamedValues;
 
 	/**

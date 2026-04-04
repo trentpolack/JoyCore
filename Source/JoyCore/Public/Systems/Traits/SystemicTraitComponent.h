@@ -12,7 +12,7 @@
 
 #include "SystemicTraitComponent.generated.h"
 
-UCLASS(ClassGroup=(JoyCore), meta=(BlueprintSpawnableComponent))
+UCLASS(Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore, meta=(BlueprintSpawnableComponent))
 class JOYCORE_API USystemicTraitComponent : public UActorComponent, public ISystemicTraitProvider
 {
 	GENERATED_BODY()
@@ -21,32 +21,29 @@ public:
 	USystemicTraitComponent();
 	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Traits")
+	// Trait Tag Container.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits")
 	FGameplayTagContainer TraitTags = FGameplayTagContainer();
 
 public:
 	/**
-	 *	USystemicTraitComponent.
-	 */
-	
-	/**
 	 *	Adds a trait tag to the component.
 	 *	@param Tag The tag to add.
 	 */
-	UFUNCTION(BlueprintCallable, Category="JoyCore|Systems|Traits")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual void AddTraitTag(const FGameplayTag& Tag);
 	/**
 	 *	Adds trait tags to the component.
 	 *	@param TagContainer Container of tags to add.
 	 */
-	UFUNCTION(BlueprintCallable, Category="JoyCore|Systems|Traits")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual void AddTraitTags(const FGameplayTagContainer& TagContainer);
 
-	/**
-	 *	ISystemicTraitProvider.
-	 */
+	// ISystemicTraitProvider.
 	virtual const FGameplayTagContainer& GetTraitTags() const override;
+	// ~ISystemicTraitComponent.
 	
-protected:
+	// UActorComponent.
 	virtual void BeginPlay() override;
+	// ~UActorComponent.
 };

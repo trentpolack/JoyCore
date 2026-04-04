@@ -19,39 +19,28 @@ struct FSystemicRuleContext;
 struct FSystemicTrace;
 
 /**
- *	Object that contains a condition which can take in a systemic event and evaluate it.
+ *	USystemicCondition Class Definition.
+ *		Object that contains a condition which can take in a systemic event and evaluate it.
  */
-UCLASS(Blueprintable, BlueprintType, EditInlineNew, ClassGroup=(JoyCore))
+UCLASS(Blueprintable, BlueprintType, EditInlineNew, Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
 class JOYCORE_API USystemicCondition : public UObject
 {
 	GENERATED_BODY()
 
 protected:
-	/**
-	 *	USystemicCondition. 
-	 */
-
-	/**
-	 *	Name of this Condition; use for identification and organization. It does not affect functionality.
-	 */
+	// Name of this Condition; use for identification and organization. It does not affect functionality.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
 	FName Name = NAME_None;
 
-	/**
-	 *	Description of what this Condition is doing; useful for in-line documentation. It does not affect functionality.
-	 */
+	// Description of what this Condition is doing; useful for in-line documentation. It does not affect functionality.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
 	FText Description = FText();
 	
-	/**
-	 *	Subject that this condition is evaluating against.
-	 */
+	// Subject that this condition is evaluating against.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
 	ESystemicEventSubject Subject = ESystemicEventSubject::SourceObject;
 
-	/**
-	 *	Whether this Condition is enabled and should be evaluated.
-	 */
+	// Whether this Condition is enabled and should be evaluated.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
 	bool bEnabled = true;
 
@@ -62,7 +51,7 @@ public:
 	 *	@param Trace Trace information for debugging and logging.
 	 *	@return Trait provider for the subject; return nullptr if the subject does not implement ISystemicTraitProvider.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Conditions")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	TScriptInterface<ISystemicTraitProvider> GetSubjectTraitProvider(const FSystemicEvent& Event, FSystemicTrace& Trace) const
 	{
 		UObject* SubjectObject = Event.GetObjectBySubject(Subject).Get();
@@ -88,6 +77,6 @@ public:
 	 * @param Trace Trace information for debugging and logging.
 	 * @return True if the condition is met, false otherwise.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Conditions")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const;
 };
