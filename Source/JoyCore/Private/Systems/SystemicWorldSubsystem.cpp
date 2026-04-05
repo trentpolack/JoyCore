@@ -8,9 +8,13 @@
 #include "HAL/IConsoleManager.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "Commandlets/GatherTextFromSourceCommandlet.h"
 
+#include "Systems/SystemicCore.h"
+#include "Systems/Conditions/SystemicCondition.h"
 #include "Systems/Events/SystemicEvent.h"
-#include "Systems/Rules/SystemicRuleAsset.h"
+#include "Systems/Rules/SystemicRule.h"
+#include "Systems/Rules/SystemicRuleContext.h"
 
 // Define the log category for the JoyCore systems logic.
 DEFINE_LOG_CATEGORY(LogJoyCoreSystems);
@@ -23,36 +27,120 @@ namespace JoyCore::Systems
 		0,
 		TEXT("Controls when events are processed; 0 = queue and dispatch during Tick (Default), 1 = process immediately in EmitEvent."),
 		ECVF_Default);
+
+	static TAutoConsoleVariable<int32> CVarSystemDebugSystemicEvents(
+		TEXT("JoyCore.Systems.DebugSystemicEvents"),
+		0,
+		TEXT("Enables additional debug logging while processing Systemic Events (Verbosity: Verbose); 0 = Disabled, 1 = Enabled."),
+		ECVF_Default);
 }
 
-// Process a rule triggered by the referenced event.
-void USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event)
+// Process a systemic event by running it through all valid rules and conditions to see if it's valid.
+bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreDisabledRules, const bool bIgnoreRuleCooldowns)
 {
 	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Processing SystemicEvent: %s"), *Event.EventTag.ToString());
+
+	// Get all matching rules.
+	TArray<FSystemicRuleRuntimeData*> matchingRules = FindMatchingRules(Event.EventTag, bIgnoreDisabledRules);
+	if(matchingRules.IsEmpty())
+	{
+		UE_LOG(LogJoyCoreSystems, Warning, TEXT("No Rules defined to process SystemicEvent: %s"), *Event.EventTag.ToString());
+		return false;
+	}
+
+	// Start building up the trace data.
+	FSystemicTrace trace;
+	trace.EventTag = Event.EventTag;
+
+	// Run through all matching rules for this event (all are sorted by priority in the map).
+	for(FSystemicRuleRuntimeData* pRuleData : matchingRules)
+	{
+		USystemicRule* pRule = pRuleData->Rule.Get();
+		const bool ruleIsValid = IsValid(pRule);
+		ensure(ruleIsValid);
+		
+		if(!ruleIsValid)
+		{
+			UE_LOG(LogJoyCoreSystems, Error, TEXT("Invalid rule encountered while processing SystemicEvent: %s"), *Event.EventTag.ToString());
+			continue;
+		}
+		
+		// Update execution trace.
+		trace.RuleNames.Add(pRule->GetRuleName());
+		
+		// If a rule is on cooldown then this event cannot be processed
+		if(!bIgnoreRuleCooldowns && (pRuleData->Cooldown > 0.0f))
+		{
+			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicRule %s is on cooldown and cannot process event %s."), *pRule->GetRuleName().ToString(), *Event.EventTag.ToString());
+			continue;
+		}
+		
+		// Execute the rule and evaluate its conditions.
+		if(!ExecuteRule(pRule, Event, trace))
+		{
+			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent %s failed to process rule %s."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString());
+			continue;
+		}
+		
+		// Put this rule on cooldown.
+		pRuleData->Cooldown = pRule->GetCooldown();
+		if(pRuleData->Cooldown > 0.0f)
+		{
+			// Need to reduce the cooldown on tick.
+			RulesOnCooldown.Add(pRuleData);
+		}
+
+		UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicEvent %s successfully processed by rule %s (Cooldown is %f)."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString(), pRuleData->Cooldown);
+		return true;
+	}
 	
-	//	
+	return false;
 }
 
 // Execute the passed-in rule triggered by the referenced event.
-void USystemicWorldSubsystem::ExecuteRule(USystemicRuleAsset* Rule, const FSystemicEvent& Event)
+bool USystemicWorldSubsystem::ExecuteRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace)
 {
 	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Executing SystemicRule: %s"), *Rule->GetRuleName().ToString());
-
-	//
+	
+	// Fill out the rule context.
+	FSystemicRuleContext ruleContext;
+	ruleContext.Instigator = Event.Instigator;
+	ruleContext.Target = Event.Target;
+	ruleContext.SourceObject = Event.SourceObject;
+	
+	for(const TObjectPtr<USystemicCondition> pCondition : Rule->GetConditionList())
+	{
+		if(!pCondition->Evaluate(Event, ruleContext, Trace))
+		{
+			// Condition failed; stop evaluating this rule.
+			UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicRule %s failed condition %s."), *Rule->GetRuleName().ToString(), *pCondition->GetName());
+			return false;
+		}
+	}
+	
+	return true;
 }
 
 // Find all rules matching the passed-in event tag.
-TArray<USystemicRuleAsset*> USystemicWorldSubsystem::FindMatchingRules(FGameplayTag EventTag) const
+TArray<FSystemicRuleRuntimeData*> USystemicWorldSubsystem::FindMatchingRules(const FGameplayTag& EventTag, const bool bIgnoreDisabled)
 {
-	TArray<USystemicRuleAsset*> matchingRules;
-	if(const FSystemicMappedRuleAssets* pMappedRules = RuleMap.Find(EventTag))
+	TArray<FSystemicRuleRuntimeData*> matchingRules;
+	
+	// Loop through the entire rule map and find all matching rules that adhere to the passed-in flags.
+	if(FSystemicMappedRules* pMappedRules = RuleMap.Find(EventTag))
 	{
-		for(const TSoftObjectPtr<USystemicRuleAsset>& ruleAsset : pMappedRules->RuleAssets)
+		for(FSystemicRuleRuntimeData& ruleData : pMappedRules->Rules)
 		{
-			if(USystemicRuleAsset* pRule = ruleAsset.Get())
+			if(USystemicRule* pRule = ruleData.Rule.Get())
 			{
+				if(bIgnoreDisabled && !pRule->IsEnabled())
+				{
+					// Rule isn't enabled; skip.
+					continue;
+				}
+
 				// Found a matching rule.
-				matchingRules.Add(pRule);
+				matchingRules.Add(&ruleData);
 			}
 		}
 	}
@@ -96,7 +184,7 @@ void USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemi
 }
 
 // Register a rule with the subsystem as an Active Rule as well as caching it off in the rule map.
-bool USystemicWorldSubsystem::RegisterRule(USystemicRuleAsset* RuleIn, bool bForceActivateRule)
+bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn, bool bForceActivateRule)
 {
 	if(!IsValid(RuleIn))
 	{
@@ -107,10 +195,16 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRuleAsset* RuleIn, bool bFor
 	for(const FGameplayTag& EventTag : RuleIn->GetTriggerEventTags())
 	{
 		// Find or add this rule to the rule map cache for easy access by tag.
-		FSystemicMappedRuleAssets& ruleAssets = RuleMap.FindOrAdd(EventTag);
+		FSystemicMappedRules& ruleAssets = RuleMap.FindOrAdd(EventTag);
 		
 		ruleAssets.EventTag = EventTag;
-		ruleAssets.RuleAssets.Add(RuleIn);
+		ruleAssets.Rules.Add(FSystemicRuleRuntimeData(RuleIn, -1.0f));
+		
+		// Sort the rule assets by priority.
+		ruleAssets.Rules.Sort([](const FSystemicRuleRuntimeData& RuleA, const FSystemicRuleRuntimeData& RuleB)
+		{
+			return(USystemicCore::GetHigherPriorityRule(RuleA.Rule.Get(), RuleB.Rule.Get()) == &RuleA);
+		});
 
 		UE_LOG(LogJoyCoreSystems, Log, TEXT("SystemicRuleAsset added to USystemicWorldSubsystem: %s\nFull Name: %s (Event Tag: %s)."), *RuleIn->GetRuleName().ToString(), *RuleIn->GetFullName(), *EventTag.ToString());
 	}
@@ -119,13 +213,6 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRuleAsset* RuleIn, bool bFor
 	{
 		// Override the rule's state.
 		RuleIn->Enable(true);
-	}
-
-	if(RuleIn->IsEnabled())
-	{
-		// Rule is enabled; add to active rules.
-		ActiveRules.Add(RuleIn);
-		UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicRuleAsset (Name: %s, Event Tags: %s) activated in USystemicWorldSubsystem."), *RuleIn->GetRuleName().ToString(), *RuleIn->GetTriggerEventTags().ToString());
 	}
 	
 	return true;
@@ -167,7 +254,7 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	// Load all Rule Assets.
 	FAssetRegistryModule& assetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 	TArray<FAssetData> assetData;
-	const UClass* Class = USystemicRuleAsset::StaticClass();
+	const UClass* Class = USystemicRule::StaticClass();
 	
 	// Get all Rule Assets by class.
 	assetRegistryModule.Get().GetAssetsByClass(Class->GetClassPathName(), assetData, true);
@@ -175,7 +262,7 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	// Go through and register all the rules with the map and the active rule list if the rule is enabled.
 	for(const FAssetData& asset : assetData)
 	{
-		TObjectPtr<USystemicRuleAsset> pRule = Cast<USystemicRuleAsset>(asset.GetAsset());
+		TObjectPtr<USystemicRule> pRule = Cast<USystemicRule>(asset.GetAsset());
 		if(IsValid(pRule))
 		{
 			// Register the rule.

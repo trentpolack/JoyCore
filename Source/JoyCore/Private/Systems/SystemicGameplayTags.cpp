@@ -32,3 +32,13 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Revived, "System.Event.Revived");
 UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Contact_Hit, "System.Event.Contact.Hit");
 UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Contact_BeginOverlap, "System.Event.Contact.BeginOverlap");
 UE_DEFINE_GAMEPLAY_TAG(TAG_System_Event_Contact_EndOverlap, "System.Event.Contact.EndOverlap");
+
+/**
+ *	Rule Tags.
+ *   Rule tags provide additional information about a given rule; largely used for prioritization.
+ */
+// Rule priority tags.
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Rule_Priority_Default, "System.Rule.Priority.Default");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Rule_Priority_Low, "System.Rule.Priority.Low");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Rule_Priority_Normal, "System.Rule.Priority.Normal");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Rule_Priority_High, "System.Rule.Priority.High");

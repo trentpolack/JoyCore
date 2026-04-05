@@ -6,7 +6,10 @@
 #include "CoreMinimal.h"
 
 #include "StructUtils/InstancedStruct.h"
+
 #include "GameplayTags.h"
+
+#include "Systems/SystemicGameplayTags.h"
 
 #include "SystemicEvent.generated.h"
 
@@ -46,6 +49,10 @@ struct JOYCORE_API FSystemicEvent
 	// Gameplay tag associated with the event.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
 	FGameplayTag EventTag = FGameplayTag();
+	
+	// Priority tag for this event (unused right now, 4/5/26).
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event", meta=(GameplayTagFilter="System.Event.Priority"))
+	FGameplayTag Priority = TAG_System_Event_Priority_Default;
 
 	// Gameplay tags providing additional event context.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")

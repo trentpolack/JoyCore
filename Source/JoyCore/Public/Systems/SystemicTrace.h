@@ -22,7 +22,7 @@ struct JOYCORE_API FSystemicTraceEvaluatedConditionResult
 	
 	// Pointer to the evaluated condition.
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
-	TWeakObjectPtr<USystemicCondition> Condition = nullptr;
+	const TWeakObjectPtr<USystemicCondition> Condition = nullptr;
 	
 	// Output of the evaluation.
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
@@ -60,7 +60,7 @@ struct JOYCORE_API FSystemicTrace
 	
 	// Name of the rule being evaluated.
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
-	FName RuleName = NAME_None;
+	TArray<FName> RuleNames;
 	
 	// List of condition evaluation results during the trace.
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")

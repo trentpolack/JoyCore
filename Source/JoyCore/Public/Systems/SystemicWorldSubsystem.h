@@ -11,20 +11,56 @@
 #include "SystemicWorldSubsystem.generated.h"
 
 // Declarations.
-class USystemicRuleAsset;
+class USystemicRule;
 
 struct FSystemicEvent;
+struct FSystemicTrace;
 
 // Log declaration.
 DECLARE_LOG_CATEGORY_EXTERN(LogJoyCoreSystems, Log, All);
 
 /**
- *	FSystemicMappedRuleAssets
- *		Workaround for not being able to directly use an array in a UPROPERTY.
- *		Contains a GameplayTag and an array of USystemicRuleAsset pointers.
+ *	FSystemicRuleRuntimeData Structure.
+ *		Contains any runtime data associated with the linked USystemicRule asset.
  */
 USTRUCT()
-struct FSystemicMappedRuleAssets
+struct FSystemicRuleRuntimeData
+{
+	GENERATED_BODY()
+	
+	// Rule asset pointer.
+	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
+	TSoftObjectPtr<USystemicRule> Rule = nullptr;
+	
+	// Current cooldown on this rule.
+	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
+	float Cooldown = -1.0f;
+
+	/**
+	 * FSystemicRuleRuntimeData Constructor.
+	 */
+	FSystemicRuleRuntimeData()
+	{	}
+
+	/**
+	 * FSystemicRuleRuntimeData Constructor.
+	 * @param RuleIn Rule asset object pointer.
+	 * @param CooldownIn Cooldown value for this rule.
+	 */
+	FSystemicRuleRuntimeData(const TSoftObjectPtr<USystemicRule> RuleIn, const float CooldownIn)	
+	{
+		Rule = RuleIn;
+		Cooldown = CooldownIn;
+	}
+};
+
+/**
+ *	FSystemicMappedRules Structure.
+ *		Workaround for not being able to directly use an array in a UPROPERTY.
+ *		Contains a GameplayTag and an array of FSystemicRuleRuntimeData (rule assets in addition to any runtime data).
+ */
+USTRUCT()
+struct FSystemicMappedRules
 {
 	GENERATED_BODY()
 	
@@ -32,7 +68,7 @@ struct FSystemicMappedRuleAssets
 	FGameplayTag EventTag;
 
 	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
-	TArray<TSoftObjectPtr<USystemicRuleAsset>> RuleAssets;
+	TArray<FSystemicRuleRuntimeData> Rules;
 };
 
 /**
@@ -44,14 +80,14 @@ class JOYCORE_API USystemicWorldSubsystem : public UTickableWorldSubsystem
 {
 	GENERATED_BODY()
 
-protected:
-	// Active Rules.
-	UPROPERTY(Category="Runtime", VisibleInstanceOnly)
-	TArray<TObjectPtr<USystemicRuleAsset>> ActiveRules;
+private:
+	// Map of Rule Assets that are triggered by a given event tag..
+	TArray<FSystemicRuleRuntimeData*> RulesOnCooldown;
 
+protected:
 	// Map of Rule Assets that are triggered by a given event tag..
 	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly, meta=(GameplayTagFilter="System.Event"))
-	TMap<FGameplayTag, FSystemicMappedRuleAssets> RuleMap;
+	TMap<FGameplayTag, FSystemicMappedRules> RuleMap;
 
 	// Queue of events to process during Tick; only used if the JoyCore.Systems.ProcessEventsImmediately console variable is set to 0 (default).
 	UPROPERTY(Category="Runtime", VisibleInstanceOnly)
@@ -63,11 +99,13 @@ protected:
 
 protected:
 	/**
-	 * Process a new event.
+	 * Process a systemic event.
 	 * @param Event The event to process.
+	 * @param bIgnoreDisabledRules Whether to ignore disabled rules when finding matching rules (defaults to true).
+	 * @param bIgnoreRuleCooldowns Whether to ignore cooldowns when finding matching rules (defaults to false).
 	 */
 	UFUNCTION(Category="Game|Systems")
-	virtual void ProcessSystemicEvent(const FSystemicEvent& Event);
+	virtual bool ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreDisabledRules = true, const bool bIgnoreRuleCooldowns = false);
 	
 	/**
 	 * Executes a rule against an event, evaluating its conditions and triggering its reaction if successful.
@@ -75,15 +113,15 @@ protected:
 	 * @param Event The event to execute the rule against.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual void ExecuteRule(USystemicRuleAsset* Rule, const FSystemicEvent& Event);
+	virtual bool ExecuteRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace);
 
-	/*
-	 *	Find rules matching the event tag.
-	 *	@param EventTag The tag of the event to find matching rules for.
-	 *	@return An array of pointers to rules matching the event tag.
+	/**
+	 * Find rules matching the event tag.
+	 * @param EventTag The tag of the event to find matching rules for.
+	 * @param bIgnoreDisabled Whether to ignore disabled rules when finding matching rules (defaults to true).
+	 * @return An array of pointers to rules matching the event tag.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems", meta=(GameplayTagFilter="System.Event"))
-	TArray<USystemicRuleAsset*> FindMatchingRules(FGameplayTag EventTag) const;
+	TArray<FSystemicRuleRuntimeData*> FindMatchingRules(const FGameplayTag& EventTag, const bool bIgnoreDisabled = true);
 
 public:
 	/**
@@ -107,7 +145,7 @@ public:
 	 * @return Returns true if the registration was successful.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual bool RegisterRule(USystemicRuleAsset* RuleIn, bool bForceActivateRule = true);
+	virtual bool RegisterRule(USystemicRule* RuleIn, bool bForceActivateRule = true);
 	
 	// UTickableWorldSubsystem.
 	virtual ETickableTickType GetTickableTickType() const override;

@@ -9,16 +9,18 @@
 
 #include "Engine/DataAsset.h"
 
-#include "SystemicRuleAsset.generated.h"
+#include "Systems/SystemicGameplayTags.h"
+
+#include "SystemicRule.generated.h"
 
 // Declarations.
 class USystemicCondition;
 
 /**
- *	USystemicRuleAsset Class Definition.
+ *	USystemicRule Class Definition.
  */
 UCLASS(Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
-class JOYCORE_API USystemicRuleAsset : public UPrimaryDataAsset
+class JOYCORE_API USystemicRule : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
@@ -36,8 +38,8 @@ protected:
 	TArray<TObjectPtr<USystemicCondition>> ConditionList;
 	
 	// Priority tag for this rule.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule", meta=(GameplayTagFilter="System.Event.Priority"))
-	FGameplayTag Priority = FGameplayTag();
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule", meta=(GameplayTagFilter="System.Rule.Priority"))
+	FGameplayTag Priority = TAG_System_Rule_Priority_Default;
 
 	// Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule")
@@ -98,6 +100,6 @@ public:
 	/**
 	 *	FSystemEvent Constructor. 
 	 */
-	USystemicRuleAsset()
+	USystemicRule()
 	{	}
 };
