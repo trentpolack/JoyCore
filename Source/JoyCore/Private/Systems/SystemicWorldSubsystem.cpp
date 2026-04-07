@@ -38,6 +38,7 @@ namespace JoyCore::Systems
 // Process a systemic event by running it through all valid rules and conditions to see if it's valid.
 bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreDisabledRules, const bool bIgnoreRuleCooldowns)
 {
+	const bool bDebugSystemicEvents = JoyCore::Systems::CVarSystemDebugSystemicEvents.GetValueOnGameThread() == 1;
 	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Processing SystemicEvent: %s"), *Event.EventTag.ToString());
 
 	// Get all matching rules.
@@ -71,14 +72,14 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 		// If a rule is on cooldown then this event cannot be processed
 		if(!bIgnoreRuleCooldowns && (pRuleData->Cooldown > 0.0f))
 		{
-			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicRule %s is on cooldown and cannot process event %s."), *pRule->GetRuleName().ToString(), *Event.EventTag.ToString());
+			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicRule (%s) is on cooldown and cannot process event (%s)."), *pRule->GetRuleName().ToString(), *Event.EventTag.ToString());
 			continue;
 		}
 		
 		// Execute the rule and evaluate its conditions.
 		if(!ExecuteRule(pRule, Event, trace))
 		{
-			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent %s failed to process rule %s."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString());
+			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) failed to process rule %s."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString());
 			continue;
 		}
 		
@@ -90,10 +91,26 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 			RulesOnCooldown.Add(pRuleData);
 		}
 
-		UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicEvent %s successfully processed by rule %s (Cooldown is %f)."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString(), pRuleData->Cooldown);
+		//Print successful handling message.
+		UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicEvent (%s) successfully processed by rule %s (Cooldown is %f)."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString(), pRuleData->Cooldown);
+
+		if(bDebugSystemicEvents)
+		{
+			// Print the evaluation log if event debugging is enabled.
+			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) evaluation log:\n%s"), *Event.EventTag.ToString(), *trace.GetEvaluationLogAsString());
+		}
+
 		return true;
 	}
 	
+	UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) was unhandled."), *Event.EventTag.ToString());
+
+	if(bDebugSystemicEvents)
+	{
+		// Print the evaluation log if event debugging is enabled.
+		UE_LOG(LogJoyCoreSystems, Log, TEXT("SystemicEvent (%s) evaluation log:\n%s"), *Event.EventTag.ToString(), *trace.GetEvaluationLogAsString());
+	}
+
 	return false;
 }
 

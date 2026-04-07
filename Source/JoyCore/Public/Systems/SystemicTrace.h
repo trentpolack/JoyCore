@@ -67,6 +67,29 @@ struct JOYCORE_API FSystemicTrace
 	TArray<FSystemicTraceEvaluatedConditionResult> EvaluatedConditionResults;
 	
 	/**
+	 *	Get the evaluation log as a string.
+	 */
+	FString GetEvaluationLogAsString() const
+	{
+		FString log;
+		
+		log+= FString::Printf(TEXT("Event Tag: %s\n"), *EventTag.ToString());
+		log+= FString::Printf(TEXT("Rule Name(s): %s\n"), *FString::JoinBy(RuleNames, TEXT(", "), [](const FName& Name){ return Name.ToString(); }));
+
+		// Go through all the conditional results.
+		for(const FSystemicTraceEvaluatedConditionResult& result : EvaluatedConditionResults)
+		{
+			for(const FString& line : result.EvaluationLog)
+			{
+				// Print out the evaluation log.
+				log+= FString::Printf(TEXT("\t%s\n"), *line);
+			}
+		}
+
+		return log;
+	}
+	
+	/**
 	 *	FSystemicEvent Constructor. 
 	 */
 	FSystemicTrace()

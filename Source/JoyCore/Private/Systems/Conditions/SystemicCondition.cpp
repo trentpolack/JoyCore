@@ -15,11 +15,11 @@ bool USystemicCondition::Evaluate(const FSystemicEvent& Event, FSystemicRuleCont
 	
 	if(result.bResult)
 	{
-		result.EvaluationLog.Add(TEXT("Condition enabled and passed base validation test on subject object."));
+		result.EvaluationLog.Add(FString::Printf(TEXT("Condition (%s): enabled.\n\tResult: Success."), *Name.ToString()));
 	}
 	else
 	{
-		result.EvaluationLog.Add(TEXT("Condition enabled and failed base validation test on subject object."));
+		result.EvaluationLog.Add(FString::Printf(TEXT("Condition (%s): enabled.\n\tResult: Failure."), *Name.ToString()));
 	}
 
 	Trace.EvaluatedConditionResults.Add(result);
