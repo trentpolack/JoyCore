@@ -203,7 +203,7 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn, bool bForceAct
 		// Sort the rule assets by priority.
 		ruleAssets.Rules.Sort([](const FSystemicRuleRuntimeData& RuleA, const FSystemicRuleRuntimeData& RuleB)
 		{
-			return(USystemicCore::GetHigherPriorityRule(RuleA.Rule.Get(), RuleB.Rule.Get()) == &RuleA);
+			return(USystemicCore::GetHigherPriorityRule(RuleA.Rule.Get(), RuleB.Rule.Get()) == RuleA.Rule.Get());
 		});
 
 		UE_LOG(LogJoyCoreSystems, Log, TEXT("SystemicRuleAsset added to USystemicWorldSubsystem: %s\nFull Name: %s (Event Tag: %s)."), *RuleIn->GetRuleName().ToString(), *RuleIn->GetFullName(), *EventTag.ToString());
@@ -229,6 +229,25 @@ ETickableTickType USystemicWorldSubsystem::GetTickableTickType() const
 void USystemicWorldSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	{
+		int32 idx = 0;
+
+		// Tick down the rules on cooldown.
+		while(!RulesOnCooldown.IsEmpty() && idx < RulesOnCooldown.Num())
+		{
+			FSystemicRuleRuntimeData* pRuleData = RulesOnCooldown[idx];
+			pRuleData->Cooldown-= DeltaTime;
+			if(pRuleData->Cooldown <= 0.0f)
+			{
+				// Cooldown is up; remove from cooldown list.
+				RulesOnCooldown.Remove(pRuleData);
+				continue;
+			}
+
+			++idx;
+		}
+	}
 
 	// Events are processed in a queue if JoyCore.Systems.ProcessEventsImmediately is 0.
 	if(JoyCore::Systems::CVarSystemProcessEventsImmediately.GetValueOnGameThread() == 0)
@@ -280,7 +299,7 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 void USystemicWorldSubsystem::Deinitialize()
 {
 	// Clear the active rule list.
-	ActiveRules.Empty();
+	RulesOnCooldown.Empty();
 	EventQueue.Empty();
 	RuleMap.Empty();
 	

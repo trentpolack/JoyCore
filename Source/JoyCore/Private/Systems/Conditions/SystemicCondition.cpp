@@ -8,8 +8,7 @@
 // Base condition evaluation; so long as it's enabled and the data is valid it'll pass.
 bool USystemicCondition::Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const
 {
-	FSystemicTraceEvaluatedConditionResult result;
-	result.Condition = this;
+	FSystemicTraceEvaluatedConditionResult result(const_cast<USystemicCondition*>(this));
 	result.bResult = bEnabled && (((Subject == ESystemicEventSubject::Instigator) && Event.Instigator.IsValid())
 		|| (Subject == ESystemicEventSubject::Target && Event.Target.IsValid())
 		|| (Subject == ESystemicEventSubject::SourceObject && Event.SourceObject.IsValid()));

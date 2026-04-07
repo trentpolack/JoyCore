@@ -10,43 +10,25 @@
 // Return the highest-priority event, defaulting to EventA if equal.
 const FSystemicEvent& USystemicCore::GetHigherPriorityEvent(const FSystemicEvent& EventA, const FSystemicEvent& EventB)
 {
-	switch(EventA.Priority)
-	{
-	case TAG_System_Event_Priority_Low:
+	if(EventA.Priority == TAG_System_Event_Priority_High)
+		return EventA;
+	else if(EventA.Priority == TAG_System_Event_Priority_Low)
 		return((EventB.Priority == TAG_System_Event_Priority_Low) ? EventA : EventB);
 
-	case TAG_System_Event_Priority_High:
-		return EventA;
-
-	case TAG_System_Event_Priority_Default:
-	case TAG_System_Event_Priority_Normal:
-	default:
-		// Just roll into the default return case.
-		break;
-	}
-	
+	// Condition handling for default and normal.
 	return((EventB.Priority != TAG_System_Event_Priority_High) ? EventA : EventB);
 }
 
 // Return the highest-priority rule, defaulting to RuleA if equal.
 const USystemicRule* USystemicCore::GetHigherPriorityRule(const USystemicRule* RuleA, const USystemicRule* RuleB)
 {
+	const FGameplayTag& ruleAPriority = RuleA->GetPriority();
 	const FGameplayTag& ruleBPriority = RuleB->GetPriority();
 	
-	switch(RuleA->GetPriority())
-	{
-	case TAG_System_Rule_Priority_Low:
-		return((ruleBPriority == TAG_System_Rule_Priority_Low) ? RuleA : RuleB);
-
-	case TAG_System_Rule_Priority_High:
+	if(ruleAPriority == TAG_System_Rule_Priority_High)
 		return RuleA;
-
-	case TAG_System_Rule_Priority_Default:
-	case TAG_System_Rule_Priority_Normal:
-	default:
-		// Just roll into the default return case.
-		break;
-	}
+	else if(ruleAPriority == TAG_System_Rule_Priority_Low)
+		return((ruleBPriority == TAG_System_Rule_Priority_Low) ? RuleA : RuleB);
 	
 	return((ruleBPriority != TAG_System_Rule_Priority_High) ? RuleA : RuleB);
 }
