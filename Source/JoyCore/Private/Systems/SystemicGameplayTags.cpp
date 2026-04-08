@@ -3,11 +3,11 @@
 
 #include "Systems/SystemicGameplayTags.h"
 
-UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_None, "System.Context.Intensity.");
-UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Low, "System.Context.Intensity.");
-UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Medium, "System.Context.Intensity.");
-UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_High, "System.Context.Intensity.");
-UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Max, "System.Context.Intensity.");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_None, "System.Context.Intensity.None");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Low, "System.Context.Intensity.Low");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Medium, "System.Context.Intensity.Medium");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_High, "System.Context.Intensity.High");
+UE_DEFINE_GAMEPLAY_TAG(TAG_System_Context_Intensity_Max, "System.Context.Intensity.Max");
 
 /**
  *	Event Tags.
