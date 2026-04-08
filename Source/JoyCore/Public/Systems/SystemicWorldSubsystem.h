@@ -111,6 +111,7 @@ protected:
 	 * Executes a rule against an event, evaluating its conditions and triggering its reaction if successful.
 	 * @param Rule The rule to execute.
 	 * @param Event The event to execute the rule against.
+	 * @param Trace The trace instance to fill out while executing the rule.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual bool ExecuteRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace);
@@ -150,6 +151,7 @@ public:
 	// UTickableWorldSubsystem.
 	virtual ETickableTickType GetTickableTickType() const override;
 	virtual void Tick(float DeltaTime) override;
+	virtual TStatId GetStatId() const override;
 	// ~UTickableWorldSubsystem.
 	
 	// USubsystem.

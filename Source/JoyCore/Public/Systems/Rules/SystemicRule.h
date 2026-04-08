@@ -68,14 +68,13 @@ public:
 	 * Get a const reference to the list of conditions for this rule.
 	 * @return List of conditions for this rule.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	const TArray<USystemicCondition*>& GetConditionList() const;
+	const TArray<TObjectPtr<USystemicCondition>>& GetConditionList() const;
 
 	/**
 	 * Get the priority tag for this rule.
 	 * @return Priority tag for this rule.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems", meta=(GameplayTagFilter="System.Event.Priority"))
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	const FGameplayTag& GetPriority() const;
 	
 	/**

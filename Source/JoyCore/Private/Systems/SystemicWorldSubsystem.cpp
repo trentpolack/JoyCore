@@ -322,3 +322,9 @@ void USystemicWorldSubsystem::Deinitialize()
 	
 	Super::Deinitialize();
 }
+
+// Required function override for profiling.
+TStatId USystemicWorldSubsystem::GetStatId() const
+{
+	RETURN_QUICK_DECLARE_CYCLE_STAT(USystemicWorldSubsystem, STATGROUP_Tickables);
+}

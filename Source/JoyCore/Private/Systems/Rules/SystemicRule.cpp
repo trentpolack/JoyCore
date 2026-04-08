@@ -16,7 +16,7 @@ const FGameplayTagContainer& USystemicRule::GetTriggerEventTags() const
 }
 
 // Get a reference to the list of conditions.
-const TArray<USystemicCondition*>& USystemicRule::GetConditionList() const
+const TArray<TObjectPtr<USystemicCondition>>& USystemicRule::GetConditionList() const
 {
 	return ConditionList;
 }
