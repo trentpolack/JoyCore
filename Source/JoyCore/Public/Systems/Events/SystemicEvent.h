@@ -58,18 +58,21 @@ struct JOYCORE_API FSystemicEvent
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
 	FGameplayTagContainer ContextTags = FGameplayTagContainer();
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
+	TInstancedStruct<FSystemicEventData> EventDataStruct;
+
 	// Initiator of the event.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TWeakObjectPtr<AActor> Instigator = nullptr;
 	// Target of the event, if there is one.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TWeakObjectPtr<AActor> Target = nullptr;
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Settings")
-	TInstancedStruct<FSystemicEventData> ContextData;
+	// Instance of the EventDataStruct
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
+	TInstancedStruct<FSystemicEventData> EventDataInstance;
 
 public:
 	/**
@@ -92,5 +95,8 @@ public:
 	 *	FSystemicEvent Constructor. 
 	 */
 	FSystemicEvent()
-	{	}
+	{
+		// Instantiate the instance event data.
+		EventDataInstance = EventDataStruct.Make();
+	}
 };

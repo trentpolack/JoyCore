@@ -35,10 +35,11 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_High);              // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Created);                    // Object Created.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Destroyed);                  // Object Destroyed.
 
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Downed);                     // Object Downed (can be revived; will trigger at the same time as Object Killed if revival is not supported).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_HealthChanged);              // Object Health Changed (Healed or Damaged).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Killed);                     // Object Killed (distinct from Object Destroyed).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Revived);                    // Object Revived.
+// Character State Tags.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_Downed);        // Character Downed (can be revived; will trigger at the same time as Object Killed if revival is not supported).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_HealthChanged); // Character Health Changed (Restored or Damaged).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_Killed);        // Character Killed (distinct from Destroyed).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_Revived);       // Character Revived.
 
 // Collision Event Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_Hit);                // Contact Hit (blocking collision).

@@ -16,7 +16,6 @@
 
 // Declarations.
 struct FSystemicRuleContext;
-struct FSystemicTrace;
 
 /**
  *	USystemicCondition Class Definition.

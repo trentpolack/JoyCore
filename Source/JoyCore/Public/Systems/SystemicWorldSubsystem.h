@@ -15,9 +15,7 @@ class USystemicRule;
 
 struct FSystemicEvent;
 struct FSystemicTrace;
-
-// Log declaration.
-DECLARE_LOG_CATEGORY_EXTERN(LogJoyCoreSystems, Log, All);
+struct FSystemicRuleContext;
 
 /**
  *	FSystemicRuleRuntimeData Structure.
@@ -81,16 +79,16 @@ class JOYCORE_API USystemicWorldSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 private:
-	// Map of Rule Assets that are triggered by a given event tag..
+	// List of rules on cooldown.
 	TArray<FSystemicRuleRuntimeData*> RulesOnCooldown;
 
 protected:
-	// Map of Rule Assets that are triggered by a given event tag..
-	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly, meta=(GameplayTagFilter="System.Event"))
+	// Map of Rule Assets that are triggered by a given event tag.
+	UPROPERTY(Transient, Category="Transient", VisibleInstanceOnly, AdvancedDisplay, meta=(GameplayTagFilter="System.Event"))
 	TMap<FGameplayTag, FSystemicMappedRules> RuleMap;
 
 	// Queue of events to process during Tick; only used if the JoyCore.Systems.ProcessEventsImmediately console variable is set to 0 (default).
-	UPROPERTY(Category="Runtime", VisibleInstanceOnly)
+	UPROPERTY(Transient, Category="Transient", VisibleInstanceOnly, AdvancedDisplay)
 	TArray<FSystemicEvent> EventQueue;
 
 	// Number of events to process during ::Tick; process all events every ::Tick if set to 0.
@@ -103,18 +101,33 @@ protected:
 	 * @param Event The event to process.
 	 * @param bIgnoreDisabledRules Whether to ignore disabled rules when finding matching rules (defaults to true).
 	 * @param bIgnoreRuleCooldowns Whether to ignore cooldowns when finding matching rules (defaults to false).
+	 * @return True if the event was successfully processed, false otherwise.
 	 */
 	UFUNCTION(Category="Game|Systems")
 	virtual bool ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreDisabledRules = true, const bool bIgnoreRuleCooldowns = false);
 	
 	/**
-	 * Executes a rule against an event, evaluating its conditions and triggering its reaction if successful.
+	 * Evaluate a rule for an event by seeing if all of its conditions pass.
 	 * @param Rule The rule to execute.
 	 * @param Event The event to execute the rule against.
-	 * @param Trace The trace instance to fill out while executing the rule.
+	 * @param Trace The trace instance to fill out while evaluating the rule.
+	 * @param RuleContextOut The rule context to fill out while evaluating the rule.
+	 * @return True if the rule was successfully evaluated, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual bool ExecuteRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace);
+	virtual bool EvaluateRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace, FSystemicRuleContext& RuleContextOut) const;
+
+	/**
+	 * Executes reactions in the specified rule's reaction list.
+	 *	NOTE (4/19/26, trent): Not entirely sure this method needs to be separated from ::EvaluateRule or if it'd be better to execute within the rule itself. Keeping ownership at the Subsystem level for now.
+	 * @param Rule The reactions specified in Rule that will be executed by this method.
+	 * @param Event The triggering event.
+	 * @param RuleContext The rule context filled out while evaluating the rule.
+	 * @param Trace The trace instance to fill out while executing the rule's reactions.
+	 * @return True if all reactions executed successfully, false if any reaction failed to execute.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	virtual bool ExecuteReactions(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicRuleContext& RuleContext, FSystemicTrace& Trace) const;
 
 	/**
 	 * Find rules matching the event tag.

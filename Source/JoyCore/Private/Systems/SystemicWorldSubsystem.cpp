@@ -13,11 +13,9 @@
 #include "Systems/SystemicCore.h"
 #include "Systems/Conditions/SystemicCondition.h"
 #include "Systems/Events/SystemicEvent.h"
+#include "Systems/Reactions/SystemicReaction.h"
 #include "Systems/Rules/SystemicRule.h"
 #include "Systems/Rules/SystemicRuleContext.h"
-
-// Define the log category for the JoyCore systems logic.
-DEFINE_LOG_CATEGORY(LogJoyCoreSystems);
 
 // Setup console commands and variables.
 namespace JoyCore::Systems
@@ -66,21 +64,35 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 			continue;
 		}
 		
-		// Update execution trace.
-		trace.RuleNames.Add(pRule->GetRuleName());
-		
 		// If a rule is on cooldown then this event cannot be processed
 		if(!bIgnoreRuleCooldowns && (pRuleData->Cooldown > 0.0f))
 		{
+			trace.RuleNameAndResultList.Add(TPair<FName, bool>(pRule->GetRuleName(), false));
+
 			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicRule (%s) is on cooldown and cannot process event (%s)."), *pRule->GetRuleName().ToString(), *Event.EventTag.ToString());
 			continue;
 		}
-		
+
 		// Execute the rule and evaluate its conditions.
-		if(!ExecuteRule(pRule, Event, trace))
+		FSystemicRuleContext ruleContext;
+		if(!EvaluateRule(pRule, Event, trace, ruleContext))
 		{
+			trace.RuleNameAndResultList.Add(TPair<FName, bool>(pRule->GetRuleName(), false));
+
 			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) failed to process rule %s."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString());
 			continue;
+		}
+
+		// Update the trace log.
+		trace.RuleNameAndResultList.Add(TPair<FName, bool>(pRule->GetRuleName(), true));
+
+		// Execute the reactions this rule has specified.
+		bool bAllReactionsSucceeded = true;
+		if(!ExecuteReactions(pRule, Event, ruleContext, trace))
+		{
+			bAllReactionsSucceeded = false;
+
+			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) failed to process all reactions for rule %s."), *Event.EventTag.ToString(), *pRule->GetRuleName().ToString());
 		}
 		
 		// Put this rule on cooldown.
@@ -100,7 +112,7 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 			UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) evaluation log:\n%s"), *Event.EventTag.ToString(), *trace.GetEvaluationLogAsString());
 		}
 
-		return true;
+		return bAllReactionsSucceeded;
 	}
 	
 	UE_LOG(LogJoyCoreSystems, Verbose, TEXT("SystemicEvent (%s) was unhandled."), *Event.EventTag.ToString());
@@ -115,19 +127,18 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 }
 
 // Execute the passed-in rule triggered by the referenced event.
-bool USystemicWorldSubsystem::ExecuteRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace)
+bool USystemicWorldSubsystem::EvaluateRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace, FSystemicRuleContext& RuleContextOut) const
 {
 	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Executing SystemicRule: %s"), *Rule->GetRuleName().ToString());
 	
 	// Fill out the rule context.
-	FSystemicRuleContext ruleContext;
-	ruleContext.Instigator = Event.Instigator;
-	ruleContext.Target = Event.Target;
-	ruleContext.SourceObject = Event.SourceObject;
+	RuleContextOut.Instigator = Event.Instigator;
+	RuleContextOut.Target = Event.Target;
+	RuleContextOut.SourceObject = Event.SourceObject;
 	
 	for(const TObjectPtr<USystemicCondition> pCondition : Rule->GetConditionList())
 	{
-		if(!pCondition->Evaluate(Event, ruleContext, Trace))
+		if(!pCondition->Evaluate(Event, RuleContextOut, Trace))
 		{
 			// Condition failed; stop evaluating this rule.
 			UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicRule %s failed condition %s."), *Rule->GetRuleName().ToString(), *pCondition->GetName());
@@ -136,6 +147,27 @@ bool USystemicWorldSubsystem::ExecuteRule(USystemicRule* Rule, const FSystemicEv
 	}
 	
 	return true;
+}
+
+// Execute the passed-in rule triggered by the referenced event.
+bool USystemicWorldSubsystem::ExecuteReactions(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicRuleContext& RuleContext, FSystemicTrace& Trace) const
+{
+	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Executing the Reactions in SystemicRule: %s"), *Rule->GetRuleName().ToString());
+	
+	bool bReactionSuccess = true;
+	for(const TObjectPtr<USystemicReaction> pReaction : Rule->GetReactionList())
+	{
+		if(!pReaction->Execute(Event, RuleContext, Trace))
+		{
+			// Reaction failed; mark the overall method as failed but continue executing remaining reactions.
+			bReactionSuccess = false;
+
+			UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicRule %s failed to execute reaction %s."), *Rule->GetRuleName().ToString(), *pReaction->GetName());
+			
+		}
+	}
+	
+	return bReactionSuccess;
 }
 
 // Find all rules matching the passed-in event tag.

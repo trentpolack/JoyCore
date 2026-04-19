@@ -21,6 +21,12 @@ const TArray<TObjectPtr<USystemicCondition>>& USystemicRule::GetConditionList() 
 	return ConditionList;
 }
 
+// Get a reference to the list of reactions.
+const TArray<TObjectPtr<USystemicReaction>>& USystemicRule::GetReactionList() const
+{
+	return ReactionList;
+}
+
 // Get the rule priority.
 const FGameplayTag& USystemicRule::GetPriority() const
 {
@@ -28,7 +34,7 @@ const FGameplayTag& USystemicRule::GetPriority() const
 }
 
 // Get the rule cooldown.
-const float USystemicRule::GetCooldown() const
+float USystemicRule::GetCooldown() const
 {
 	return Cooldown;
 }

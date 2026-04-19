@@ -26,20 +26,11 @@ protected:
 	FGameplayTagContainer TraitTags = FGameplayTagContainer();
 
 public:
-	/**
-	 *	Adds a trait tag to the component.
-	 *	@param Tag The tag to add.
-	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual void AddTraitTag(const FGameplayTag& Tag);
-	/**
-	 *	Adds trait tags to the component.
-	 *	@param TagContainer Container of tags to add.
-	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual void AddTraitTags(const FGameplayTagContainer& TagContainer);
-
 	// ISystemicTraitProvider.
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	virtual void AddTraitTag(const FGameplayTag& Tag) override;
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	virtual void AddTraitTags(const FGameplayTagContainer& TagContainer) override;
 	virtual const FGameplayTagContainer& GetTraitTags() const override;
 	// ~ISystemicTraitComponent.
 	

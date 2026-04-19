@@ -16,21 +16,21 @@ struct JOYCORE_API FSystemicRuleContext
 	GENERATED_BODY()
 	
 	// Initiator of the event.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TWeakObjectPtr<AActor> Instigator = nullptr;
 	// Target of the event, if there is one.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TWeakObjectPtr<AActor> Target = nullptr;
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
 
 	// Cache of named objects throughout the evaluation of a ruleset and reaction. 
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TMap<FName, UObject*> NamedObjects;
 
 	// Cache of named parameters throughout the evaluation of a ruleset and reaction. 
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Runtime")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
 	TMap<FName, float> NamedValues;
 
 	/**

@@ -1,0 +1,31 @@
+﻿// Copyright (c) 2026 Trent Polack. All Rights Reserved.
+// Licensed under the MIT License.
+
+#pragma once
+
+#include "CoreMinimal.h"
+
+#include "GameplayTags.h"
+
+#include "Systems/Reactions/SystemicReaction.h"
+
+#include "SystemicReactionAddTraits.generated.h"
+
+/**
+ *	USystemicReactionAddTraits Class Definition.
+ *		This class reacts to an event by applying traits to the event subject.
+ */
+UCLASS()
+class JOYCORE_API USystemicReactionAddTraits : public USystemicReaction
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction")
+	FGameplayTagContainer TraitTags = FGameplayTagContainer();
+
+public:
+	// USystemicReaction.	
+	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) override;
+	// ~USystemicReaction.
+};

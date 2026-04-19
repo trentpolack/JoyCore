@@ -5,6 +5,9 @@
 
 #include "CoreMinimal.h"
 
+#include "Templates/Tuple.h"
+#include "Templates/TupleFwd.h"
+#include "CoreTypes.h"
 #include "GameplayTags.h"
 
 #include "SystemicTrace.generated.h"
@@ -55,17 +58,19 @@ struct JOYCORE_API FSystemicTrace
 	GENERATED_BODY()
 	
 	// Event tag.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Systems|Trace")
 	FGameplayTag EventTag = FGameplayTag();
 	
-	// Name of the rule being evaluated.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
-	TArray<FName> RuleNames;
-	
 	// List of condition evaluation results during the trace.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Systems|Trace")
 	TArray<FSystemicTraceEvaluatedConditionResult> EvaluatedConditionResults;
 	
+	// List of names and results of evaluated rules.
+	TArray<TPair<FName, bool>> RuleNameAndResultList;
+
+	// List of names and results in the executed rule's reactions.
+	TArray<TPair<FName, bool>> RuleReactionNameAndResultList;
+
 	/**
 	 *	Get the evaluation log as a string.
 	 */
@@ -74,8 +79,8 @@ struct JOYCORE_API FSystemicTrace
 		FString log;
 		
 		log+= FString::Printf(TEXT("Event Tag: %s\n"), *EventTag.ToString());
-		log+= FString::Printf(TEXT("Rule Name(s): %s\n"), *FString::JoinBy(RuleNames, TEXT(", "), [](const FName& Name){ return Name.ToString(); }));
-
+		log+= FString::Printf(TEXT("Rule Name(s): %s\n"), *FString::JoinBy(RuleNameAndResultList, TEXT(", "), [](const TPair<FName, bool>& Name){ return FString::Printf(TEXT("%s: %s"), *Name.Key.ToString(), Name.Value ? TEXT("Passed") : TEXT("Failed")); }));
+		
 		// Go through all the conditional results.
 		for(const FSystemicTraceEvaluatedConditionResult& result : EvaluatedConditionResults)
 		{
@@ -85,6 +90,9 @@ struct JOYCORE_API FSystemicTrace
 				log+= FString::Printf(TEXT("\t%s\n"), *line);
 			}
 		}
+		
+		log+= FString::Printf(TEXT("Rule Reaction Execution Results:\n"));
+		log+= FString::Printf(TEXT("\t%s\n"), *FString::JoinBy(RuleReactionNameAndResultList, TEXT(", "), [](const TPair<FName, bool>& Name){ return FString::Printf(TEXT("%s: %s"), *Name.Key.ToString(), Name.Value ? TEXT("Succeeded") : TEXT("Failed")); }));
 
 		return log;
 	}

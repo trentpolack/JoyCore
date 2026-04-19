@@ -1,0 +1,50 @@
+﻿// Copyright (c) 2026 Trent Polack. All Rights Reserved.
+// Licensed under the MIT License.
+
+#pragma once
+
+#include "CoreMinimal.h"
+
+#include "UObject/Object.h"
+
+#include "Systems/Events/SystemicEvent.h"
+#include "Systems/SystemicTrace.h"
+
+#include "SystemicReaction.generated.h"
+
+// Declarations.
+struct FSystemicRuleContext;
+struct FSystemicTrace;
+
+/**
+ *	USystemicReaction Class Definition.
+ *		Object that contains a Reaction which can take in a systemic event and evaluate it.
+ */
+UCLASS(Blueprintable, BlueprintType, EditInlineNew, Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
+class JOYCORE_API USystemicReaction : public UObject
+{
+	GENERATED_BODY()
+
+protected:
+	// Name of this Reaction; use for identification and organization. It does not affect functionality.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reaction")
+	FName ReactionName = NAME_None;
+
+public:
+	/**
+	 * Accessor for the reaction name.
+	 * @return The name of this reaction.
+	 */
+	UFUNCTION(blueprintCallable, Category="Game|Systems")
+	const FName& GetReactionName() const;
+	
+	/**
+	 * Execute this reaction from the triggering event, cached data in the rule context, and built-up trace information. The base implementation will just log that it has been executed.
+	 * @param Event Triggering event.
+	 * @param Context Cached data from the rule context.
+	 * @param Trace Trace information for debugging and logging.
+	 * @return True if the execution is complete, false if there's an error along the way.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
+};

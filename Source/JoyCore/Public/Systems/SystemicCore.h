@@ -15,6 +15,9 @@ class USystemicRule;
 struct FSystemicEvent;
 struct FSystemicTrace;
 
+// Log declaration.
+DECLARE_LOG_CATEGORY_EXTERN(LogJoyCoreSystems, Log, All);
+
 /**
  * USystemicCore Class Definition.
  *	Core config settings, helpers, and utilities. Not intended to be instanced.

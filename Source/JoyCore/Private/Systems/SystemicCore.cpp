@@ -7,6 +7,9 @@
 #include "Systems/Events/SystemicEvent.h"
 #include "Systems/Rules/SystemicRule.h"
 
+// Define the log category for the JoyCore systems logic.
+DEFINE_LOG_CATEGORY(LogJoyCoreSystems);
+
 // Return the highest-priority event, defaulting to EventA if equal.
 const FSystemicEvent& USystemicCore::GetHigherPriorityEvent(const FSystemicEvent& EventA, const FSystemicEvent& EventB)
 {

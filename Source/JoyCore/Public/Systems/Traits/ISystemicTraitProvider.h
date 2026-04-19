@@ -25,6 +25,20 @@ class JOYCORE_API ISystemicTraitProvider
 
 public:
 	/**
+	 *	Adds a trait tag to the component.
+	 *	@param Tag The tag to add.
+	 */
+	UFUNCTION(Category="Game|Systems")
+	virtual void AddTraitTag(const FGameplayTag& Tag) = 0;
+
+	/**
+	 *	Adds trait tags to the component.
+	 *	@param TagContainer Container of tags to add.
+	 */
+	UFUNCTION(Category="Game|Systems")
+	virtual void AddTraitTags(const FGameplayTagContainer& TagContainer) = 0;
+
+	/**
 	 *	Check if the provider has a specific trait tag.
 	 *	@param Tag Trait tag to check for.
 	 *	@returns True if the provider has the specified trait tag, false otherwise. 

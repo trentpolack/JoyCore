@@ -15,6 +15,7 @@
 
 // Declarations.
 class USystemicCondition;
+class USystemicReaction;
 
 /**
  *	USystemicRule Class Definition.
@@ -36,7 +37,11 @@ protected:
 	// List of conditions that must all pass to trigger a reaction.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "Rule")
 	TArray<TObjectPtr<USystemicCondition>> ConditionList;
-	
+
+	// List of reactions to trigger if all conditions are satisfied.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "Rule")
+	TArray<TObjectPtr<USystemicReaction>> ReactionList;
+
 	// Priority tag for this rule.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule", meta=(GameplayTagFilter="System.Rule.Priority"))
 	FGameplayTag Priority = TAG_System_Rule_Priority_Default;
@@ -71,6 +76,12 @@ public:
 	const TArray<TObjectPtr<USystemicCondition>>& GetConditionList() const;
 
 	/**
+	 * Get a const reference to the list of reactions for this rule.
+	 * @return List of reactions for this rule.
+	 */
+	const TArray<TObjectPtr<USystemicReaction>>& GetReactionList() const;
+
+	/**
 	 * Get the priority tag for this rule.
 	 * @return Priority tag for this rule.
 	 */
@@ -82,7 +93,7 @@ public:
 	 * @return Cooldown for this rule.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	const float GetCooldown() const;
+	float GetCooldown() const;
 
 	/**
 	 * Get the state of this rule.
