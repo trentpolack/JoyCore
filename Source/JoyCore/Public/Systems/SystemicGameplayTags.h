@@ -31,15 +31,21 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_Low);               // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_Normal);            // Normal-priority event.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_High);              // Highest-priority event.
 
-// Lifecycle Event Tags.
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Created);                    // Object Created.
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Destroyed);                  // Object Destroyed.
+// High-level Event Tags.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Created);                    // Object Created (e.g., ::BeginPlay or constructor).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Destroyed);                  // Object Destroyed (e.g., ::EndPlay or deconstructor).
 
-// Character State Tags.
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_Downed);        // Character Downed (can be revived; will trigger at the same time as Object Killed if revival is not supported).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_HealthChanged); // Character Health Changed (Restored or Damaged).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_Killed);        // Character Killed (distinct from Destroyed).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_CharacterState_Revived);       // Character Revived.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Broken);                     // Object has been broken.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Frozen);                     // Object is frozen (due to low-temperature threshold reached).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_HealthChanged);              // Object health changed (damage/heal event).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Ignited);                    // Object on fire (due to spreading fire and/or autoignition by temperature).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Interacted);                 // Object interacted with (e.g., used, picked up, etc.).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_TemperatureChanged);         // Object temperature changed (cold/hot event).
+
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Spawned);                    // Object spawned (distinct from Created).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Downed);                     // Object downed (can be revived; will trigger at the same time as Object Killed if revival is not supported).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Revived);                    // Object revived (distinct from spawned).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Killed);                     // Object killed (distinct from Destroyed).
 
 // Collision Event Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_Hit);                // Contact Hit (blocking collision).
@@ -55,3 +61,19 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Rule_Priority_Default);            // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Rule_Priority_Low);                // Low-priority rule.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Rule_Priority_Normal);             // Normal-priority rule.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Rule_Priority_High);               // Highest-priority rule.
+
+/**
+ * Trait Tags.
+ *   A baseline set of Trait tags that can be used in a wide variety of projects.
+ */
+// Trait Tags.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Breakable);                  // Can be broken.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Damageable);                 // Can be damaged.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Flammable);                  // Can be lit on fire.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Freezable);                  // Can be frozen.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Gas);                        // Gaseous matter state.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Interactable);               // Is interactable.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Liquid);                     // Liquid matter state.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Solid);                      // Solid matter state.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_TemperatureSource);          // Is a temperature source (-cold, +hot).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Throwable);                  // Can be picked up and thrown.
