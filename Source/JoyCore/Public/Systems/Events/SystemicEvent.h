@@ -24,18 +24,18 @@ enum class ESystemicEventSubject : uint8
 	Target
 };
 
-USTRUCT(BlueprintType, Category="Game|Systems")
+USTRUCT(BlueprintType, Category="Game|Systems|EventData")
 struct FSystemicEventData
 {
 	GENERATED_BODY()
 	
 	// Location of the event, if applicable.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, Category = "Event|Data")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Data|Transient")
 	FVector Location = FVector::ZeroVector;
 	
-	// Magnitude of the event, if applicable.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, Category = "Event|Data")
-	float Magnitude = 1.0f;
+	// General-purpose delta value associated with the event, if applicable; e.g. health lost, temperature change, etc.
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Data|Transient")
+	float Value = 1.0f;
 };
 
 /**
@@ -47,31 +47,31 @@ struct JOYCORE_API FSystemicEvent
 	GENERATED_BODY()
 	
 	// Gameplay tag associated with the event.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	FGameplayTag EventTag = FGameplayTag();
 	
 	// Priority tag for this event (unused right now, 4/5/26).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event", meta=(GameplayTagFilter="System.Event.Priority"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event.Priority"))
 	FGameplayTag Priority = TAG_System_Event_Priority_Default;
 
 	// Gameplay tags providing additional event context.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	FGameplayTagContainer ContextTags = FGameplayTagContainer();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Event")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TInstancedStruct<FSystemicEventData> EventDataStruct;
 
 	// Initiator of the event.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<AActor> Instigator = nullptr;
 	// Target of the event, if there is one.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<AActor> Target = nullptr;
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
 	// Instance of the EventDataStruct
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TInstancedStruct<FSystemicEventData> EventDataInstance;
 
 public:
@@ -79,7 +79,7 @@ public:
 	 * Get the object associated with the condition's subject.
 	 * @return The object if found, otherwise nullptr.
 	 */
-	const TWeakObjectPtr<UObject> GetObjectBySubject(const ESystemicEventSubject Subject) const
+	TWeakObjectPtr<UObject> GetObjectBySubject(const ESystemicEventSubject Subject) const
 	{
 		switch(Subject)
 		{

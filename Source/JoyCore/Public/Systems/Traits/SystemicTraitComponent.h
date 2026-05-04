@@ -12,6 +12,9 @@
 
 #include "SystemicTraitComponent.generated.h"
 
+// Delegate for broadcasting when a trait provider's traits have changed; contains the new current trait tags as well as a container with only the new tags.
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSystemicTraitSignature, UObject*, Object, const FGameplayTagContainer&, TraitTags, const FGameplayTagContainer&, TraitTagsNew);
+
 UCLASS(Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore, meta=(BlueprintSpawnableComponent))
 class JOYCORE_API USystemicTraitComponent : public UActorComponent, public ISystemicTraitProvider
 {
@@ -22,19 +25,35 @@ public:
 	
 protected:
 	// Trait Tag Container.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits")
-	FGameplayTagContainer TraitTags = FGameplayTagContainer();
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Transient|Traits", meta=(GameplayTagFilter="System.Trait"))
+	FGameplayTagContainer Traits = FGameplayTagContainer();
+
+	// Whether to emit object-level lifecycle events like creation/destruction (default: true).
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Config|Events")
+	uint8 bEmitLifecycleEvents = true;
+
+protected:
+	/**
+	 *	Emit a lifecycle event; namely, creation and destruction.
+	 *	@param EventTag Tag to emit.
+	 */
+	virtual bool EmitLifecycleEvent(const FGameplayTag& EventTag);
 
 public:
+	// Broadcast when this component successfully receives an interaction.
+	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
+	FSystemicTraitSignature OnTraitsChanged;
+	
 	// ISystemicTraitProvider.
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual void AddTraitTag(const FGameplayTag& Tag) override;
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual void AddTraitTags(const FGameplayTagContainer& TagContainer) override;
-	virtual const FGameplayTagContainer& GetTraitTags() const override;
+	virtual bool AddTrait(const FGameplayTag& TraitTag) override;
+	virtual bool AddTraits(const FGameplayTagContainer& TraitTagContainer) override;
+	virtual bool RemoveTraits(const FGameplayTag& TraitTag) override;
+	virtual bool RemoveTraits(const FGameplayTagContainer& TraitTagContainer) override;
+	virtual const FGameplayTagContainer& GetTraits() const override;
 	// ~ISystemicTraitComponent.
 	
 	// UActorComponent.
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	// ~UActorComponent.
 };

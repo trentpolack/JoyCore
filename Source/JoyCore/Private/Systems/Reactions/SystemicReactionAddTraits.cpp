@@ -5,6 +5,8 @@
 
 #include "Systems/SystemicCore.h"
 
+#include "GameFramework/Actor.h"
+
 #include "Systems/Rules/SystemicRuleContext.h"
 #include "Systems/Traits/ISystemicTraitProvider.h"
 
@@ -12,9 +14,23 @@
 bool USystemicReactionAddTraits::Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
 {
 	bool bSuccess = false;
-	if (ISystemicTraitProvider* pTraitProvider = Cast<ISystemicTraitProvider>(Context.Target))
+
+	// Get the trait provider interface from the target object.
+	UObject* TargetObject = Context.Target.Get();
+	ISystemicTraitProvider* pTraitProvider = Cast<ISystemicTraitProvider>(TargetObject);
+	if(!pTraitProvider)
 	{
-		pTraitProvider->AddTraitTags(TraitTags);
+		// Target check failed, see if the interface is implemented by a component.
+		if(const AActor* pTargetActor = Cast<AActor>(TargetObject))
+		{
+			TargetObject = pTargetActor->FindComponentByInterface(USystemicTraitProvider::StaticClass());
+			pTraitProvider = Cast<ISystemicTraitProvider>(TargetObject);
+		}
+	}
+
+	if(pTraitProvider)
+	{
+		pTraitProvider->AddTraits(TraitTags);
 		
 		bSuccess = true;
 	}

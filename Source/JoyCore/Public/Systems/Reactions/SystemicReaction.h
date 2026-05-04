@@ -27,7 +27,7 @@ class JOYCORE_API USystemicReaction : public UObject
 
 protected:
 	// Name of this Reaction; use for identification and organization. It does not affect functionality.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reaction")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reaction|Config")
 	FName ReactionName = NAME_None;
 
 public:
@@ -35,7 +35,7 @@ public:
 	 * Accessor for the reaction name.
 	 * @return The name of this reaction.
 	 */
-	UFUNCTION(blueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reaction")
 	const FName& GetReactionName() const;
 	
 	/**
@@ -45,6 +45,6 @@ public:
 	 * @param Trace Trace information for debugging and logging.
 	 * @return True if the execution is complete, false if there's an error along the way.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reaction")
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
 };

@@ -29,6 +29,7 @@ public class JoyCore : ModuleRules
 				"Engine",
 				"GameplayTags",
 				"AssetRegistry",
+				"StructUtils",
 			}
 			);
 			

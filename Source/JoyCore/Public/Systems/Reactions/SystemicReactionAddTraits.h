@@ -21,7 +21,7 @@ class JOYCORE_API USystemicReactionAddTraits : public USystemicReaction
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config")
 	FGameplayTagContainer TraitTags = FGameplayTagContainer();
 
 public:

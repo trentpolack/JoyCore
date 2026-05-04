@@ -57,15 +57,15 @@ struct FSystemicRuleRuntimeData
  *		Workaround for not being able to directly use an array in a UPROPERTY.
  *		Contains a GameplayTag and an array of FSystemicRuleRuntimeData (rule assets in addition to any runtime data).
  */
-USTRUCT()
+USTRUCT(BlueprintType, Category="Game|Systems|Rules")
 struct FSystemicMappedRules
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient", meta=(GameplayTagFilter="System.Event"))
 	FGameplayTag EventTag;
 
-	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
+	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient")
 	TArray<FSystemicRuleRuntimeData> Rules;
 };
 
@@ -84,15 +84,15 @@ private:
 
 protected:
 	// Map of Rule Assets that are triggered by a given event tag.
-	UPROPERTY(Transient, Category="Transient", VisibleInstanceOnly, AdvancedDisplay, meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules", meta=(GameplayTagFilter="System.Event"))
 	TMap<FGameplayTag, FSystemicMappedRules> RuleMap;
 
 	// Queue of events to process during Tick; only used if the JoyCore.Systems.ProcessEventsImmediately console variable is set to 0 (default).
-	UPROPERTY(Transient, Category="Transient", VisibleInstanceOnly, AdvancedDisplay)
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Events")
 	TArray<FSystemicEvent> EventQueue;
 
 	// Number of events to process during ::Tick; process all events every ::Tick if set to 0.
-	UPROPERTY(Config, EditAnywhere, Category="Settings")
+	UPROPERTY(BlueprintReadOnly, Config, EditAnywhere, Category="Config")
 	int32 EventProcessCountPerTick = 10;
 
 protected:
@@ -141,16 +141,18 @@ public:
 	/**
 	 *	Emit an event to the systemic world subsystem.
 	 *	@param Event The event to emit.
+	 *	@return True if the event was successfully emitted.
 	 */
-	virtual void EmitEvent(const FSystemicEvent& Event);
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	virtual bool EmitEvent(const FSystemicEvent& Event);
 
 	/**
 	 * Static version of EmitEvent. Allows for blueprint exposure without needing to get a reference to the subsystem.
 	 * @param WorldContextObj World context object pointer.
 	 * @param Event Event to emit.
+	 * @return True if the event was successfully emitted.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	static void EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event);
+	static bool EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event);
 
 	/**
 	 * Register a Rule Asset with the subsystem (and add it to the rule cache).

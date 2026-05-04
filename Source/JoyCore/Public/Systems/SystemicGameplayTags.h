@@ -36,9 +36,11 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Created);                    // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Destroyed);                  // Object Destroyed (e.g., ::EndPlay or deconstructor).
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Broken);                     // Object has been broken.
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Frozen);                     // Object is frozen (due to low-temperature threshold reached).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Freeze);                     // Object is frozen (due to low-temperature threshold reached).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Freeze_Warmed);              // Object has warmed enough to remove frozen state..
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_HealthChanged);              // Object health changed (damage/heal event).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Ignited);                    // Object on fire (due to spreading fire and/or autoignition by temperature).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Ignite);                     // Object on fire (due to spreading fire and/or autoignition by temperature).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Ignite_Cooled);              // Object has reduced temperature enough to remove the ignition state..
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Interacted);                 // Object interacted with (e.g., used, picked up, etc.).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_TemperatureChanged);         // Object temperature changed (cold/hot event).
 
@@ -49,8 +51,8 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Killed);                     // 
 
 // Collision Event Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_Hit);                // Contact Hit (blocking collision).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_BeginOverlap);       // Contact Begin Overlap (overlapping collision).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_EndOverlap);         // Contact End Overlap (overlapping collision).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_OverlapBegin);       // Contact Begin Overlap (overlapping collision).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_OverlapEnd);         // Contact End Overlap (overlapping collision).
 
 /**
  * Rule Tags.
@@ -66,6 +68,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Rule_Priority_High);               // 
  * Trait Tags.
  *   A baseline set of Trait tags that can be used in a wide variety of projects.
  */
+
 // Trait Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Breakable);                  // Can be broken.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Damageable);                 // Can be damaged.
@@ -77,3 +80,13 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Liquid);                     // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Solid);                      // Solid matter state.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_TemperatureSource);          // Is a temperature source (-cold, +hot).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Throwable);                  // Can be picked up and thrown.
+
+// State Tags (Lifecycle).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Alive);                // Is currently alive.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Downed);               // Is downed, but not dead.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Dead);                 // Is dead.
+
+// State Tags (Status).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Broken);               // Is broken.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Ignited);              // Is on fire.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Frozen);               // Is frozen.

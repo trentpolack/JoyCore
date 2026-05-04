@@ -198,7 +198,7 @@ TArray<FSystemicRuleRuntimeData*> USystemicWorldSubsystem::FindMatchingRules(con
 }
 
 // Emit (dispatch) an event for processing either immediately or in the ::Tick queue.
-void USystemicWorldSubsystem::EmitEvent(const FSystemicEvent& Event)
+bool USystemicWorldSubsystem::EmitEvent(const FSystemicEvent& Event)
 {
 	if(JoyCore::Systems::CVarSystemProcessEventsImmediately.GetValueOnGameThread() == 0)	
 	{
@@ -210,26 +210,28 @@ void USystemicWorldSubsystem::EmitEvent(const FSystemicEvent& Event)
 		// Process the event immediately.
 		ProcessSystemicEvent(Event);
 	}
+	
+	return true;
 }
 
 // Static call to emit an event (for blueprint exposure).
-void USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event)
+bool USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event)
 {
 	if(!IsValid(WorldContextObj))
 	{
 		// Invalid world context, can't grab the subsystem.
-		return;
+		return false;
 	}
 	
 	TObjectPtr<USystemicWorldSubsystem> pSubsystem = WorldContextObj->GetWorld()->GetSubsystem<USystemicWorldSubsystem>();
 	if(!IsValid(pSubsystem))
 	{
 		// Subsystem not found.
-		return;
+		return false;
 	}
 
 	// Now emit the event.
-	pSubsystem->EmitEvent(Event);
+	return(pSubsystem->EmitEvent(Event));
 }
 
 // Register a rule with the subsystem as an Active Rule as well as caching it off in the rule map.
