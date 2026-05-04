@@ -13,6 +13,13 @@
 
 #include "SystemicEvent.generated.h"
 
+#define JOYCORE_POPULATE_EVENT(Event, EventTagIn, OwnerIn, InstigatorActorIn, SourceObjectIn, EventDataTypeIn)		\
+	Event.EventTag = EventTagIn;									\
+	Event.Target = OwnerIn;											\
+	Event.Instigator = InstigatorActorIn;							\
+	Event.SourceObject = SourceObjectIn ? SourceObjectIn : this;	\
+	Event.EventDataInstance.InitializeAs<EventDataTypeIn>()
+
 /**
  *	Enum representing the subject of a systemic event.
  */

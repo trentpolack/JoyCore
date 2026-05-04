@@ -34,7 +34,7 @@ protected:
 
 	// Whether this component currently accepts and emits interactions (default: true).
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Interaction|Config")
-	uint8 bEnabled = true;
+	uint8 bEnabled : 1 = true;
 
 public:
 	// Broadcast when this component successfully receives an interaction.

@@ -17,9 +17,9 @@ class AController;
 class UDamageType;
 
 // Delegate for broadcasting health changes.
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSystemicHealthChangedSignature, float, HealthPrevious, float, HealthNew, float, HealthDelta, AActor*, InstigatorActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FSystemicHealthChangedSignature, float, HealthPrevious, float, HealthNew, float, HealthDelta, AActor*, InstigatorActor, UObject*, SourceObject);
 // Delegate for broadcasting object state changes due to health changes.
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSystemicLifeStateSignature, AActor*, InstigatorActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSystemicLifeStateSignature, AActor*, InstigatorActor, UObject*, SourceObject);
 
 /**
  *	USystemicHealthComponent Class.
@@ -37,55 +37,81 @@ public:
 	USystemicHealthComponent();
 
 protected:
-	// Current health value.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Health|Transient", meta=(ClampMin="0.0"))
-	float Health = HealthMax;
-
 	// Maximum health value used when clamping current health.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, DisplayName="Max Health", Category="Health|Config", meta=(ClampMin="0.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, DisplayName="Max Health", Category="Config|Health", meta=(ClampMin="0.0"))
 	float HealthMax = 100.0f;
 	
+	// Current health value.
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Health", meta=(ClampMin="0.0"))
+	float Health = 0.0f;
+	
 	// Whether this component destroys its owner when health reaches zero (default: false).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Health|Config")
-	uint8 bDestroyOwnerOnKilled = false;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Health")
+	uint8 bDestroyOwnerOnKilled : 1 = false;
 
 	// Whether this component supports a downed state before death (default: false).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Health|Config")
-	uint8 bDownedStateSupported = false;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Health")
+	uint8 bDownedStateSupported : 1 = false;
+
+	// Whether or not to bind to engine damage events (default: true).
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Health")
+	uint8 bBindToDamageEvents : 1 = true;
 
 protected:
 	/**
+	 *	Handle an engine damage event.
+	 *		NOTE (trent, 5/4/26): Damage is negated in this method and passed along as a health modifier.
+	 *	@param Actor Target actor for health modification.
+	 *	@param Damage Health delta applied.
+	 *	@param DamageType Damage type object (if relevant).
+	 *	@param InstigatorActor Controller responsible for the damage (if relevant).
+	 *	@param DamageCauser Actor that caused the damage.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health")
+	virtual void HandleTakeDamage(AActor* Actor, float Damage, const UDamageType* DamageType, AController* InstigatorActor, AActor* DamageCauser);
+
+	/**
 	 *	Emit a systemic health change event.
+	 *	@param HealthNew New health value after modification.
+	 *	@param HealthPrevious Previous health value before modification.
 	 *	@param HealthDelta Health delta applied.
 	 *	@param InstigatorActor Actor responsible for the change.
 	 *	@param SourceObject Object responsible for the change.
-	 *	@param bWasFatal True if the change caused this component to enter the killed state.
+	 *	@return True if the event was successfully emitted.
 	 */
-	virtual void EmitHealthEvent(float HealthDelta, AActor* InstigatorActor, UObject* SourceObject, bool bWasFatal) const;
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health")
+	virtual bool EmitHealthEvent(float HealthNew, float HealthPrevious, float HealthDelta, AActor* InstigatorActor, UObject* SourceObject);
+
+	/**
+	 *	Emit a systemic max health change event.
+	 *	@param HealthMaxNew New max health value after modification.
+	 *	@param HealthMaxPrevious Previous max health value before modification.
+	 *	@param HealthMaxDelta Max health delta applied.
+	 *	@param InstigatorActor Actor responsible for the change.
+	 *	@param SourceObject Object responsible for the change.
+	 *	@return True if the event was successfully emitted.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health")
+	virtual bool EmitHealthMaxEvent(float HealthMaxNew, float HealthMaxPrevious, float HealthMaxDelta, AActor* InstigatorActor, UObject* SourceObject);
 
 	/**
 	 *	Emit a systemic life-state event.
 	 *	@param EventTag Gameplay tag identifying the life-state event.
 	 *	@param InstigatorActor Actor responsible for the state change.
 	 *	@param SourceObject Object responsible for the state change.
+	 *	@return True if the event was successfully emitted.
 	 */
-	virtual void EmitLifeStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject) const;
-
-	/**
-	 *	Handle health change events from this component's owner.
-	 *	@param Actor Actor that received damage.
-	 *	@param HealthDelta Health delta applied.
-	 *	@param DamageType Damage type object (if relevant).
-	 *	@param InstigatorActor Controller responsible for the damage (if relevant).
-	 *	@param SourceObject Actor that caused the damage.
-	 */
-	UFUNCTION()
-	virtual void OnHealthModified(AActor* Actor, float HealthDelta, const UDamageType* DamageType, AController* InstigatorActor, UObject* SourceObject);
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health", meta=(GameplayTagFilter="System.Event"))
+	virtual bool EmitLifeStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject);
 
 public:
 	// Broadcast when this component's health changes.
 	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
 	FSystemicHealthChangedSignature OnHealthChanged;
+
+	// Broadcast when this component's max health changes.
+	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
+	FSystemicHealthChangedSignature OnHealthMaxChanged;
 
 	// Broadcast when this component is spawned.
 	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
@@ -108,9 +134,10 @@ public:
 	 *	@param HealthIn New health value.
 	 *	@param InstigatorActor Actor responsible for the change.
 	 *	@param SourceObject Object responsible for the change.
+	 *	@return The current health value after modification.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health")
-	void SetHealth(float HealthIn, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
+	float SetHealth(float HealthIn, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
 
 	/**
 	 *	Get this component's current health.
@@ -121,12 +148,14 @@ public:
 
 	/**
 	 *	Set this component's max health.
+	 *		NOTE (trent, 5/4/26): Treating this as a first-class modifier and event is likely unnecessary, but it's here for the sake of the unknown.
 	 *	@param HealthMaxIn New max health value.
 	 *	@param InstigatorActor Actor responsible for the change.
 	 *	@param SourceObject Object responsible for the change.
-	 */
+	 *	@return The current max health value after modification.
+	*/
 	UFUNCTION(BlueprintCallable, DisplayName="Set Max Health", Category="Game|Systems|Health")
-	void SetHealthMax(float HealthMaxIn, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
+	float SetHealthMax(float HealthMaxIn, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
 
 	/**
 	 *	Get this component's maximum health.

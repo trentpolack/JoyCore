@@ -21,17 +21,17 @@ struct FSystemicRuleContext;
  *	FSystemicRuleRuntimeData Structure.
  *		Contains any runtime data associated with the linked USystemicRule asset.
  */
-USTRUCT()
+USTRUCT(Category="Game|Systems|Rules")
 struct FSystemicRuleRuntimeData
 {
 	GENERATED_BODY()
 	
 	// Rule asset pointer.
-	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
+	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules")
 	TSoftObjectPtr<USystemicRule> Rule = nullptr;
 	
 	// Current cooldown on this rule.
-	UPROPERTY(Transient, Category="Runtime", VisibleInstanceOnly)
+	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules")
 	float Cooldown = -1.0f;
 
 	/**
@@ -62,10 +62,10 @@ struct FSystemicMappedRules
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules", meta=(GameplayTagFilter="System.Event"))
 	FGameplayTag EventTag;
 
-	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient")
+	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules")
 	TArray<FSystemicRuleRuntimeData> Rules;
 };
 

@@ -30,12 +30,13 @@ protected:
 
 	// Whether to emit object-level lifecycle events like creation/destruction (default: true).
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Config|Events")
-	uint8 bEmitLifecycleEvents = true;
+	uint8 bEmitLifecycleEvents : 1 = true;
 
 protected:
 	/**
 	 *	Emit a lifecycle event; namely, creation and destruction.
 	 *	@param EventTag Tag to emit.
+	 *	@return True if the event was successfully emitted.
 	 */
 	virtual bool EmitLifecycleEvent(const FGameplayTag& EventTag);
 
@@ -47,7 +48,7 @@ public:
 	// ISystemicTraitProvider.
 	virtual bool AddTrait(const FGameplayTag& TraitTag) override;
 	virtual bool AddTraits(const FGameplayTagContainer& TraitTagContainer) override;
-	virtual bool RemoveTraits(const FGameplayTag& TraitTag) override;
+	virtual bool RemoveTrait(const FGameplayTag& TraitTag) override;
 	virtual bool RemoveTraits(const FGameplayTagContainer& TraitTagContainer) override;
 	virtual const FGameplayTagContainer& GetTraits() const override;
 	// ~ISystemicTraitComponent.

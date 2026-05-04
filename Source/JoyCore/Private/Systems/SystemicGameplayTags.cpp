@@ -32,6 +32,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Broken, "System.Event.Broken", "
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Freeze, "System.Event.Freeze", "Freeze object due to low-temperature threshold reached.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Freeze_Warmed, "System.Event.Freeze.Warmed", "Object has warmed enough to remove frozen state.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_HealthChanged, "System.Event.HealthChanged", "Object health changed (damage/heal event).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_HealthMaxChanged, "System.Event.HealthMaxChanged", "Object max health changed.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Ignite, "System.Event.Ignite", "Ignite object due to spreading fire and/or autoignition by temperature.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Ignite_Cooled, "System.Event.Ignite.Cooled", "Object has reduced temperature enough to remove the ignition state.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Interacted, "System.Event.Interacted", "Object interacted with (e.g., used, picked up, etc.).");

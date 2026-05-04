@@ -10,7 +10,7 @@
 #include "Systems/Events/EventData/SystemicTemperatureEventData.h"
 
 USystemicTemperatureComponent::USystemicTemperatureComponent()
-: Super()
+: Temperature(AmbientTemperature)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -35,10 +35,49 @@ float USystemicTemperatureComponent::SetTemperature(float TemperatureIn, AActor*
 		return(Temperature);
 	}
 
-	// Broadcast the temperature change and emit the corresponding event.
-	OnTemperatureChanged.Broadcast(GetTemperature(), temperaturePrevious, temperatureDelta, InstigatorActor);
+	// Emit the temperature change event and broadcast it.
 	EmitTemperatureEvent(Temperature, temperaturePrevious, temperatureDelta, InstigatorActor, SourceObject);
+	OnTemperatureChanged.Broadcast(GetTemperature(), temperaturePrevious, temperatureDelta, InstigatorActor);
 	
+	// Check for state changes as a result of the temperature change; first ignition and then freezing.
+	const TScriptInterface<ISystemicTraitProvider> pTraitProvider = GetTraitProvider();
+	if(pTraitProvider->HasTrait(TAG_System_Trait_State_Ignited) && (Temperature < IgnitionTemperatureThreshold))
+	{
+		// Temperature has cooled enough to remove ignition state.
+		pTraitProvider->RemoveTrait(TAG_System_Trait_State_Ignited);
+
+		EmitStateEvent(TAG_System_Event_Ignite_Cooled, InstigatorActor, SourceObject);
+	}
+	else if(pTraitProvider->HasTrait(TAG_System_Trait_State_Frozen) && (Temperature > FreezeTemperatureThreshold))
+	{
+		// Temperature has warmed enough to remove frozen state.
+		pTraitProvider->RemoveTrait(TAG_System_Trait_State_Frozen);
+		
+		EmitStateEvent(TAG_System_Event_Freeze_Warmed, InstigatorActor, SourceObject);
+	}
+	else if(pTraitProvider->HasTrait(TAG_System_Trait_Flammable) && ((temperaturePrevious < IgnitionTemperatureThreshold) && (Temperature >= IgnitionTemperatureThreshold)))
+	{
+		// Temperature has increased enough to ignite the object.
+		pTraitProvider->AddTrait(TAG_System_Trait_State_Ignited);
+		
+		// Emit the ignite event.
+		EmitStateEvent(TAG_System_Event_Ignite, InstigatorActor, SourceObject);
+
+		// Broadcast the ignite event.
+		OnIgnited.Broadcast(InstigatorActor);
+	}
+	else if((pTraitProvider->HasTrait(TAG_System_Trait_Freezable) && (temperaturePrevious > FreezeTemperatureThreshold) && (Temperature <= FreezeTemperatureThreshold)))
+	{
+		// Temperature has decreased enough to freeze the object.
+		pTraitProvider->AddTrait(TAG_System_Trait_State_Frozen);
+
+		// Emit the freeze event.
+		EmitStateEvent(TAG_System_Event_Freeze, InstigatorActor, SourceObject);
+
+		// Broadcast the freeze event.
+		OnFrozen.Broadcast(InstigatorActor);
+	}
+
 	return Temperature;
 }
 
@@ -65,45 +104,7 @@ bool USystemicTemperatureComponent::EmitTemperatureEvent(float TemperatureNew, f
 	EventData.TemperaturePrevious = TemperaturePrevious;
 	EventData.Value = TemperatureDelta;
 	
-	// Trigger the temperature change event.
-	uint8 bResult = USystemicWorldSubsystem::EmitEvent(pOwner, Event);
-
-	// Check for state changes; first ignition and then freezing.
-	const TScriptInterface<ISystemicTraitProvider> pTraitProvider = GetTraitProvider();
-	if(pTraitProvider->HasTrait(TAG_System_Trait_State_Ignited) && (Temperature < IgnitionTemperatureThreshold))
-	{
-		// Temperature has cooled enough to remove ignition state.
-		bResult = bResult && EmitStateEvent(TAG_System_Event_Ignite_Cooled, InstigatorActor, SourceObject);
-	}
-	else if(pTraitProvider->HasTrait(TAG_System_Trait_State_Frozen) && (Temperature > FreezeTemperatureThreshold))
-	{
-		// Temperature has warmed enough to remove frozen state.
-		bResult = bResult && EmitStateEvent(TAG_System_Event_Freeze_Warmed, InstigatorActor, SourceObject);
-	}
-	else if(pTraitProvider->HasTrait(TAG_System_Trait_Flammable) && ((TemperaturePrevious < IgnitionTemperatureThreshold) && (Temperature >= IgnitionTemperatureThreshold)))
-	{
-		// Temperature has increased enough to ignite the object.
-		pTraitProvider->AddTrait(TAG_System_Trait_State_Frozen);
-		
-		// Emit the ignite event.
-		bResult = bResult && EmitStateEvent(TAG_System_Event_Ignite, InstigatorActor, SourceObject);
-
-		// Broadcast the ignite event.
-		OnIgnited.Broadcast(InstigatorActor);
-	}
-	else if((pTraitProvider->HasTrait(TAG_System_Trait_Freezable) && (TemperaturePrevious > FreezeTemperatureThreshold) && (Temperature <= FreezeTemperatureThreshold)))
-	{
-		// Temperature has decreased enough to freeze the object.
-		pTraitProvider->AddTrait(TAG_System_Trait_State_Frozen);
-
-		// Emit the freeze event.
-		bResult = bResult && EmitStateEvent(TAG_System_Event_Freeze, InstigatorActor, SourceObject);
-
-		// Broadcast the freeze event.
-		OnFrozen.Broadcast(InstigatorActor);
-	}
-
-	return bResult;
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
 }
 
 bool USystemicTemperatureComponent::EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject) const
@@ -111,7 +112,7 @@ bool USystemicTemperatureComponent::EmitStateEvent(const FGameplayTag& EventTag,
 	TObjectPtr<AActor> pOwner = GetOwner();
 	if(!IsValid(pOwner))
 	{
-		// Invalid state.
+		// Invalid owner.
 		return false;
 	}
 
@@ -141,5 +142,5 @@ void USystemicTemperatureComponent::TickComponent(float DeltaTime, ELevelTick Ti
 	}
 
 	// Modify the temperature to bring it closer to the ambient temperature.
-	ModifyTemperature(FMath::FInterpConstantTo(Temperature, AmbientTemperature, DeltaTime, EquilibriumRate), GetOwner(), this);
+	ModifyTemperature(FMath::FInterpConstantTo(Temperature, AmbientTemperature, DeltaTime, EquilibriumRate) - Temperature, GetOwner(), this);
 }

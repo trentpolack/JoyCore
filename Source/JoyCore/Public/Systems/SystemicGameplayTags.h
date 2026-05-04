@@ -39,6 +39,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Broken);                     // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Freeze);                     // Object is frozen (due to low-temperature threshold reached).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Freeze_Warmed);              // Object has warmed enough to remove frozen state..
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_HealthChanged);              // Object health changed (damage/heal event).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_HealthMaxChanged);           // Object max health changed.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Ignite);                     // Object on fire (due to spreading fire and/or autoignition by temperature).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Ignite_Cooled);              // Object has reduced temperature enough to remove the ignition state..
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Interacted);                 // Object interacted with (e.g., used, picked up, etc.).

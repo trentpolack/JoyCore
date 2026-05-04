@@ -87,7 +87,7 @@ bool USystemicTraitComponent::AddTraits(const FGameplayTagContainer& TraitTagCon
 }
 
 // Removes a trait tag from the component.
-bool USystemicTraitComponent::RemoveTraits(const FGameplayTag& TraitTag)
+bool USystemicTraitComponent::RemoveTrait(const FGameplayTag& TraitTag)
 {
 	if(!Traits.HasTag(TraitTag))
 	{

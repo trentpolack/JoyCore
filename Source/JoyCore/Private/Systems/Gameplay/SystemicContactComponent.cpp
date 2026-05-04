@@ -12,8 +12,7 @@
 
 // Constructor.
 USystemicContactComponent::USystemicContactComponent()
-: Super()
-, CollisionComponent(nullptr)
+: CollisionComponent(nullptr)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
@@ -50,7 +49,7 @@ void USystemicContactComponent::HandleOverlapEnd(UPrimitiveComponent* Overlapped
 }
 
 // Emit a systemic contact event with contact-specific event data.
-bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude) const
+bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude)
 {
 	TObjectPtr<AActor> pOwner = GetOwner();
 	if(!IsValid(pOwner) || (OtherActor == pOwner))

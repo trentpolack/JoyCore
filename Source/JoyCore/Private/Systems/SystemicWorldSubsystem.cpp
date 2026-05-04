@@ -21,7 +21,7 @@
 namespace JoyCore::Systems
 {
 	static TAutoConsoleVariable<int32> CVarSystemProcessEventsImmediately(
-		TEXT("JoyCore.Systems.ProcessEventsImmediate"),
+		TEXT("JoyCore.Systems.ProcessEventsImmediately"),
 		0,
 		TEXT("Controls when events are processed; 0 = queue and dispatch during Tick (Default), 1 = process immediately in EmitEvent."),
 		ECVF_Default);
@@ -100,7 +100,7 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 		if(pRuleData->Cooldown > 0.0f)
 		{
 			// Need to reduce the cooldown on tick.
-			RulesOnCooldown.Add(pRuleData);
+			RulesOnCooldown.AddUnique(pRuleData);
 		}
 
 		//Print successful handling message.
@@ -138,6 +138,13 @@ bool USystemicWorldSubsystem::EvaluateRule(USystemicRule* Rule, const FSystemicE
 	
 	for(const TObjectPtr<USystemicCondition> pCondition : Rule->GetConditionList())
 	{
+		if(!IsValid(pCondition))
+		{
+			// Invalid condition; skip evaluation.
+			UE_LOG(LogJoyCoreSystems, Warning, TEXT("SystemicRule %s failed evaluation due to having an invalid condition (during ::EvaluateRule)."), *Rule->GetRuleName().ToString());
+			return false;
+		}
+		
 		if(!pCondition->Evaluate(Event, RuleContextOut, Trace))
 		{
 			// Condition failed; stop evaluating this rule.
@@ -157,13 +164,21 @@ bool USystemicWorldSubsystem::ExecuteReactions(USystemicRule* Rule, const FSyste
 	bool bReactionSuccess = true;
 	for(const TObjectPtr<USystemicReaction> pReaction : Rule->GetReactionList())
 	{
+		if(!IsValid(pReaction))
+		{
+			// Invalid reaction; skip execution.
+			bReactionSuccess = false;
+
+			UE_LOG(LogJoyCoreSystems, Warning, TEXT("SystemicRule %s has an invalid reaction (during ::ExecuteReactions)."), *Rule->GetRuleName().ToString());
+			continue;
+		}
+		
 		if(!pReaction->Execute(Event, RuleContext, Trace))
 		{
 			// Reaction failed; mark the overall method as failed but continue executing remaining reactions.
 			bReactionSuccess = false;
 
 			UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("SystemicRule %s failed to execute reaction %s."), *Rule->GetRuleName().ToString(), *pReaction->GetName());
-			
 		}
 	}
 	
@@ -220,13 +235,24 @@ bool USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemi
 	if(!IsValid(WorldContextObj))
 	{
 		// Invalid world context, can't grab the subsystem.
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicWorldSubSystem::EmitEvent has a null world context (Event Tag: %s)."), *Event.EventTag.ToString());
 		return false;
 	}
 	
-	TObjectPtr<USystemicWorldSubsystem> pSubsystem = WorldContextObj->GetWorld()->GetSubsystem<USystemicWorldSubsystem>();
+	const TObjectPtr<UWorld> pWorld = WorldContextObj->GetWorld();
+	if(!IsValid(pWorld))
+	{
+		// Invalid world, can't grab the subsystem.
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicWorldSubSystem::EmitEvent has a null world context (Event Tag: %s)."), *Event.EventTag.ToString());
+		return false;
+	}
+	
+	TObjectPtr<USystemicWorldSubsystem> pSubsystem = pWorld->GetSubsystem<USystemicWorldSubsystem>();
+	ensure(IsValid(pSubsystem));
 	if(!IsValid(pSubsystem))
 	{
 		// Subsystem not found.
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("No valid SystemicWorldSubSystem instance (Event Tag: %s)."), *Event.EventTag.ToString());
 		return false;
 	}
 
@@ -240,6 +266,7 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn, bool bForceAct
 	if(!IsValid(RuleIn))
 	{
 		// Invalid rule; do not register.
+		UE_LOG(LogJoyCoreSystems, Warning, TEXT("USystemicWorldSubSystem::RegisterRule has a null rule input."));
 		return false;
 	}
 

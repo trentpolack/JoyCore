@@ -39,11 +39,11 @@ public:
 protected:
 	// Whether this component emits systemic contact events for hit notifications (default: true).
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact")
-	uint8 bEmitHitEvents = true;
+	uint8 bEmitHitEvents : 1 = true;
 
 	// Whether this component emits systemic contact events for begin/end overlap notifications (default: true).
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact")
-	uint8 bEmitOverlapEvents = true;
+	uint8 bEmitOverlapEvents : 1 = true;
 
 	// Primitive component whose hit and overlap events are observed; if unset, this component uses its owner's.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact")
@@ -55,7 +55,7 @@ protected:
 
 	// Whether this component emits systemic contact events for hit notifications (default: true).
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Contact")
-	uint8 bCollisionEventsBound = false;;
+	uint8 bCollisionEventsBound : 1 = false;
 
 protected:
 	/**
@@ -70,7 +70,7 @@ protected:
 	 *	@param Magnitude General-purpose magnitude/value associated with the contact event.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Contact", meta=(GameplayTagFilter="System.Event"))
-	virtual bool EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude) const;
+	virtual bool EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude);
 
 	/**
 	 *	Handle a hit notification from the observed primitive component.

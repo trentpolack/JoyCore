@@ -16,7 +16,7 @@ USystemicGameplayComponentBase::USystemicGameplayComponentBase()
 // Get the trait provider for this component.
 TScriptInterface<ISystemicTraitProvider> USystemicGameplayComponentBase::GetTraitProvider() const
 {
-	ensure(TraitProvider);
+	check(TraitProvider);
 	return TraitProvider;
 }
 
@@ -26,12 +26,20 @@ void USystemicGameplayComponentBase::BeginPlay()
 	Super::BeginPlay();
 
 	// Get the trait provider from the owner.
-	TraitProvider = Cast<ISystemicTraitProvider>(GetOwner());
-	if(!TraitProvider)
+	TObjectPtr<AActor> pOwner = GetOwner();
+	check(IsValid(pOwner));
+
+	if(pOwner->Implements<USystemicTraitProvider>())
+	{
+		// Actor implements the interface.
+		TraitProvider.SetObject(pOwner);
+		TraitProvider.SetInterface(Cast<ISystemicTraitProvider>(pOwner));
+	}
+	else
 	{
 		// Look through other components to see if it's implemented.
-		TraitProvider = Cast<ISystemicTraitProvider>(GetOwner()->FindComponentByInterface(USystemicTraitProvider::StaticClass()));
-		
-		ensure(TraitProvider);
+		TraitProvider = GetOwner()->FindComponentByInterface(USystemicTraitProvider::StaticClass());
 	}
+
+	check(TraitProvider);
 }

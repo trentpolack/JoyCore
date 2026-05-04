@@ -42,7 +42,7 @@ protected:
 
 	// Whether this Condition is enabled and should be evaluated (default: true).
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config")
-	bool bEnabled = true;
+	uint8 bEnabled : 1 = true;
 
 public:
 	/**

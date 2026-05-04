@@ -65,7 +65,7 @@ protected:
 	 *	@param SourceObject Object responsible for the change.
 	 *	@return Returns true if the event is successfully emitted.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature"))
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature")
 	bool EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* SourceObject) const;
 
 	/**
@@ -92,20 +92,11 @@ public:
 	FSystemicTemperatureStateSignature OnFrozen;
 
 	/**
-	 *	Apply a temperature delta to this component.
-	 *	@param TemperatureDelta Temperature delta to apply.
-	 *	@param InstigatorActor Actor responsible for the change.
-	 *	@param SourceObject Object responsible for the change.
-	 *	@return New temperature value.
-	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	float ModifyTemperature(float TemperatureDelta, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
-
-	/**
 	 *	Set this component's temperature.
 	 *	@param TemperatureIn New temperature value.
 	 *	@param InstigatorActor Actor responsible for the change.
 	 *	@param SourceObject Object responsible for the change.
+	 *	@return The temperature after modification.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature")
 	float SetTemperature(float TemperatureIn, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
@@ -116,6 +107,16 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature")
 	float GetTemperature() const { return Temperature; }
+
+	/**
+	 *	Apply a temperature delta to this component.
+	 *	@param TemperatureDelta Temperature delta to apply.
+	 *	@param InstigatorActor Actor responsible for the change.
+	 *	@param SourceObject Object responsible for the change.
+	 *	@return New temperature value.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	float ModifyTemperature(float TemperatureDelta, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
 
 	/**
 	 *	Check whether this component is currently ignited.

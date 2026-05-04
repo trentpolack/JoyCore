@@ -52,21 +52,21 @@ protected:
 
 	// Whether this rule is enabled or not; defaults to true.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule")
-	bool bEnabled = true;
+	uint8 bEnabled : 1 = true;
 
 public:
 	/**
 	 * Rule name accessor.
 	 * @return Name of this rule.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	const FName& GetRuleName() const;
 
 	/**
 	 * Get a const reference to the container of triggering event tags.
 	 * @return Container of triggering event tags.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems", meta=(GameplayTagFilter="System.Event"))
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules", meta=(GameplayTagFilter="System.Event"))
 	const FGameplayTagContainer& GetTriggerEventTags() const;
 
 	/**
@@ -85,27 +85,29 @@ public:
 	 * Get the priority tag for this rule.
 	 * @return Priority tag for this rule.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	const FGameplayTag& GetPriority() const;
 	
 	/**
 	 * Get the cooldown for this rule.
 	 * @return Cooldown for this rule.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	float GetCooldown() const;
 
 	/**
 	 * Get the state of this rule.
+	 * @return Returns true if the rule is enabled.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	bool IsEnabled() const;
 
 	/**
 	 * Set the state of this rule.
+	 * @param bEnabledIn New state for the rule.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	void Enable(bool bEnabledIn = true);
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
+	bool Enable(bool bEnabledIn = true);
 	
 	/**
 	 *	FSystemEvent Constructor. 

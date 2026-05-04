@@ -29,7 +29,7 @@ public:
 	 *	@param TraitTag The tag to add.
 	 *	@return Returns true if it was successfully added.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool AddTrait(const FGameplayTag& TraitTag) = 0;
 
 	/**
@@ -37,15 +37,15 @@ public:
 	 *	@param TraitTagContainer Container of tags to add.
 	 *	@return Returns true if any passed tag was successfully added.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
-	virtual bool AddTrait(const FGameplayTagContainer& TraitTagContainer) = 0;
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	virtual bool AddTraits(const FGameplayTagContainer& TraitTagContainer) = 0;
 
 	/**
 	 *	Removes a trait tag from the component.
 	 *	@param TraitTag The tag to remove.
 	 *	@return Returns true if it was successfully removed.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool RemoveTrait(const FGameplayTag& TraitTag) = 0;
 
 	/**
@@ -53,8 +53,8 @@ public:
 	 *	@param TraitTagContainer Container of tags to remove.
 	 *	@return Returns true if any tags were removed.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
-	virtual bool RemoveTrait(const FGameplayTagContainer& TraitTagContainer) = 0;
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	virtual bool RemoveTraits(const FGameplayTagContainer& TraitTagContainer) = 0;
 
 	
 	/**
@@ -62,7 +62,7 @@ public:
 	 *	@param TraitTag Trait tag to check for.
 	 *	@returns True if the provider has the specified trait tag, false otherwise. 
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool HasTrait(const FGameplayTag& TraitTag) const
 	{
 		return(GetTraits().HasTag(TraitTag));
@@ -73,7 +73,7 @@ public:
 	 *	@param TraitTagContainer Container of trait tags to check for.
 	 *	@returns True if the provider has all the specified trait tags, false otherwise. 
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool HasTraits(const FGameplayTagContainer& TraitTagContainer) const
 	{
 		return(GetTraits().HasAll(TraitTagContainer));
@@ -84,7 +84,7 @@ public:
 	 *	@param TraitTagQuery Query to run against the provider's trait tags.
 	 *	@returns True if the query passes, false otherwise. 
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool QueryTraits(const FGameplayTagQuery& TraitTagQuery) const
 	{
 		return(GetTraits().MatchesQuery((TraitTagQuery)));
@@ -94,6 +94,6 @@ public:
 	 *	Get the tag container of the provider.
 	 *	@returns FGameplayTagContainer of the provider.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual const FGameplayTagContainer& GetTraits() const = 0;
 };

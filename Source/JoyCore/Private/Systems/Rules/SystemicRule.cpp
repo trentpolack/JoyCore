@@ -46,7 +46,8 @@ bool USystemicRule::IsEnabled() const
 }
 
 // Set the state of this rule.
-void USystemicRule::Enable(bool bEnabledIn)
+bool USystemicRule::Enable(bool bEnabledIn)
 {
 	bEnabled = bEnabledIn;
+	return bEnabledIn;
 }

@@ -24,15 +24,15 @@ struct JOYCORE_API FSystemicTraceEvaluatedConditionResult
 	GENERATED_BODY()
 	
 	// Pointer to the evaluated condition.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Transient|Trace")
 	TWeakObjectPtr<USystemicCondition> Condition = nullptr;
 	
 	// Output of the evaluation.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
-	bool bResult = true;
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Transient|Trace")
+	uint8 bResult : 1 = true;
 	
 	// Text representation of the evaluation result.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, Category = "Systems|Trace")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Transient|Trace")
 	TArray<FString> EvaluationLog;
 	
 public:
@@ -58,11 +58,11 @@ struct JOYCORE_API FSystemicTrace
 	GENERATED_BODY()
 	
 	// Event tag.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Systems|Trace")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient|Trace")
 	FGameplayTag EventTag = FGameplayTag();
 	
 	// List of condition evaluation results during the trace.
-	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Systems|Trace")
+	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "Transient|Trace")
 	TArray<FSystemicTraceEvaluatedConditionResult> EvaluatedConditionResults;
 	
 	// List of names and results of evaluated rules.

@@ -51,6 +51,5 @@ bool USystemicCondition::Evaluate(const FSystemicEvent& Event, FSystemicRuleCont
 		result.EvaluationLog.Add(FString::Printf(TEXT("Condition (%s): enabled.\n\tResult: Failure."), *Name.ToString()));
 	}
 
-	Trace.EvaluatedConditionResults.Add(result);
 	return(result.bResult);
 }
