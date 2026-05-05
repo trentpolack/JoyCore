@@ -66,7 +66,7 @@ protected:
 	 *	@return Returns true if the event is successfully emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature")
-	bool EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* SourceObject) const;
+	virtual bool EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* SourceObject);
 
 	/**
 	 *	Emit a systemic temperature state event.
@@ -76,7 +76,7 @@ protected:
 	 *	@return Returns true if the event is successfully emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature", meta=(GameplayTagFilter="System.Trait.State"))
-	bool EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject) const;
+	virtual bool EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject);
 
 public:
 	// Broadcast when this component's temperature changes.

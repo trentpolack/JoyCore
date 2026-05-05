@@ -51,25 +51,21 @@ void USystemicContactComponent::HandleOverlapEnd(UPrimitiveComponent* Overlapped
 // Emit a systemic contact event with contact-specific event data.
 bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude)
 {
-	TObjectPtr<AActor> pOwner = GetOwner();
+	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner) || (OtherActor == pOwner))
 	{
 		// No collision for one reason or another.
 		return false;
 	}
 
-	FSystemicEvent Event;
-	Event.EventTag = EventTag;
-	Event.Target = pOwner;
-	Event.Instigator = OtherActor;
-	Event.SourceObject = SourceObject ? SourceObject : this;
-	Event.EventDataInstance.InitializeAs<FSystemicContactEventData>(HitResult);
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT_CONSTRUCTOR_ARGLIST(event, EventTag, pOwner, OtherActor, (SourceObject ? SourceObject : this), FSystemicContactEventData, HitResult);
 
-	FSystemicContactEventData& EventData = Event.EventDataInstance.GetMutable<FSystemicContactEventData>();
-	EventData.Location = HitResult.Location;
-	EventData.Value = Magnitude;
+	FSystemicContactEventData& eventData = event.EventDataInstance.GetMutable<FSystemicContactEventData>();
+	eventData.Location = HitResult.Location;
+	eventData.Value = Magnitude;
 
-	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
 // Set the collision component and setup the event bindings (and unbind if necessary).

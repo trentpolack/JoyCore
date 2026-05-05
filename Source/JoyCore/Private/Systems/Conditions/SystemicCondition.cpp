@@ -13,7 +13,7 @@ TScriptInterface<ISystemicTraitProvider> USystemicCondition::GetSubjectTraitProv
 	if(!pSubjectTraitProvider)
 	{
 		// There was no trait provider on the object, attempt to find it on the actor.
-		if(TObjectPtr<AActor> pSubjectActor = Cast<AActor>(pSubjectObject))
+		if(AActor* pSubjectActor = Cast<AActor>(pSubjectObject))
 		{
 			pSubjectObject = pSubjectActor->FindComponentByInterface(USystemicTraitProvider::StaticClass());
 			pSubjectTraitProvider = Cast<ISystemicTraitProvider>(pSubjectObject);

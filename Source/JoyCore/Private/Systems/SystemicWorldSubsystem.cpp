@@ -34,13 +34,13 @@ namespace JoyCore::Systems
 }
 
 // Process a systemic event by running it through all valid rules and conditions to see if it's valid.
-bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreDisabledRules, const bool bIgnoreRuleCooldowns)
+bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreRuleCooldowns)
 {
 	const bool bDebugSystemicEvents = JoyCore::Systems::CVarSystemDebugSystemicEvents.GetValueOnGameThread() == 1;
 	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Processing SystemicEvent: %s"), *Event.EventTag.ToString());
 
 	// Get all matching rules.
-	TArray<FSystemicRuleRuntimeData*> matchingRules = FindMatchingRules(Event.EventTag, bIgnoreDisabledRules);
+	TArray<FSystemicRuleRuntimeData*> matchingRules = FindMatchingRules(Event.EventTag);
 	if(matchingRules.IsEmpty())
 	{
 		UE_LOG(LogJoyCoreSystems, Warning, TEXT("No Rules defined to process SystemicEvent: %s"), *Event.EventTag.ToString());
@@ -136,7 +136,7 @@ bool USystemicWorldSubsystem::EvaluateRule(USystemicRule* Rule, const FSystemicE
 	RuleContextOut.Target = Event.Target;
 	RuleContextOut.SourceObject = Event.SourceObject;
 	
-	for(const TObjectPtr<USystemicCondition> pCondition : Rule->GetConditionList())
+	for(const USystemicCondition* pCondition : Rule->GetConditionList())
 	{
 		if(!IsValid(pCondition))
 		{
@@ -162,7 +162,7 @@ bool USystemicWorldSubsystem::ExecuteReactions(USystemicRule* Rule, const FSyste
 	UE_LOG(LogJoyCoreSystems, VeryVerbose, TEXT("Executing the Reactions in SystemicRule: %s"), *Rule->GetRuleName().ToString());
 	
 	bool bReactionSuccess = true;
-	for(const TObjectPtr<USystemicReaction> pReaction : Rule->GetReactionList())
+	for(USystemicReaction* pReaction : Rule->GetReactionList())
 	{
 		if(!IsValid(pReaction))
 		{
@@ -186,7 +186,7 @@ bool USystemicWorldSubsystem::ExecuteReactions(USystemicRule* Rule, const FSyste
 }
 
 // Find all rules matching the passed-in event tag.
-TArray<FSystemicRuleRuntimeData*> USystemicWorldSubsystem::FindMatchingRules(const FGameplayTag& EventTag, const bool bIgnoreDisabled)
+TArray<FSystemicRuleRuntimeData*> USystemicWorldSubsystem::FindMatchingRules(const FGameplayTag& EventTag)
 {
 	TArray<FSystemicRuleRuntimeData*> matchingRules;
 	
@@ -197,7 +197,7 @@ TArray<FSystemicRuleRuntimeData*> USystemicWorldSubsystem::FindMatchingRules(con
 		{
 			if(USystemicRule* pRule = ruleData.Rule.Get())
 			{
-				if(bIgnoreDisabled && !pRule->IsEnabled())
+				if(!pRule->GetIsEnabled())
 				{
 					// Rule isn't enabled; skip.
 					continue;
@@ -239,7 +239,7 @@ bool USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemi
 		return false;
 	}
 	
-	const TObjectPtr<UWorld> pWorld = WorldContextObj->GetWorld();
+	const UWorld* pWorld = WorldContextObj->GetWorld();
 	if(!IsValid(pWorld))
 	{
 		// Invalid world, can't grab the subsystem.
@@ -247,7 +247,7 @@ bool USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemi
 		return false;
 	}
 	
-	TObjectPtr<USystemicWorldSubsystem> pSubsystem = pWorld->GetSubsystem<USystemicWorldSubsystem>();
+	USystemicWorldSubsystem* pSubsystem = pWorld->GetSubsystem<USystemicWorldSubsystem>();
 	ensure(IsValid(pSubsystem));
 	if(!IsValid(pSubsystem))
 	{
@@ -261,7 +261,7 @@ bool USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemi
 }
 
 // Register a rule with the subsystem as an Active Rule as well as caching it off in the rule map.
-bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn, bool bForceActivateRule)
+bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn)
 {
 	if(!IsValid(RuleIn))
 	{
@@ -285,12 +285,6 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn, bool bForceAct
 		});
 
 		UE_LOG(LogJoyCoreSystems, Log, TEXT("SystemicRuleAsset added to USystemicWorldSubsystem: %s\nFull Name: %s (Event Tag: %s)."), *RuleIn->GetRuleName().ToString(), *RuleIn->GetFullName(), *EventTag.ToString());
-	}
-
-	if(bForceActivateRule)
-	{
-		// Override the rule's state.
-		RuleIn->Enable(true);
 	}
 	
 	return true;

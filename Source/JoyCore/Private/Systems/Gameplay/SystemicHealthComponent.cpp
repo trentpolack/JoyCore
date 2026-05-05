@@ -84,16 +84,17 @@ bool USystemicHealthComponent::EmitHealthEvent(float HealthNew, float HealthPrev
 		return false;
 	}
 
-	FSystemicEvent Event;
-	JOYCORE_POPULATE_EVENT(Event, TAG_System_Event_HealthChanged, pOwner, InstigatorActor, SourceObject, FSystemicHealthEventData);
+	// Populate event data.
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthChanged, pOwner, InstigatorActor, SourceObject, FSystemicHealthEventData);
 
-	FSystemicHealthEventData& eventData = Event.EventDataInstance.GetMutable<FSystemicHealthEventData>();
+	FSystemicHealthEventData& eventData = event.EventDataInstance.GetMutable<FSystemicHealthEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.HealthNew = HealthNew;
 	eventData.HealthPrevious = HealthPrevious;
 	eventData.Value = HealthDelta;
 
-	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
 // Emit a health max change event.
@@ -106,16 +107,17 @@ bool USystemicHealthComponent::EmitHealthMaxEvent(float HealthMaxNew, float Heal
 		return false;
 	}
 
-	FSystemicEvent Event;
-	JOYCORE_POPULATE_EVENT(Event, TAG_System_Event_HealthMaxChanged, pOwner, InstigatorActor, SourceObject, FSystemicHealthEventData);
+	// Populate event data.
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthMaxChanged, pOwner, InstigatorActor, SourceObject, FSystemicHealthEventData);
 
-	FSystemicHealthEventData& eventData = Event.EventDataInstance.GetMutable<FSystemicHealthEventData>();
+	FSystemicHealthEventData& eventData = event.EventDataInstance.GetMutable<FSystemicHealthEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.HealthNew = HealthMaxNew;
 	eventData.HealthPrevious = HealthMaxPrevious;
 	eventData.Value = HealthMaxDelta;
 
-	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
 // Emit a lifecycle change event.
@@ -128,15 +130,15 @@ bool USystemicHealthComponent::EmitLifeStateEvent(const FGameplayTag& EventTag, 
 		return false;
 	}
 
-	// Fill out the health event data.
-	FSystemicEvent Event;
-	JOYCORE_POPULATE_EVENT(Event, EventTag, pOwner, InstigatorActor, SourceObject, FSystemicEventData);
+	// Populate event data.
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT(event, EventTag, pOwner, InstigatorActor, SourceObject, FSystemicEventData);
 
-	FSystemicEventData& eventData = Event.EventDataInstance.GetMutable<FSystemicEventData>();
+	FSystemicEventData& eventData = event.EventDataInstance.GetMutable<FSystemicEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.Value = GetHealth();
 
-	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
 // Set the current health.

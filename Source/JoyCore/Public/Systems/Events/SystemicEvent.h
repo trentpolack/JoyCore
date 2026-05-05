@@ -20,6 +20,13 @@
 	Event.SourceObject = SourceObjectIn ? SourceObjectIn : this;	\
 	Event.EventDataInstance.InitializeAs<EventDataTypeIn>()
 
+#define JOYCORE_POPULATE_EVENT_CONSTRUCTOR_ARGLIST(Event, EventTagIn, OwnerIn, InstigatorActorIn, SourceObjectIn, EventDataTypeIn, ...)		\
+	Event.EventTag = EventTagIn;									\
+	Event.Target = OwnerIn;											\
+	Event.Instigator = InstigatorActorIn;							\
+	Event.SourceObject = SourceObjectIn ? SourceObjectIn : this;	\
+	Event.EventDataInstance.InitializeAs<EventDataTypeIn>(__VA_ARGS__)
+
 /**
  *	Enum representing the subject of a systemic event.
  */

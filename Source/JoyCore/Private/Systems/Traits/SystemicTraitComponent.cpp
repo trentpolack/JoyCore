@@ -19,7 +19,7 @@ USystemicTraitComponent::USystemicTraitComponent()
 // Emit a lifecycle event for this component (created/destroyed).
 bool USystemicTraitComponent::EmitLifecycleEvent(const FGameplayTag& EventTag)
 {
-	TObjectPtr<AActor> pOwner = GetOwner();
+	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
 	{
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("Trait Component has no owner: %s"), *GetName());
@@ -27,10 +27,7 @@ bool USystemicTraitComponent::EmitLifecycleEvent(const FGameplayTag& EventTag)
 	}
 
 	FSystemicEvent event;
-	event.EventTag = EventTag;
-	event.Target = pOwner;
-	event.SourceObject = ConstCast<USystemicTraitComponent>(this);
-	event.EventDataInstance.InitializeAs<FSystemicEventData>();
+	JOYCORE_POPULATE_EVENT(event, EventTag, pOwner, pOwner, this, FSystemicEventData);
 
 	FSystemicEventData& eventData = event.EventDataInstance.GetMutable<FSystemicEventData>();
 	eventData.Location = pOwner->GetActorLocation();

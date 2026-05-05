@@ -100,7 +100,7 @@ public:
 	 * @return Returns true if the rule is enabled.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
-	bool IsEnabled() const;
+	bool GetIsEnabled() const;
 
 	/**
 	 * Set the state of this rule.

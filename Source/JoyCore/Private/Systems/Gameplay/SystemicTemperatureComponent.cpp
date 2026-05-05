@@ -81,7 +81,7 @@ float USystemicTemperatureComponent::SetTemperature(float TemperatureIn, AActor*
 	return Temperature;
 }
 
-bool USystemicTemperatureComponent::EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* SourceObject) const
+bool USystemicTemperatureComponent::EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* SourceObject)
 {
 	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
@@ -89,45 +89,37 @@ bool USystemicTemperatureComponent::EmitTemperatureEvent(float TemperatureNew, f
 		return false;
 	}
 
-	// Setup the event.
-	FSystemicEvent Event;
-	Event.EventTag = TAG_System_Event_TemperatureChanged;
-	Event.Target = pOwner;
-	Event.Instigator = InstigatorActor;
-	Event.SourceObject = SourceObject ? SourceObject : const_cast<USystemicTemperatureComponent*>(this);
-	Event.EventDataInstance.InitializeAs<FSystemicTemperatureEventData>();
+	// Setup the temperature change event.
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_TemperatureChanged, pOwner, InstigatorActor, SourceObject, FSystemicTemperatureEventData);
 
-	// Fill out the temperature event data.
-	FSystemicTemperatureEventData& EventData = Event.EventDataInstance.GetMutable<FSystemicTemperatureEventData>();
-	EventData.Location = pOwner->GetActorLocation();
-	EventData.TemperatureNew = TemperatureNew;
-	EventData.TemperaturePrevious = TemperaturePrevious;
-	EventData.Value = TemperatureDelta;
+	FSystemicTemperatureEventData& eventData = event.EventDataInstance.GetMutable<FSystemicTemperatureEventData>();
+	eventData.Location = pOwner->GetActorLocation();
+	eventData.TemperatureNew = TemperatureNew;
+	eventData.TemperaturePrevious = TemperaturePrevious;
+	eventData.Value = TemperatureDelta;
 	
-	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
-bool USystemicTemperatureComponent::EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject) const
+bool USystemicTemperatureComponent::EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject)
 {
-	TObjectPtr<AActor> pOwner = GetOwner();
+	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
 	{
 		// Invalid owner.
 		return false;
 	}
 
-	FSystemicEvent Event;
-	Event.EventTag = EventTag;
-	Event.Target = pOwner;
-	Event.Instigator = InstigatorActor;
-	Event.SourceObject = SourceObject ? SourceObject : const_cast<USystemicTemperatureComponent*>(this);
-	Event.EventDataInstance.InitializeAs<FSystemicEventData>();
+	// Populate the event with temperature state event data.
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT(event, EventTag, pOwner, InstigatorActor, SourceObject, FSystemicEventData);
 
-	FSystemicEventData& EventData = Event.EventDataInstance.GetMutable<FSystemicEventData>();
-	EventData.Location = pOwner->GetActorLocation();
-	EventData.Value = GetTemperature();
+	FSystemicEventData& eventData = event.EventDataInstance.GetMutable<FSystemicEventData>();
+	eventData.Location = pOwner->GetActorLocation();
+	eventData.Value = GetTemperature();
 
-	return(USystemicWorldSubsystem::EmitEvent(pOwner, Event));
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
 // Tick the component to modify temperature towards equilibrium.

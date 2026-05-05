@@ -18,30 +18,41 @@ USystemicInteractionComponent::USystemicInteractionComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-bool USystemicInteractionComponent::Interact(AActor* InstigatorActor, FName InteractionName, UObject* SourceObject)
+bool USystemicInteractionComponent::EmitInteractEvent(const FName& InteractionName, AActor* InstigatorActor, UObject* SourceObject)
 {
-	AActor* Owner = GetOwner();
-	if(!GetIsEnabled() || !IsValid(Owner))
+	AActor* pOwner = GetOwner();
+	if(!IsValid(pOwner))
 	{
+		// Return early if component is disabled or owner is invalid (though if the component is disabled, it shouldn't get this far).
 		return false;
 	}
 
-	const FName ResolvedInteractionName = InteractionName.IsNone() ? InteractionNameDefault : InteractionName;
-	OnInteracted.Broadcast(InstigatorActor, ResolvedInteractionName);
+	// Populate evnet data.
+	FSystemicEvent event;
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_Interacted, pOwner, InstigatorActor, SourceObject, FSystemicInteractionEventData);
 
-	FSystemicEvent Event;
-	Event.EventTag = TAG_System_Event_Interacted;
-	Event.Target = Owner;
-	Event.Instigator = InstigatorActor;
-	Event.SourceObject = SourceObject ? SourceObject : this;
-	Event.EventDataInstance.InitializeAs<FSystemicInteractionEventData>();
+	FSystemicInteractionEventData& eventData = event.EventDataInstance.GetMutable<FSystemicInteractionEventData>();
+	eventData.Location = pOwner->GetActorLocation();
+	eventData.Value = 1.0f;
 
-	FSystemicInteractionEventData& EventData = Event.EventDataInstance.GetMutable<FSystemicInteractionEventData>();
-	EventData.Location = Owner->GetActorLocation();
-	EventData.Value = 1.0f;
+	eventData.InteractionName = InteractionName;
 
-	EventData.InteractionName = ResolvedInteractionName;
+	// Broadcast the interaction.
+	OnInteracted.Broadcast(InstigatorActor, InteractionName);
 
-	USystemicWorldSubsystem::EmitEvent(Owner, Event);
-	return true;
+	// Emit the Interact event.
+	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
+}
+
+bool USystemicInteractionComponent::Interact(const FName& InteractionName, AActor* InstigatorActor, UObject* SourceObject)
+{
+	if(!GetIsEnabled())
+	{
+		// Return early if component is disabled; though it probably shouldn't get this far.
+		return false;
+	}
+
+	// Emit the interaction event with the interaction name.
+	const FName& resolvedInteractionName = InteractionName.IsNone() ? InteractionNameDefault : InteractionName;
+	return(EmitInteractEvent(resolvedInteractionName, InstigatorActor, SourceObject));
 }

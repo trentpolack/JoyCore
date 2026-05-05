@@ -99,12 +99,11 @@ protected:
 	/**
 	 * Process a systemic event.
 	 * @param Event The event to process.
-	 * @param bIgnoreDisabledRules Whether to ignore disabled rules when finding matching rules (defaults to true).
 	 * @param bIgnoreRuleCooldowns Whether to ignore cooldowns when finding matching rules (defaults to false).
 	 * @return True if the event was successfully processed, false otherwise.
 	 */
 	UFUNCTION(Category="Game|Systems")
-	virtual bool ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreDisabledRules = true, const bool bIgnoreRuleCooldowns = false);
+	virtual bool ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreRuleCooldowns = false);
 	
 	/**
 	 * Evaluate a rule for an event by seeing if all of its conditions pass.
@@ -132,10 +131,9 @@ protected:
 	/**
 	 * Find rules matching the event tag.
 	 * @param EventTag The tag of the event to find matching rules for.
-	 * @param bIgnoreDisabled Whether to ignore disabled rules when finding matching rules (defaults to true).
 	 * @return An array of pointers to rules matching the event tag.
 	 */
-	TArray<FSystemicRuleRuntimeData*> FindMatchingRules(const FGameplayTag& EventTag, const bool bIgnoreDisabled = true);
+	TArray<FSystemicRuleRuntimeData*> FindMatchingRules(const FGameplayTag& EventTag);
 
 public:
 	/**
@@ -157,11 +155,10 @@ public:
 	/**
 	 * Register a Rule Asset with the subsystem (and add it to the rule cache).
 	 * @param RuleIn The Rule Asset to register.
-	 * @param bForceActivateRule Optional override for rule activation state.
 	 * @return Returns true if the registration was successful.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	virtual bool RegisterRule(USystemicRule* RuleIn, bool bForceActivateRule = true);
+	virtual bool RegisterRule(USystemicRule* RuleIn);
 	
 	// UTickableWorldSubsystem.
 	virtual ETickableTickType GetTickableTickType() const override;

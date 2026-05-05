@@ -63,10 +63,7 @@ protected:
 	 *	@param EventTag Gameplay tag identifying the contact event.
 	 *	@param OtherActor Actor involved in the contact.
 	 *	@param SourceObject Object responsible for the contact event.
-	 *	@param Location World-space location of the contact event.
-	 *	@param Normal Surface normal associated with the contact event, if applicable.
-	 *	@param Impulse Impulse associated with the contact event, if applicable.
-	 *	@param BoneName Bone name associated with the contact event, if applicable.
+	 *	@param HitResult Hit result structure filled out from the contact event.
 	 *	@param Magnitude General-purpose magnitude/value associated with the contact event.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Contact", meta=(GameplayTagFilter="System.Event"))
@@ -78,7 +75,7 @@ protected:
 	 *	@param OtherActor Actor that hit or was hit by this component.
 	 *	@param OtherComponent The other component involved in the hit.
 	 *	@param NormalImpulse Normal impulse applied by the hit.
-	 *	@param Hit Hit result describing the contact.
+	 *	@param HitResult Hit result describing the contact.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Contact")
 	virtual void HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult);

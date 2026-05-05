@@ -26,7 +26,7 @@ void USystemicGameplayComponentBase::BeginPlay()
 	Super::BeginPlay();
 
 	// Get the trait provider from the owner.
-	TObjectPtr<AActor> pOwner = GetOwner();
+	AActor* pOwner = GetOwner();
 	check(IsValid(pOwner));
 
 	if(pOwner->Implements<USystemicTraitProvider>())
@@ -38,7 +38,7 @@ void USystemicGameplayComponentBase::BeginPlay()
 	else
 	{
 		// Look through other components to see if it's implemented.
-		TraitProvider = GetOwner()->FindComponentByInterface(USystemicTraitProvider::StaticClass());
+		TraitProvider = pOwner->FindComponentByInterface(USystemicTraitProvider::StaticClass());
 	}
 
 	check(TraitProvider);

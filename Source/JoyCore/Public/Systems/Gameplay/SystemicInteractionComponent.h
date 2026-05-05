@@ -33,8 +33,19 @@ protected:
 	static const FName InteractionNameDefault;
 
 	// Whether this component currently accepts and emits interactions (default: true).
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Interaction|Config")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Config|Interaction")
 	uint8 bEnabled : 1 = true;
+
+protected:
+	/**
+	 *	Emit an interact event.
+	 *	@param InteractionName Name of the interaction to emit.
+	 *	@param InstigatorActor Actor responsible for the change.
+	 *	@param SourceObject Object responsible for the change.
+	 *	@return Returns true if the event is successfully emitted.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Interaction")
+	virtual bool EmitInteractEvent(const FName& InteractionName, AActor* InstigatorActor, UObject* SourceObject);
 
 public:
 	// Broadcast when this component successfully receives an interaction.
@@ -57,11 +68,11 @@ public:
 	
 	/**
 	 *	Attempt to interact with this component.
-	 *	@param InstigatorActor Actor responsible for the interaction.
 	 *	@param InteractionName Interaction name to emit; uses DefaultInteractionName when NAME_None.
+	 *	@param InstigatorActor Actor responsible for the interaction.
 	 *	@param SourceObject Object responsible for the interaction.
-	 *	@return True if the interaction was accepted and emitted, false otherwise.
+	 *	@return True if the interaction was successful and the event was emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Interaction")
-	virtual bool Interact(AActor* InstigatorActor, FName InteractionName = NAME_None, UObject* SourceObject = nullptr);
+	virtual bool Interact(const FName& InteractionName = NAME_None, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
 };

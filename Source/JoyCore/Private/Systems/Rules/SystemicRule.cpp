@@ -40,7 +40,7 @@ float USystemicRule::GetCooldown() const
 }
 
 // Get the state of this rule.
-bool USystemicRule::IsEnabled() const
+bool USystemicRule::GetIsEnabled() const
 {
 	return bEnabled;
 }
