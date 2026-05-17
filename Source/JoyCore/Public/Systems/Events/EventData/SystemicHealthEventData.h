@@ -20,10 +20,10 @@ struct JOYCORE_API FSystemicHealthEventData : public FSystemicEventData
 	GENERATED_BODY()
 
 	// Previous health value before the event was processed.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Event|Data|Health|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Health")
 	float HealthPrevious = 0.0f;
 
 	// New health value after the event was processed.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Event|Data|Health|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Health")
 	float HealthNew = 0.0f;
 };

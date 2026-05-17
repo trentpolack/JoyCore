@@ -44,11 +44,11 @@ struct FSystemicEventData
 	GENERATED_BODY()
 	
 	// Location of the event, if applicable.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Data|Transient")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "EventData")
 	FVector Location = FVector::ZeroVector;
 	
 	// General-purpose delta value associated with the event, if applicable; e.g. health lost, temperature change, etc.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Data|Transient")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "EventData")
 	float Value = 1.0f;
 };
 
@@ -72,9 +72,6 @@ struct JOYCORE_API FSystemicEvent
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	FGameplayTagContainer ContextTags = FGameplayTagContainer();
 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
-	TInstancedStruct<FSystemicEventData> EventDataStruct;
-
 	// Initiator of the event.
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<AActor> Instigator = nullptr;
@@ -84,33 +81,15 @@ struct JOYCORE_API FSystemicEvent
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
-	// Instance of the EventDataStruct
+	// Instance of the EventDataStruct.
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TInstancedStruct<FSystemicEventData> EventDataInstance;
 
 public:
 	/**
-	 * Get the object associated with the condition's subject.
-	 * @return The object if found, otherwise nullptr.
-	 */
-	TWeakObjectPtr<UObject> GetObjectBySubject(const ESystemicEventSubject Subject) const
-	{
-		switch(Subject)
-		{
-			case ESystemicEventSubject::Instigator:		return(Cast<UObject>(Instigator.Get()));
-			case ESystemicEventSubject::Target:			return(Cast<UObject>(Target.Get()));
-			case ESystemicEventSubject::SourceObject:	return(Cast<UObject>(SourceObject.Get()));
-		}
-
-		return nullptr;
-	}
-
-	/**
 	 *	FSystemicEvent Constructor. 
 	 */
 	FSystemicEvent()
 	{
-		// Instantiate the instance event data.
-		EventDataInstance = EventDataStruct.Make();
 	}
 };

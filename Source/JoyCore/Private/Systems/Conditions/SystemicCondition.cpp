@@ -3,12 +3,13 @@
 
 #include "Systems/Conditions/SystemicCondition.h"
 
+#include "Systems/SystemicCore.h"
 #include "Systems/Events/SystemicEvent.h"
 
 // Get the trait provider for the subject of the event, handling both actor and component-based implementations.
 TScriptInterface<ISystemicTraitProvider> USystemicCondition::GetSubjectTraitProvider(const FSystemicEvent& Event, FSystemicTrace& Trace) const
 {
-	UObject* pSubjectObject = Event.GetObjectBySubject(Subject).Get();
+	UObject* pSubjectObject = USystemicCore::GetEventObjectBySubject(Event, Subject);
 	ISystemicTraitProvider* pSubjectTraitProvider = Cast<ISystemicTraitProvider>(pSubjectObject);
 	if(!pSubjectTraitProvider)
 	{

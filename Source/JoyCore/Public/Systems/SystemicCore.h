@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 
-#include "GameplayTags.h"
+#include "Events/SystemicEvent.h"
 
 #include "SystemicCore.generated.h"
 
@@ -33,12 +33,31 @@ public:
 	 */
 	
 	/**
+	 * Get the object associated with the event condition's subject.
+	 * @param Event The event to retrieve the subject object from.
+	 * @param Subject The subject type to retrieve the object for.
+	 * @return The object if found, otherwise nullptr.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game|Systems|Events")
+	static UObject* GetEventObjectBySubject(const FSystemicEvent& Event, const ESystemicEventSubject Subject)
+	{
+		switch(Subject)
+		{
+		case ESystemicEventSubject::Instigator:		return(Cast<UObject>(Event.Instigator.Get()));
+		case ESystemicEventSubject::Target:			return(Cast<UObject>(Event.Target.Get()));
+		case ESystemicEventSubject::SourceObject:	return(Cast<UObject>(Event.SourceObject.Get()));
+		}
+
+		return nullptr;
+	}
+
+	/**
 	 * Get which of the two passed-in Events is higher-priority.
 	 * @param EventA First Event to compare
 	 * @param EventB Second Event to compare
 	 * @return The Event with higher priority; EventA if priority is equal.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game|Systems|Events")
 	static const FSystemicEvent& GetHigherPriorityEvent(const FSystemicEvent& EventA, const FSystemicEvent& EventB);
 	
 	/**
@@ -51,6 +70,6 @@ public:
 	 * @param RuleB Second rule to compare
 	 * @return The rule with higher priority; RuleA if priority is equal.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game|Systems|Rules")
 	static const USystemicRule* GetHigherPriorityRule(const USystemicRule* RuleA, const USystemicRule* RuleB);
 };

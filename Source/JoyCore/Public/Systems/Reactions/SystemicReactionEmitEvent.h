@@ -23,11 +23,11 @@ class JOYCORE_API USystemicReactionEmitEvent : public USystemicReaction
 protected:
 	// The event to emit on reaction.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config")
-	FSystemicEvent ReactionEvent = FSystemicEvent();
+	TInstancedStruct<FSystemicEvent> ReactionEvent;
 
 	// The subject of the reaction event.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Reaction|Transient")
-	ESystemicEventSubject ReactionSubject = ESystemicEventSubject::Target;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config")
+	ESystemicEventSubject EventSubject = ESystemicEventSubject::Target;
 	
 public:
 	/**
@@ -35,9 +35,10 @@ public:
 	 * @param Event The triggering event.
 	 * @param Context The rule context populated with event data.
 	 * @param EventDataOut The populated event data structure.
+	 * @param EventDataStruct The event data struct type for the event (FSystemicEventData if not provided).
 	 */
 	UFUNCTION(Blueprintable, BlueprintCallable, Category="Game|Systems|Reactions")
-	virtual void PopulateEventData(const FSystemicEvent& Event, FSystemicRuleContext& Context, TInstancedStruct<FSystemicEventData>& EventDataOut);
+	virtual void PopulateEventData(const FSystemicEvent& Event, FSystemicRuleContext& Context, TInstancedStruct<FSystemicEventData>& EventDataOut, const UScriptStruct* EventDataStruct = nullptr);
 	
 	// USystemicReaction.	
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) override;

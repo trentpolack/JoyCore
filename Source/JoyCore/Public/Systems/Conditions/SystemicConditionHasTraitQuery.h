@@ -22,7 +22,7 @@ class JOYCORE_API USystemicConditionHasTraitQuery : public USystemicCondition
 
 protected:
 	// Name of this Condition; use for identification and organization. It does not affect functionality.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter="System.Trait"))
 	FGameplayTagQuery TraitQuery;
 
 public:

@@ -20,10 +20,10 @@ struct JOYCORE_API FSystemicTemperatureEventData : public FSystemicEventData
 	GENERATED_BODY()
 
 	// Temperature value after this event was applied.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Event|Data|Temperature|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Temperature")
 	float TemperatureNew = 0.0f;
 
 	// Temperature value before this event was applied.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Event|Data|Temperature|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Temperature")
 	float TemperaturePrevious = 0.0f;
 };

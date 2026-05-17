@@ -20,6 +20,6 @@ struct JOYCORE_API FSystemicInteractionEventData : public FSystemicEventData
 	GENERATED_BODY()
 
 	// Name of the interaction associated with this event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Event|Data|Interaction|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Interaction")
 	FName InteractionName = NAME_None;
 };
