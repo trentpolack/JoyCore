@@ -22,7 +22,7 @@ struct FSystemicRuleContext;
  *	USystemicCondition Class Definition.
  *		Object that contains a condition which can take in a systemic event and evaluate it.
  */
-UCLASS(Blueprintable, BlueprintType, EditInlineNew, Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
+UCLASS(Blueprintable, BlueprintType, EditInlineNew, Category="Game|Systems", ClassGroup=(JoyCore))
 class JOYCORE_API USystemicCondition : public UObject
 {
 	GENERATED_BODY()

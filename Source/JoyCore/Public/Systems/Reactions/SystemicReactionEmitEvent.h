@@ -36,7 +36,7 @@ public:
 	 * @param Context The rule context populated with event data.
 	 * @param EventDataOut The populated event data structure.
 	 */
-	UFUNCTION(Blueprintable, BlueprintCallable, Category="Game|Systems")
+	UFUNCTION(Blueprintable, BlueprintCallable, Category="Game|Systems|Reactions")
 	virtual void PopulateEventData(const FSystemicEvent& Event, FSystemicRuleContext& Context, TInstancedStruct<FSystemicEventData>& EventDataOut);
 	
 	// USystemicReaction.	

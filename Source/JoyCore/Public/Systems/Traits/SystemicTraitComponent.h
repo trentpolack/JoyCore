@@ -25,11 +25,11 @@ public:
 	
 protected:
 	// Trait Tag Container.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Transient|Traits", meta=(GameplayTagFilter="System.Trait"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Traits|Transient", meta=(GameplayTagFilter="System.Trait"))
 	FGameplayTagContainer Traits = FGameplayTagContainer();
 
 	// Whether to emit object-level lifecycle events like creation/destruction (default: true).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Config|Events")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits|Config")
 	uint8 bEmitLifecycleEvents : 1 = true;
 
 protected:
@@ -42,7 +42,7 @@ protected:
 
 public:
 	// Broadcast when this component successfully receives an interaction.
-	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
+	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Traits|Events")
 	FSystemicTraitSignature OnTraitsChanged;
 	
 	// ISystemicTraitProvider.

@@ -27,11 +27,11 @@ struct FSystemicRuleRuntimeData
 	GENERATED_BODY()
 	
 	// Rule asset pointer.
-	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules")
+	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rule|Transient")
 	TSoftObjectPtr<USystemicRule> Rule = nullptr;
 	
 	// Current cooldown on this rule.
-	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules")
+	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rule|Transient")
 	float Cooldown = -1.0f;
 
 	/**
@@ -84,15 +84,15 @@ private:
 
 protected:
 	// Map of Rule Assets that are triggered by a given event tag.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rules|Transient", meta=(GameplayTagFilter="System.Event"))
 	TMap<FGameplayTag, FSystemicMappedRules> RuleMap;
 
 	// Queue of events to process during Tick; only used if the JoyCore.Systems.ProcessEventsImmediately console variable is set to 0 (default).
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Events")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Events|Transient")
 	TArray<FSystemicEvent> EventQueue;
 
 	// Number of events to process during ::Tick; process all events every ::Tick if set to 0.
-	UPROPERTY(BlueprintReadOnly, Config, EditAnywhere, Category="Config")
+	UPROPERTY(BlueprintReadOnly, Config, EditAnywhere, Category="Systemic World|Config")
 	int32 EventProcessCountPerTick = 10;
 
 protected:

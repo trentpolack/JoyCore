@@ -20,7 +20,7 @@ struct FSystemicTrace;
  *	USystemicReaction Class Definition.
  *		Object that contains a Reaction which can take in a systemic event and evaluate it.
  */
-UCLASS(Blueprintable, BlueprintType, EditInlineNew, Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
+UCLASS(Blueprintable, BlueprintType, Abstract, EditInlineNew, Category="Game|Systems", ClassGroup=(JoyCore))
 class JOYCORE_API USystemicReaction : public UObject
 {
 	GENERATED_BODY()
@@ -35,7 +35,7 @@ public:
 	 * Accessor for the reaction name.
 	 * @return The name of this reaction.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reaction")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reactions")
 	const FName& GetReactionName() const;
 	
 	/**
@@ -45,6 +45,6 @@ public:
 	 * @param Trace Trace information for debugging and logging.
 	 * @return True if the execution is complete, false if there's an error along the way.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reaction")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reactions")
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
 };

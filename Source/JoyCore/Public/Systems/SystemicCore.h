@@ -22,7 +22,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogJoyCoreSystems, Log, All);
  * USystemicCore Class Definition.
  *	Core config settings, helpers, and utilities. Not intended to be instanced.
  */
-UCLASS(NotBlueprintable, NotBlueprintType, Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore)
+UCLASS(NotBlueprintable, NotBlueprintType, Category="Game|Systems", ClassGroup=(JoyCore))
 class JOYCORE_API USystemicCore : public UObject
 {
 	GENERATED_BODY()
@@ -40,8 +40,6 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	static const FSystemicEvent& GetHigherPriorityEvent(const FSystemicEvent& EventA, const FSystemicEvent& EventB);
-	
-	
 	
 	/**
 	 *	Rules.
