@@ -4,7 +4,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Systems/Reactions/SystemicReaction.h"
 
 #include "Systems/Events/SystemicEvent.h"
@@ -21,26 +20,34 @@ class JOYCORE_API USystemicReactionEmitEvent : public USystemicReaction
 	GENERATED_BODY()
 
 protected:
-	// The event to emit on reaction.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config")
-	TInstancedStruct<FSystemicEvent> ReactionEvent;
+	// The event tag for the reaction event.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event"))
+	FGameplayTag ReactionEventTag;
+
+	// The event priority for the created event.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event.Priority"))
+	FGameplayTag ReactionEventPriorityTag = TAG_System_Event_Priority_Default;
 
 	// The subject of the reaction event.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config")
-	ESystemicEventSubject EventSubject = ESystemicEventSubject::Target;
+	ESystemicEventSubject ReactionEventSubject = ESystemicEventSubject::Target;
+	
+	// The event data struct for the reaction's event.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta = (BaseStruct = "/Script/JoyCore.FSystemicEventData"))
+	UScriptStruct* ReactionEventDataStruct = FSystemicEventData::StaticStruct();
 	
 public:
 	/**
-	 * Populates the event data for the reaction's event.
-	 * @param Event The triggering event.
-	 * @param Context The rule context populated with event data.
-	 * @param EventDataOut The populated event data structure.
-	 * @param EventDataStruct The event data struct type for the event (FSystemicEventData if not provided).
+	 * Blueprint native event to create and fill out an event structure; base implementation emits a generic event with ::ReactionEventTag and the event subject.
+	 * @param Event Triggering event.
+	 * @param Context Cached data from the rule context.
+	 * @param Trace Trace information for debugging and logging.
+	 * @return The created reaction event.
 	 */
-	UFUNCTION(Blueprintable, BlueprintCallable, Category="Game|Systems|Reactions")
-	virtual void PopulateEventData(const FSystemicEvent& Event, FSystemicRuleContext& Context, TInstancedStruct<FSystemicEventData>& EventDataOut, const UScriptStruct* EventDataStruct = nullptr);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game|Systems|Reactions", meta = (ReturnDisplayName = "Reaction Event"))
+	FSystemicEvent CreateReactionEvent(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
 	
-	// USystemicReaction.	
+	// USystemicReaction.
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) override;
 	// ~USystemicReaction.
 };

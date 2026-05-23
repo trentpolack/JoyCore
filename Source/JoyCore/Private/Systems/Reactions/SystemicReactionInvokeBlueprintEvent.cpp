@@ -9,6 +9,6 @@ bool USystemicReactionInvokeBlueprintEvent::Execute(const FSystemicEvent& Event,
 	// Execute the blueprint-implemented event.
 	bool bSuccess = OnReaction(Event, Context, Trace);
 	
-	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(ReactionName, bSuccess));
+	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(GetReactionName(), bSuccess));
 	return bSuccess;
 }

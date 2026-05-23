@@ -38,23 +38,23 @@ public:
 
 protected:
 	// Whether this component emits systemic contact events for hit notifications (default: true).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Contact|Config")
 	uint8 bEmitHitEvents : 1 = true;
 
 	// Whether this component emits systemic contact events for begin/end overlap notifications (default: true).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Contact|Config")
 	uint8 bEmitOverlapEvents : 1 = true;
 
 	// Primitive component whose hit and overlap events are observed; if unset, this component uses its owner's.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Contact|Config")
 	TObjectPtr<UPrimitiveComponent> CollisionComponent = nullptr;
 	
 	// Minimum hit impulse magnitude required before a hit event is emitted (default: 0.0).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Contact", meta=(ClampMin="0.0"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Contact|Config", meta=(ClampMin="0.0"))
 	float HitImpulseThreshold = 0.0f;
 
 	// Whether this component emits systemic contact events for hit notifications (default: true).
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Contact")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Contact|Transient")
 	uint8 bCollisionEventsBound : 1 = false;
 
 protected:
@@ -114,7 +114,6 @@ public:
 	// Broadcast when this component's temperature changes.
 	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
 	FSystemicContactOverlapEndSignature OnOverlapEnd;
-
 	
 	/**
 	 *	Set the primitive component to loosely bind to this component.

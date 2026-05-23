@@ -33,7 +33,7 @@ protected:
 	static const FName InteractionNameDefault;
 
 	// Whether this component currently accepts and emits interactions (default: true).
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Config|Interaction")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Interaction|Config")
 	uint8 bEnabled : 1 = true;
 
 protected:

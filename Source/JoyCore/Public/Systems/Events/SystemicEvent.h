@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 
+#include "Templates/UniquePtr.h"
 #include "StructUtils/InstancedStruct.h"
 
 #include "GameplayTags.h"
@@ -68,6 +69,10 @@ struct JOYCORE_API FSystemicEvent
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event.Priority"))
 	FGameplayTag Priority = TAG_System_Event_Priority_Default;
 
+	// Subject of this event.
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
+	ESystemicEventSubject Subject = ESystemicEventSubject::Target;
+
 	// Gameplay tags providing additional event context.
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	FGameplayTagContainer ContextTags = FGameplayTagContainer();
@@ -77,7 +82,7 @@ struct JOYCORE_API FSystemicEvent
 	TWeakObjectPtr<AActor> Instigator = nullptr;
 	// Target of the event, if there is one.
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
-	TWeakObjectPtr<AActor> Target = nullptr;
+	TWeakObjectPtr<UObject> Target = nullptr;
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;
@@ -91,5 +96,15 @@ public:
 	 */
 	FSystemicEvent()
 	{
+	}
+	
+	/**
+	 *	Accessor for the FSystemicEventData instance.
+	 *	@return Reference to the event data instance.
+	 */
+	template <typename T>
+	FORCEINLINE T& GetEventData()
+	{
+		return *(CastChecked<T>(EventDataInstance));
 	}
 };

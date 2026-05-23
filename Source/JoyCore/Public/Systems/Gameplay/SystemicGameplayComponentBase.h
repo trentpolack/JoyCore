@@ -27,7 +27,7 @@ public:
 	USystemicGameplayComponentBase();
 
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Traits|Transient")
 	TScriptInterface<ISystemicTraitProvider> TraitProvider = nullptr;
 	
 public:

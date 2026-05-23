@@ -7,44 +7,59 @@
 
 #include "Systems/SystemicCore.h"
 #include "Systems/SystemicWorldSubsystem.h"
+#include "Systems/Rules/SystemicRuleContext.h"
 
-// Populate the event data structure with relevant information.
-void USystemicReactionEmitEvent::PopulateEventData(const FSystemicEvent& Event, FSystemicRuleContext& Context, TInstancedStruct<FSystemicEventData>& EventDataOut, const UScriptStruct* EventDataStruct)
+// Base implementation for ::EmitEvent; intended to be implemented by derived classes in blueprint.
+FSystemicEvent USystemicReactionEmitEvent::CreateReactionEvent_Implementation(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
 {
-	AActor* pActor = Cast<AActor>(USystemicCore::GetEventObjectBySubject(Event, EventSubject));
-	if(!IsValid(pActor))
+	UObject* pObject = USystemicCore::GetEventObjectBySubject(Event, Event.Subject);
+	if(!IsValid(pObject) && !IsValid(pObject = USystemicCore::GetEventObjectBySubject(Event, ReactionEventSubject)))
 	{
-		UE_LOG(LogJoyCoreSystems, Error, TEXT("Reaction subject is not a valid actor: %s"), *Event.EventTag.ToString());
-		return;
+		// Log the error but continue.
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("%s subject and reaction subject are not valid objects (ReactionEmitEvent)."), *Event.EventTag.ToString());
+		return FSystemicEvent();
 	}
 	
-	// Base level implementation can only work off of the limited native event data structure.
-	EventDataOut.InitializeAsScriptStruct(EventDataStruct ? EventDataStruct : FSystemicEventData::StaticStruct());
+	// Create the reaction event.
+	FSystemicEvent reactionEvent;
+	reactionEvent.EventTag = ReactionEventTag;
+	reactionEvent.Priority = ReactionEventPriorityTag;
+	reactionEvent.Subject = ReactionEventSubject;
+	reactionEvent.SourceObject = IsValid(pObject) ? pObject : Cast<UObject>(this);
+	reactionEvent.Instigator = Event.Instigator;
+	reactionEvent.Target = USystemicCore::GetEventObjectBySubject(Event, ReactionEventSubject);
 
-	FSystemicEventData& eventData = EventDataOut.GetMutable<FSystemicEventData>();
-	eventData.Location = pActor->GetActorLocation();
-	eventData.Value = Event.EventDataInstance->Value;
+	// Base level implementation can only fill in the basic data (FSystemicEventData properties).
+	reactionEvent.EventDataInstance.InitializeAsScriptStruct(ReactionEventDataStruct ? ReactionEventDataStruct : FSystemicEventData::StaticStruct());
+
+	const FSystemicEventData& eventData = Event.EventDataInstance.Get<FSystemicEventData>();
+	FSystemicEventData& reactionEventData = reactionEvent.EventDataInstance.GetMutable<FSystemicEventData>();
+	AActor* pActor = Cast<AActor>(USystemicCore::GetEventObjectBySubject(reactionEvent, ReactionEventSubject));
+	reactionEventData.Location = IsValid(pActor) ? pActor->GetActorLocation() : eventData.Location;
+	reactionEventData.Value = eventData.Value;
+	return reactionEvent;
 }
 
 // Execute the blueprint-implemented event as a reaction to the triggering event.
 bool USystemicReactionEmitEvent::Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
 {
-	AActor* pReactionActor = Cast<AActor>(USystemicCore::GetEventObjectBySubject(Event, EventSubject));
+	// Create the reaction event.
+	FSystemicEvent reactionEvent = CreateReactionEvent(Event, Context, Trace);
+	AActor* pReactionActor = Cast<AActor>(USystemicCore::GetEventObjectBySubject(reactionEvent, reactionEvent.Subject));
 	if(!IsValid(pReactionActor))
 	{
-		Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(ReactionName, false));
+		// Log the error but continue.
+		Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(GetReactionName(), false));
 		return false;
 	}
 
-	FSystemicEvent& event = ReactionEvent.GetMutable<FSystemicEvent>();
-	event.Target = pReactionActor;
-	event.Instigator = Event.Instigator;
-	event.SourceObject = this;
+	// Fill out additional context.
+	Context.NamedObjects.Add(*FString::Printf(TEXT("ReactionEmitEventActor (%s)"), *ReactionEventTag.GetTagName().ToString()), pReactionActor);
 
-	// Populate the event data and emit it.
-	PopulateEventData(Event, Context, event.EventDataInstance);
-	USystemicWorldSubsystem::EmitEvent(pReactionActor, ReactionEvent.GetMutable<FSystemicEvent>());
-	
-	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(ReactionName, true));
+	// Emit it.
+	USystemicWorldSubsystem::EmitEvent(pReactionActor, reactionEvent);
+
+	// Update the trace.
+	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(GetReactionName(), true));
 	return true;
 }

@@ -20,7 +20,7 @@ struct JOYCORE_API FSystemicRuleContext
 	TWeakObjectPtr<AActor> Instigator = nullptr;
 	// Target of the event, if there is one.
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "RuleContext|Transient")
-	TWeakObjectPtr<AActor> Target = nullptr;
+	TWeakObjectPtr<UObject> Target = nullptr;
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "RuleContext|Transient")
 	TWeakObjectPtr<UObject> SourceObject = nullptr;

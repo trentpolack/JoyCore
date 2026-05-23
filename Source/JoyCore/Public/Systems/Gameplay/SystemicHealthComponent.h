@@ -38,23 +38,23 @@ public:
 
 protected:
 	// Maximum health value used when clamping current health.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, DisplayName="Max Health", Category="Config|Health", meta=(ClampMin="0.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, DisplayName="Max Health", Category="Health|Config", meta=(ClampMin="0.0"))
 	float HealthMax = 100.0f;
 	
 	// Current health value.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Health", meta=(ClampMin="0.0"))
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Health|Transient", meta=(ClampMin="0.0"))
 	float Health = 0.0f;
 	
 	// Whether this component destroys its owner when health reaches zero (default: false).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Health")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Health|Config")
 	uint8 bDestroyOwnerOnKilled : 1 = false;
 
 	// Whether this component supports a downed state before death (default: false).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Health")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Health|Config")
 	uint8 bDownedStateSupported : 1 = false;
 
 	// Whether or not to bind to engine damage events (default: true).
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Config|Health")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Health|Config")
 	uint8 bBindToDamageEvents : 1 = true;
 
 protected:
