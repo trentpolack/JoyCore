@@ -6,13 +6,13 @@
 // Rule name accessor.
 const FName& USystemicRule::GetRuleName() const
 {
-	return Name;
+	return RuleName;
 }
 
 // Rule Description accessor.
 const FString& USystemicRule::GetRuleDescription() const
 {
-	return Description;
+	return RuleDescription;
 }
 
 // Return a reference to the container of triggering event tags.

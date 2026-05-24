@@ -21,7 +21,7 @@ class JOYCORE_API USystemicConditionTraitQuery : public USystemicCondition
 	GENERATED_BODY()
 
 protected:
-	// Name of this Condition; use for identification and organization. It does not affect functionality.
+	// The trait query to evaluate against.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter=TAG_System_Trait))
 	FGameplayTagQuery TraitQuery;
 

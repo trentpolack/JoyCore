@@ -345,11 +345,11 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	// Load all Rule Assets.
 	FAssetRegistryModule& assetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
-	TArray<FAssetData> assetData;
-	const UClass* Class = USystemicRule::StaticClass();
+	FTopLevelAssetPath ruleAssetPath = USystemicRule::StaticClass()->GetClassPathName();
 	
 	// Get all Rule Assets by class.
-	assetRegistryModule.Get().GetAssetsByClass(Class->GetClassPathName(), assetData, true);
+	TArray<FAssetData> assetData;
+	assetRegistryModule.Get().GetAssetsByClass(ruleAssetPath, assetData, true);
 	
 	// Go through and register all the rules with the map and the active rule list if the rule is enabled.
 	for(const FAssetData& asset : assetData)

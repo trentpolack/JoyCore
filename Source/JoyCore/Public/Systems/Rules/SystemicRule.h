@@ -28,11 +28,11 @@ class JOYCORE_API USystemicRule : public UPrimaryDataAsset
 protected:
 	// Name of this rule, ideally unique.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
-	FName Name = NAME_None;
+	FName RuleName = NAME_None;
 
 	// Description of this rule, providing context and purpose.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
-	FString Description = TEXT("");
+	FString RuleDescription = TEXT("");
 
 	// Gameplay tags of events that can trigger a reaction.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter=TAG_System_Event))

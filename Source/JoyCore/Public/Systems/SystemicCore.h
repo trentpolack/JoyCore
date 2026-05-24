@@ -82,38 +82,34 @@ public:
 	/**
 	 * Get the event data from the passed-in Event as a FSystemicContactEventData-typed struct.
 	 * @param Event Contact Event to extract data from.
-	 * @param EventDataOut Output struct to populate with event data.
-	 * @returns True if the event is a contact-related event.
+	 * @returns Reference to the populated FSystemicContactEventData struct.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events")
-	static bool GetContactEventData(FSystemicEvent& Event, FSystemicContactEventData& EventDataOut);
+	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Contact Event Data"))
+	static UPARAM(ref) FSystemicContactEventData& GetContactEventData(UPARAM(ref) FSystemicEvent& Event);
 	
 	/**
-	 * Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
+	 * Get the event data from the passed-in Event as a FSystemicHealthEventData-typed struct.
 	 * @param Event Health Event to extract data from.
-	 * @param EventDataOut Output struct to populate with event data.
-	 * @returns True if the event is a health-related event.
+	 * @returns Reference to the populated FSystemicHealthEventData struct.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events")
-	static bool GetHealthEventData(FSystemicEvent& Event, FSystemicHealthEventData& EventDataOut);
+	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Health Event Data"))
+	static UPARAM(ref) FSystemicHealthEventData& GetHealthEventData(UPARAM(ref) FSystemicEvent& Event);
 
 	/**
 	 * Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
 	 * @param Event Interaction Event to extract data from.
-	 * @param EventDataOut Output struct to populate with event data.
-	 * @returns True if the event is an interaction-related event.
+	 * @returns Reference to the populated FSystemicInteractionEventData struct.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events")
-	static bool GetInteractionEventData(FSystemicEvent& Event, FSystemicInteractionEventData& EventDataOut);
+	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Interaction Event Data"))
+	static FSystemicInteractionEventData& GetInteractionEventData(UPARAM(ref) FSystemicEvent& Event);
 
 	/**
 	 * Get the event data from the passed-in Event as a FSystemicTemperatureEventData-typed struct.
 	 * @param Event Temperature Event to extract data from.
-	 * @param EventDataOut Output struct to populate with event data.
-	 * @returns True if the event is a temperature-related event.
+	 * @returns Reference to the populated FSystemicTemperatureEventData struct.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events")
-	static bool GetTemperatureEventData(FSystemicEvent& Event, FSystemicTemperatureEventData& EventDataOut);
+	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Temperature Event Data"))
+	static UPARAM(ref) FSystemicTemperatureEventData& GetTemperatureEventData(UPARAM(ref) FSystemicEvent& Event);
 	
 	/**
 	 *	Rules.

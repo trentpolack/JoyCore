@@ -29,59 +29,51 @@ const FSystemicEvent& USystemicCore::GetHigherPriorityEvent(const FSystemicEvent
 }
 
 // Get the event data from the passed-in Event as a FSystemicContactEventData-typed struct.
-bool USystemicCore::GetContactEventData(FSystemicEvent& Event, FSystemicContactEventData& EventDataOut)
+FSystemicContactEventData& USystemicCore::GetContactEventData(FSystemicEvent& Event)
 {
 	if(!Event.IsValidEventDataType<FSystemicContactEventData>())
 	{
 		// Invalid event data type.
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::GetContactEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
-		return false;
 	}
 	
-	EventDataOut = Event.GetEventDataMutable<FSystemicContactEventData>();	
-	return true;
+	return(Event.GetEventDataMutable<FSystemicContactEventData>());	
 }
 
 // Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
-bool USystemicCore::GetHealthEventData(FSystemicEvent& Event, FSystemicHealthEventData& EventDataOut)
+FSystemicHealthEventData& USystemicCore::GetHealthEventData(FSystemicEvent& Event)
 {
 	if(!Event.IsValidEventDataType<FSystemicHealthEventData>())
 	{
 		// Invalid event data type.
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::GetHealthEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
-		return false;
 	}
 	
-	EventDataOut = Event.GetEventDataMutable<FSystemicHealthEventData>();	
-	return true;
+	return(Event.GetEventDataMutable<FSystemicHealthEventData>());	
 }
 
 // Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
-bool USystemicCore::GetInteractionEventData(FSystemicEvent& Event, FSystemicInteractionEventData& EventDataOut)
+FSystemicInteractionEventData& USystemicCore::GetInteractionEventData(FSystemicEvent& Event)
 {
 	if(!Event.IsValidEventDataType<FSystemicInteractionEventData>())
 	{
 		// Invalid event data type.
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::GetInteractionEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
-		return false;
 	}
 	
-	EventDataOut = Event.GetEventDataMutable<FSystemicInteractionEventData>();	
-	return true;
+	return(Event.GetEventDataMutable<FSystemicInteractionEventData>());
 }
 
 // Get the event data from the passed-in Event as a FSystemicTemperatureEventData-typed struct.
-bool USystemicCore::GetTemperatureEventData(FSystemicEvent& Event, FSystemicTemperatureEventData& EventDataOut)
+FSystemicTemperatureEventData& USystemicCore::GetTemperatureEventData(FSystemicEvent& Event)
 {
 	if(!Event.IsValidEventDataType<FSystemicTemperatureEventData>())
 	{
 		// Invalid event data type.
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::GetTemperatureEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
-		return false;
 	}
 	
-	EventDataOut = Event.GetEventDataMutable<FSystemicTemperatureEventData>();	
-	return true;
+	return(Event.GetEventDataMutable<FSystemicTemperatureEventData>());
 }
 
 // Return the highest-priority rule, defaulting to RuleA if equal.
