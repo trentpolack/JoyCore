@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 
-#include "GameplayTags.h"
+#include "Systems/SystemicGameplayTags.h"
 
 #include "Systems/Conditions/SystemicCondition.h"
 
@@ -22,7 +22,7 @@ class JOYCORE_API USystemicConditionTraitQuery : public USystemicCondition
 
 protected:
 	// Name of this Condition; use for identification and organization. It does not affect functionality.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter="System.Trait"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter=TAG_System_Trait))
 	FGameplayTagQuery TraitQuery;
 
 public:

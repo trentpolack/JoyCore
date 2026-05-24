@@ -62,11 +62,11 @@ struct JOYCORE_API FSystemicEvent
 	GENERATED_BODY()
 	
 	// Gameplay tag associated with the event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter=TAG_System_Event))
 	FGameplayTag EventTag = FGameplayTag();
 	
 	// Priority tag for this event (unused right now, 4/5/26).
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event.Priority"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter=TAG_System_Event_Priority))
 	FGameplayTag Priority = TAG_System_Event_Priority_Default;
 
 	// Subject of this event.

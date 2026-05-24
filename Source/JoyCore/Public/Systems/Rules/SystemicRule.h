@@ -35,7 +35,7 @@ protected:
 	FString Description = TEXT("");
 
 	// Gameplay tags of events that can trigger a reaction.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter=TAG_System_Event))
 	FGameplayTagContainer TriggerEventTags = FGameplayTagContainer();
 
 	// List of conditions that must all pass to trigger a reaction.
@@ -47,7 +47,7 @@ protected:
 	TArray<TObjectPtr<USystemicReaction>> ReactionList;
 
 	// Priority tag for this rule.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter="System.Rule.Priority"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter=TAG_System_Rule_Priority))
 	FGameplayTag Priority = TAG_System_Rule_Priority_Default;
 
 	// Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
@@ -77,7 +77,7 @@ public:
 	 * Get a const reference to the container of triggering event tags.
 	 * @returns Container of triggering event tags.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules", meta=(GameplayTagFilter="System.Event"))
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules", meta=(GameplayTagFilter=TAG_System_Event))
 	const FGameplayTagContainer& GetTriggerEventTags() const;
 
 	/**

@@ -21,11 +21,11 @@ class JOYCORE_API USystemicReactionEmitEvent : public USystemicReaction
 
 protected:
 	// The event tag for the reaction event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter=TAG_System_Event))
 	FGameplayTag ReactionEventTag;
 
 	// The event priority for the created event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event.Priority"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter=TAG_System_Event_Priority))
 	FGameplayTag ReactionEventPriorityTag = TAG_System_Event_Priority_Default;
 
 	// The subject of the reaction event.
@@ -34,7 +34,7 @@ protected:
 	
 	// The event data struct for the reaction's event.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta = (BaseStruct = "/Script/JoyCore.FSystemicEventData"))
-	UScriptStruct* ReactionEventDataStruct = FSystemicEventData::StaticStruct();
+	FInstancedStruct ReactionEventDataStruct;
 	
 public:
 	/**
@@ -42,10 +42,10 @@ public:
 	 * @param Event Triggering event.
 	 * @param Context Cached data from the rule context.
 	 * @param Trace Trace information for debugging and logging.
-	 * @returns The created reaction event.
+	 * @param ReactionEventOut The created reaction event.
 	 */
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game|Systems|Reactions", meta = (ReturnDisplayName = "Reaction Event"))
-	FSystemicEvent CreateReactionEvent(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game|Systems|Reactions", meta = (ForceAsFunction))
+	void CreateReactionEvent(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace, FSystemicEvent& ReactionEventOut);
 	
 	// USystemicReaction.
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) override;

@@ -26,9 +26,11 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Context_Intensity_Max);            // 
  *		Events are used to trigger reactions based on a set of rules and conditions.
  */
 
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event);           // Systemic Event parent tag.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event);                            // Systemic Event parent tag.
 
 // Event Priority Tags.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority);                   // Systemic Event Priority parent tag.
+
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_Default);           // Default priority of an event (equivalent to Normal-priority).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_Low);               // Low-priority event.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Priority_Normal);            // Normal-priority event.
@@ -95,6 +97,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Rule_Priority_High);               // 
 
 // Trait Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait);                            // Systemic Trait parent tag.
+
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Breakable);                  // Can be broken.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Conductor);                  // Can be electrified.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Damageable);                 // Can be damaged.
@@ -109,6 +112,9 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_TemperatureSource);          // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Throwable);                  // Can be picked up and thrown.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_Waterproof);                 // Cannot get wet.
 
+
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State);                      // Systemic Trait State parent tag.
+
 // State Tags (Status).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Broken);               // Is broken.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Electrified);          // Is electrified.
@@ -117,7 +123,8 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Frozen);               // 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Wet);                  // Is wet.
 
 // State Tags (Lifecycle).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State);                      // Systemic Trait State parent tag.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Lifecycle);            // Systemic Trait State (Lifecycle) parent tag.
+
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Lifecycle_Alive);      // Is currently alive.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Lifecycle_Downed);     // Is downed, but not dead.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Lifecycle_Dead);       // Is dead.

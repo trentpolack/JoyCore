@@ -26,8 +26,8 @@ public:
 	 * @param Trace Trace information for debugging and logging.
 	 * @returns True if the execution is complete, false if there's an error along the way.
 	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Game|Systems|Reactions", meta = (DisplayName = "On Reaction"))
-	bool OnReaction(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Game|Systems|Reactions", meta = (DisplayName = "On Reaction", ForceAsFunction))
+	void OnReaction(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
 
 	// USystemicReaction.
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) override;

@@ -7,8 +7,8 @@
 bool USystemicReactionInvokeBlueprintEvent::Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
 {
 	// Execute the blueprint-implemented event.
-	bool bSuccess = OnReaction(Event, Context, Trace);
+	OnReaction(Event, Context, Trace);
 	
-	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(GetReactionName(), bSuccess));
-	return bSuccess;
+	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(GetReactionName(), true));
+	return true;
 }

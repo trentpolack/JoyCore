@@ -21,6 +21,8 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Context_Intensity_Max, "System.Context
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event, "System.Event", "Systemic Event parent tag.");
 
 // Event Priority Tags.
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Priority, "System.Event.Priority", "Systemic Event Priority parent tag.");
+
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Priority_Default, "System.Event.Priority.Default", "Default priority of an event (equivalent to Normal-priority)");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Priority_Low, "System.Event.Priority.Low", "Low-priority event.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Priority_Normal, "System.Event.Priority.Normal", "Normal-priority event.");
@@ -102,6 +104,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_TemperatureSource, "System.Trait
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Throwable, "System.Trait.Throwable", "Can be picked up and thrown.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Waterproof, "System.Trait.Waterproof", "Cannot get wet.");
 
+// State Tags.
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State, "System.Trait.State", "Systemic Trait State parent tag.");
 
 // State Tags (Status).
@@ -112,6 +115,8 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Frozen, "System.Trait.Stat
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Wet, "System.Trait.State.Wet", "Is wet.");
 
 // State Tags (Lifecycle).
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Lifecycle, "System.Trait.State.Lifecycle", "Systemic Trait State (Lifecycle) parent tag.");
+
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Lifecycle_Alive, "System.Trait.State.Lifecycle.Alive", "Is currently alive.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Lifecycle_Downed, "System.Trait.State.Lifecycle.Downed", "Is downed (but not dead).");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Lifecycle_Dead, "System.Trait.State.Lifecycle.Dead", "Is currently dead.");

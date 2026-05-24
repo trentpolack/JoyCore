@@ -29,7 +29,7 @@ public:
 	
 protected:
 	// Trait Tag Container.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Traits|Transient", meta=(GameplayTagFilter="System.Trait"))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Traits|Transient", meta=(GameplayTagFilter=TAG_System_Trait))
 	FGameplayTagContainer Traits = FGameplayTagContainer();
 
 	// Whether to emit object-level lifecycle events like creation/destruction (default: true).
