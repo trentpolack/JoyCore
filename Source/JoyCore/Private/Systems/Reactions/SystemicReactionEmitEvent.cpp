@@ -58,10 +58,7 @@ bool USystemicReactionEmitEvent::Execute(const FSystemicEvent& Event, FSystemicR
 	// Fill out additional context.
 	Context.NamedObjects.Add(*FString::Printf(TEXT("ReactionEmitEventActor (%s)"), *ReactionEventTag.GetTagName().ToString()), pReactionSubject);
 
-	// Emit it.
-	USystemicWorldSubsystem::EmitEvent(pReactionSubject, reactionEvent);
-
-	// Update the trace.
+	// Update the trace and emit the event.
 	Trace.RuleReactionNameAndResultList.Add(TPair<FName, bool>(GetReactionName(), true));
-	return true;
+	return(USystemicWorldSubsystem::EmitEvent(pReactionSubject, reactionEvent));
 }

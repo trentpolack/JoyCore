@@ -50,7 +50,7 @@ void USystemicCondition::GenerateNameAndDescription()
 }
 #endif
 
-// Base condition evaluation; so long as it's enabled and the data is valid it'll pass.
+// Base condition evaluation; so long as it's enabled, and the data is valid, it'll pass.
 bool USystemicCondition::Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const
 {
 	FSystemicTraceEvaluatedConditionResult result(const_cast<USystemicCondition*>(this));

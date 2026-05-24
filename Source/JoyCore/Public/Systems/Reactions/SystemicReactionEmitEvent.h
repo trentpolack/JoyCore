@@ -34,7 +34,7 @@ protected:
 	
 	// The event data struct for the reaction's event.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta = (BaseStruct = "/Script/JoyCore.SystemicEventData"))
-	FInstancedStruct ReactionEventDataStruct = FInstancedStruct(FSystemicEvent::StaticStruct());
+	FInstancedStruct ReactionEventDataStruct = FInstancedStruct(FSystemicEventData::StaticStruct());
 	
 public:
 	/**
