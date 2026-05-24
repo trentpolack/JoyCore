@@ -29,17 +29,71 @@ bool USystemicTraitComponent::EmitLifecycleEvent(const FGameplayTag& EventTag)
 	FSystemicEvent event;
 	JOYCORE_POPULATE_EVENT(event, EventTag, pOwner, pOwner, this, FSystemicEventData);
 
-	FSystemicEventData& eventData = event.EventDataInstance.GetMutable<FSystemicEventData>();
+	FSystemicEventData& eventData = event.GetEventDataMutable<FSystemicEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.Value = 0.0f;
 
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
-// Adds a trait tag to the component.
-bool USystemicTraitComponent::AddTrait(const FGameplayTag& TraitTag)
+// Broadcast OnTraitsChanged and, for state changes, also broadcast OnStateChanged.
+bool USystemicTraitComponent::BroadcastEvents(UObject* Object, const FGameplayTagContainer& TraitTags, const FGameplayTagContainer& TraitTagsNew, const FGameplayTagContainer& TraitTagsRemoved)
 {
-	if(Traits.HasTag(TraitTag))
+	// Broadcast the tag change delegate.
+	OnTraitsChanged.Broadcast(this, GetTraits(), TraitTagsNew, TraitTagsRemoved);
+	
+	// Broadcast the systemic subsystem event.
+	FSystemicEvent traitsChangedEvent;
+	JOYCORE_POPULATE_EVENT(traitsChangedEvent, TAG_System_Event_TraitsChanged, Object, Cast<AActor>(Object), this, FSystemicEventData);
+
+	// Try and get a location from the owner.
+	FVector location = FVector::ZeroVector;
+	if(const AActor* pActor = Cast<AActor>(Object))
+	{
+		// Get actor location.
+		location = pActor->GetActorLocation();
+	}
+	else if(const USceneComponent *pComponent = Cast<USceneComponent>(Object))
+	{
+		// Get the component location.
+		location = pComponent->GetComponentLocation();
+	}
+	
+	{
+		// Fill out trait change event data.
+		FSystemicEventData& eventData = traitsChangedEvent.GetEventDataMutable<FSystemicEventData>();
+		eventData.Location = location;
+		eventData.Value = 0.0f;
+	}
+	
+	// Emit the TraitsChanged event.
+	bool result = USystemicWorldSubsystem::EmitEvent(Object, traitsChangedEvent);
+	if(TraitTagsNew.HasTag(TAG_System_Trait_State) || TraitTagsRemoved.HasTag(TAG_System_Trait_State))
+	{
+		FSystemicEvent stateChangedEvent;
+		JOYCORE_POPULATE_EVENT(stateChangedEvent, TAG_System_Event_StateChanged, Object, Cast<AActor>(Object), this, FSystemicEventData);
+		
+		{
+			// Fill out state change event data.
+			FSystemicEventData& eventData = stateChangedEvent.GetEventDataMutable<FSystemicEventData>();
+			eventData.Location = location;
+			eventData.Value = 0.0f;
+		}
+		
+		// Broadcast the state change delegate.
+		OnStateChanged.Broadcast(this, GetTraits(), TraitTagsNew.Filter(FGameplayTagContainer(TAG_System_Trait_State)), TraitTagsRemoved.Filter(FGameplayTagContainer(TAG_System_Trait_State)));
+		
+		// Emit the StateChanged event.
+		result = result && USystemicWorldSubsystem::EmitEvent(Object, stateChangedEvent);
+	}
+	
+	return result;
+}
+
+// Adds a trait tag to the component.
+bool USystemicTraitComponent::AddTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent)
+{
+	if(Traits.HasTagExact(TraitTag))
 	{
 		// Already present.
 		return false;
@@ -48,45 +102,54 @@ bool USystemicTraitComponent::AddTrait(const FGameplayTag& TraitTag)
 	// Add a new trait tag.
 	Traits.AddTag(TraitTag);
 	
-	// Broadcast the tag change.
-	OnTraitsChanged.Broadcast(this, GetTraits(), FGameplayTagContainer(TraitTag));
+	if(bEmitTraitChangedEvent)
+	{
+		// Broadcast the relevant events.
+		BroadcastEvents(GetOwner(), GetTraits(), FGameplayTagContainer(TraitTag), FGameplayTagContainer());
+	}
+	
 	return true;
 }
 
 // Adds trait tags to the component.
-bool USystemicTraitComponent::AddTraits(const FGameplayTagContainer& TraitTagContainer)
+const FGameplayTagContainer USystemicTraitComponent::AddTraits(const FGameplayTagContainer& TraitTagContainer, bool bEmitTraitChangedEvent)
 {
-	FGameplayTagContainer TagsFiltered_New;
+	FGameplayTagContainer tagsFiltered_New;
 
+	// Go through the passed-in tag container and only find new tags.
 	for(const FGameplayTag& Tag : TraitTagContainer)
 	{
-		if(Traits.HasTag(Tag))
+		if(Traits.HasTagExact(Tag))
 		{
 			// Already present.
 			continue;
 		}
 
-		TagsFiltered_New.AddTag(Tag);
+		tagsFiltered_New.AddTag(Tag);
 	}
 	
-	if(TagsFiltered_New.IsEmpty())
+	if(tagsFiltered_New.IsEmpty())
 	{
 		// No new tags to add.
-		return false;
+		return(FGameplayTagContainer());
 	}
 	
 	// Append only the new tags.
-	Traits.AppendTags(TagsFiltered_New);
+	Traits.AppendTags(tagsFiltered_New);
 	
-	// Broadcast the tag change.
-	OnTraitsChanged.Broadcast(this, GetTraits(), TagsFiltered_New);
-	return true;
+	if(bEmitTraitChangedEvent)
+	{
+		// Broadcast the relevant events.
+		BroadcastEvents(GetOwner(), GetTraits(), tagsFiltered_New, FGameplayTagContainer());
+	}
+
+	return tagsFiltered_New;
 }
 
 // Removes a trait tag from the component.
-bool USystemicTraitComponent::RemoveTrait(const FGameplayTag& TraitTag)
+bool USystemicTraitComponent::RemoveTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent)
 {
-	if(!Traits.HasTag(TraitTag))
+	if(!Traits.HasTagExact(TraitTag))
 	{
 		// Tag not present.
 		return false;
@@ -94,39 +157,66 @@ bool USystemicTraitComponent::RemoveTrait(const FGameplayTag& TraitTag)
 	
 	// Remove the tag.
 	Traits.RemoveTag(TraitTag);
+
+	if(bEmitTraitChangedEvent)
+	{
+		// Broadcast the relevant events.
+		BroadcastEvents(GetOwner(), GetTraits(), FGameplayTagContainer(), FGameplayTagContainer(TraitTag));
+	}
 	
-	// Broadcast the tag change.
-	OnTraitsChanged.Broadcast(this, GetTraits(), FGameplayTagContainer(TraitTag));
 	return true;
 }
 
 // Remove trait tags from the component.
-bool USystemicTraitComponent::RemoveTraits(const FGameplayTagContainer& TraitTagContainer)
+const FGameplayTagContainer USystemicTraitComponent::RemoveTraits(const FGameplayTagContainer& TraitTagContainer, bool bEmitTraitChangedEvent)
 {
-	FGameplayTagContainer TagsFiltered_Removed;
+	FGameplayTagContainer tagsFiltered_Removed;
 
+	// Go through the passed-in tag container and only find existing tags to remove.
 	for(const FGameplayTag& Tag : TraitTagContainer)
 	{
-		if(!Traits.HasTag(Tag))
+		if(!Traits.HasTagExact(Tag))
 		{
 			// The tag is not present.
 			continue;
 		}
 
-		TagsFiltered_Removed.AddTag(Tag);
+		tagsFiltered_Removed.AddTag(Tag);
 	}
 	
-	if(TagsFiltered_Removed.IsEmpty())
+	if(tagsFiltered_Removed.IsEmpty())
 	{
 		// No matching tags to remove.
-		return false;
+		return(FGameplayTagContainer());
 	}
 	
 	// Remove only the filtered tags.
-	Traits.RemoveTags(TagsFiltered_Removed);
+	Traits.RemoveTags(tagsFiltered_Removed);
 	
-	// Broadcast the tag change.
-	OnTraitsChanged.Broadcast(this, GetTraits(), TagsFiltered_Removed);
+	if(bEmitTraitChangedEvent)
+	{
+		// Broadcast the relevant events.
+		BroadcastEvents(GetOwner(), GetTraits(), FGameplayTagContainer(), tagsFiltered_Removed);
+	}
+
+	return tagsFiltered_Removed;
+}
+
+// Add/remove traits from the current container's tags; intended for batch changes.
+bool USystemicTraitComponent::ModifyTraits(const FGameplayTagContainer& TraitTagsToAdd, const FGameplayTagContainer& TraitTagsToRemove)
+{
+	// Add/remove traits and prevent OnTraitsChanged event from being broadcast (so this method can just broadcast a single batch op).
+	FGameplayTagContainer tagsFiltered_New(AddTraits(TraitTagsToAdd, false)), tagsFiltered_Removed(RemoveTraits(TraitTagsToRemove, false));
+	
+	if(!tagsFiltered_New.IsEmpty() || !tagsFiltered_Removed.IsEmpty())
+	{
+		// No traits were changed.
+		return false;
+	}
+	
+	// Broadcast the relevant events.
+	BroadcastEvents(GetOwner(), GetTraits(), tagsFiltered_New, tagsFiltered_Removed);
+
 	return true;
 }
 

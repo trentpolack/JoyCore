@@ -24,7 +24,7 @@ public:
 	 * @param Event Triggering event.
 	 * @param Context Cached data from the rule context.
 	 * @param Trace Trace information for debugging and logging.
-	 * @return True if the execution is complete, false if there's an error along the way.
+	 * @returns True if the execution is complete, false if there's an error along the way.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game|Systems|Reactions", meta = (DisplayName = "On Reaction"))
 	bool OnReaction(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);

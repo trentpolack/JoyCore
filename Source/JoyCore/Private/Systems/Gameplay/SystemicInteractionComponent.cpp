@@ -18,7 +18,7 @@ USystemicInteractionComponent::USystemicInteractionComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-bool USystemicInteractionComponent::EmitInteractEvent(const FName& InteractionName, AActor* InstigatorActor, UObject* SourceObject)
+bool USystemicInteractionComponent::EmitInteractEvent(const FName& InteractionName, AActor* InstigatorActor, UObject* Source)
 {
 	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
@@ -29,7 +29,7 @@ bool USystemicInteractionComponent::EmitInteractEvent(const FName& InteractionNa
 
 	// Populate evnet data.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_Interacted, pOwner, InstigatorActor, SourceObject, FSystemicInteractionEventData);
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_Interacted, pOwner, InstigatorActor, Source, FSystemicInteractionEventData);
 
 	FSystemicInteractionEventData& eventData = event.EventDataInstance.GetMutable<FSystemicInteractionEventData>();
 	eventData.Location = pOwner->GetActorLocation();
@@ -44,7 +44,7 @@ bool USystemicInteractionComponent::EmitInteractEvent(const FName& InteractionNa
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
-bool USystemicInteractionComponent::Interact(const FName& InteractionName, AActor* InstigatorActor, UObject* SourceObject)
+bool USystemicInteractionComponent::Interact(const FName& InteractionName, AActor* InstigatorActor, UObject* Source)
 {
 	if(!GetIsEnabled())
 	{
@@ -54,5 +54,5 @@ bool USystemicInteractionComponent::Interact(const FName& InteractionName, AActo
 
 	// Emit the interaction event with the interaction name.
 	const FName& resolvedInteractionName = InteractionName.IsNone() ? InteractionNameDefault : InteractionName;
-	return(EmitInteractEvent(resolvedInteractionName, InstigatorActor, SourceObject));
+	return(EmitInteractEvent(resolvedInteractionName, InstigatorActor, Source));
 }

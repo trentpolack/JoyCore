@@ -9,6 +9,12 @@ const FName& USystemicRule::GetRuleName() const
 	return Name;
 }
 
+// Rule Description accessor.
+const FString& USystemicRule::GetRuleDescription() const
+{
+	return Description;
+}
+
 // Return a reference to the container of triggering event tags.
 const FGameplayTagContainer& USystemicRule::GetTriggerEventTags() const
 {

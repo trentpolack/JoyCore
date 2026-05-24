@@ -9,14 +9,14 @@
 
 #include "Systems/Conditions/SystemicCondition.h"
 
-#include "SystemicConditionHasTraitQuery.generated.h"
+#include "SystemicConditionTraitQuery.generated.h"
 
 /**
- *	USystemicConditionHasTraitQuery Class Definition.
+ *	USystemicConditionTraitQuery Class Definition.
  *		This class evaluates an event subject with the ISystemicTraitProvider interface to determine if the subject matches a specific trait query.
  */
 UCLASS()
-class JOYCORE_API USystemicConditionHasTraitQuery : public USystemicCondition
+class JOYCORE_API USystemicConditionTraitQuery : public USystemicCondition
 {
 	GENERATED_BODY()
 
@@ -26,6 +26,11 @@ protected:
 	FGameplayTagQuery TraitQuery;
 
 public:
+	/**
+	 *	USystemicConditionTraitQuery Constructor.
+	 */
+	USystemicConditionTraitQuery();
+
 	// USystemicCondition.	
 	virtual bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const override;
 	// ~USystemicCondition.

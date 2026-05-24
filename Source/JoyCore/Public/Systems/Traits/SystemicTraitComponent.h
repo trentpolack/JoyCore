@@ -12,9 +12,13 @@
 
 #include "SystemicTraitComponent.generated.h"
 
-// Delegate for broadcasting when a trait provider's traits have changed; contains the new current trait tags as well as a container with only the new tags.
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSystemicTraitSignature, UObject*, Object, const FGameplayTagContainer&, TraitTags, const FGameplayTagContainer&, TraitTagsNew);
+// Delegate for broadcasting when a trait provider's traits have changed; contains the new current trait tags, container of only new tags, and container of only removed tags.
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSystemicTraitSignature, UObject*, Object, const FGameplayTagContainer&, TraitTags, const FGameplayTagContainer&, TraitTagsNew, const FGameplayTagContainer&, TraitTagsRemoved);
 
+/**
+ *	USystemicTraitComponent Class.
+ *		Actor component that implements all the base data and functionality for ISystemicTraitProvider, provides OnTraitChanged/OnStateChanged delegates, and emits relevant events to the systemic world.
+ */
 UCLASS(Category="Game|Systems", ClassGroup=(JoyCore), Config=JoyCore, meta=(BlueprintSpawnableComponent))
 class JOYCORE_API USystemicTraitComponent : public UActorComponent, public ISystemicTraitProvider
 {
@@ -34,22 +38,38 @@ protected:
 
 protected:
 	/**
-	 *	Emit a lifecycle event; namely, creation and destruction.
+	 *	Emit an object lifecycle event; namely, creation and destruction (_not_ health-related gameplay lifecycle).
 	 *	@param EventTag Tag to emit.
-	 *	@return True if the event was successfully emitted.
+	 *	@returns True if the event was successfully emitted.
 	 */
+	UFUNCTION(Category="Game|Systems|Events", meta=(GameplayTagFilter=TAG_System_Event))
 	virtual bool EmitLifecycleEvent(const FGameplayTag& EventTag);
 
+	/**
+	 *	Broadcast OnTraitsChanged and, for state changes, also broadcast OnStateChanged.
+	 *	@param Object Object that is being changed.
+	 *	@param TraitTags Current trait tags.
+	 *	@param TraitTagsNew New trait tags.
+	 *	@param TraitTagsRemoved Removed trait tags.
+	 */
+	bool BroadcastEvents(UObject* Object, const FGameplayTagContainer& TraitTags, const FGameplayTagContainer& TraitTagsNew, const FGameplayTagContainer& TraitTagsRemoved);
+
 public:
-	// Broadcast when this component successfully receives an interaction.
-	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Traits|Events")
+	// Broadcast when this component's Traits are changed (including State changes).
+	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
 	FSystemicTraitSignature OnTraitsChanged;
-	
+
+	// Broadcast when this component's Traits are changed (excludes non-state changes).
+	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")
+	FSystemicTraitSignature OnStateChanged;
+
 	// ISystemicTraitProvider.
-	virtual bool AddTrait(const FGameplayTag& TraitTag) override;
-	virtual bool AddTraits(const FGameplayTagContainer& TraitTagContainer) override;
-	virtual bool RemoveTrait(const FGameplayTag& TraitTag) override;
-	virtual bool RemoveTraits(const FGameplayTagContainer& TraitTagContainer) override;
+	virtual bool AddTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent = true) override;
+	virtual const FGameplayTagContainer AddTraits(const FGameplayTagContainer& TraitTags, bool bEmitTraitChangedEvent = true) override;
+	virtual bool RemoveTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent = true) override;
+	virtual const FGameplayTagContainer RemoveTraits(const FGameplayTagContainer& TraitTags, bool bEmitTraitChangedEvent = true) override;
+	virtual bool ModifyTraits(const FGameplayTagContainer& TraitTagsToAdd, const FGameplayTagContainer& TraitTagsToRemove) override;
+	
 	virtual const FGameplayTagContainer& GetTraits() const override;
 	// ~ISystemicTraitComponent.
 	

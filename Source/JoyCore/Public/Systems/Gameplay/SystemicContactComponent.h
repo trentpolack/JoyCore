@@ -62,12 +62,12 @@ protected:
 	 *	Emit a systemic contact event.
 	 *	@param EventTag Gameplay tag identifying the contact event.
 	 *	@param OtherActor Actor involved in the contact.
-	 *	@param SourceObject Object responsible for the contact event.
+	 *	@param Source Object responsible for the contact event.
 	 *	@param HitResult Hit result structure filled out from the contact event.
 	 *	@param Magnitude General-purpose magnitude/value associated with the contact event.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Contact", meta=(GameplayTagFilter="System.Event"))
-	virtual bool EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude);
+	virtual bool EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* Source, const FHitResult& HitResult, float Magnitude);
 
 	/**
 	 *	Handle a hit notification from the observed primitive component.
@@ -124,7 +124,7 @@ public:
 
 	/**
 	 *	Get the primitive component loosely bound to this component.
-	 *	@return Primitive component being listened to.
+	 *	@returns Primitive component being listened to.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Contact")
 	UPrimitiveComponent* GetCollisionComponent() const;

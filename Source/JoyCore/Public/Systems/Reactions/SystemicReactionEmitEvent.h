@@ -42,7 +42,7 @@ public:
 	 * @param Event Triggering event.
 	 * @param Context Cached data from the rule context.
 	 * @param Trace Trace information for debugging and logging.
-	 * @return The created reaction event.
+	 * @returns The created reaction event.
 	 */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game|Systems|Reactions", meta = (ReturnDisplayName = "Reaction Event"))
 	FSystemicEvent CreateReactionEvent(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);

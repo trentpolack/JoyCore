@@ -41,11 +41,11 @@ protected:
 	 *	Emit an interact event.
 	 *	@param InteractionName Name of the interaction to emit.
 	 *	@param InstigatorActor Actor responsible for the change.
-	 *	@param SourceObject Object responsible for the change.
-	 *	@return Returns true if the event is successfully emitted.
+	 *	@param Source Object responsible for the change.
+	 *	@returns Returns true if the event is successfully emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Interaction")
-	virtual bool EmitInteractEvent(const FName& InteractionName, AActor* InstigatorActor, UObject* SourceObject);
+	virtual bool EmitInteractEvent(const FName& InteractionName, AActor* InstigatorActor, UObject* Source);
 
 public:
 	// Broadcast when this component successfully receives an interaction.
@@ -61,7 +61,7 @@ public:
 
 	/**
 	 *	Check whether this component currently accepts and emits interactions.
-	 *	@return True if enabled, false otherwise.
+	 *	@returns True if enabled, false otherwise.
 	 */
 	UFUNCTION(BlueprintPure, Category="Game|Systems|Interaction")
 	bool GetIsEnabled() const { return bEnabled; }
@@ -70,9 +70,9 @@ public:
 	 *	Attempt to interact with this component.
 	 *	@param InteractionName Interaction name to emit; uses DefaultInteractionName when NAME_None.
 	 *	@param InstigatorActor Actor responsible for the interaction.
-	 *	@param SourceObject Object responsible for the interaction.
-	 *	@return True if the interaction was successful and the event was emitted.
+	 *	@param Source Object responsible for the interaction.
+	 *	@returns True if the interaction was successful and the event was emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Interaction")
-	virtual bool Interact(const FName& InteractionName = NAME_None, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
+	virtual bool Interact(const FName& InteractionName = NAME_None, AActor* InstigatorActor = nullptr, UObject* Source = nullptr);
 };

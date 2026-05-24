@@ -14,18 +14,18 @@
 
 #include "SystemicEvent.generated.h"
 
-#define JOYCORE_POPULATE_EVENT(Event, EventTagIn, OwnerIn, InstigatorActorIn, SourceObjectIn, EventDataTypeIn)		\
+#define JOYCORE_POPULATE_EVENT(Event, EventTagIn, OwnerIn, InstigatorActorIn, SourceIn, EventDataTypeIn)		\
 	Event.EventTag = EventTagIn;									\
 	Event.Target = OwnerIn;											\
 	Event.Instigator = InstigatorActorIn;							\
-	Event.SourceObject = SourceObjectIn ? SourceObjectIn : this;	\
+	Event.Source = SourceIn ? SourceIn : this;						\
 	Event.EventDataInstance.InitializeAs<EventDataTypeIn>()
 
-#define JOYCORE_POPULATE_EVENT_CONSTRUCTOR_ARGLIST(Event, EventTagIn, OwnerIn, InstigatorActorIn, SourceObjectIn, EventDataTypeIn, ...)		\
+#define JOYCORE_POPULATE_EVENT_CONSTRUCTOR_ARGLIST(Event, EventTagIn, OwnerIn, InstigatorActorIn, SourceIn, EventDataTypeIn, ...)		\
 	Event.EventTag = EventTagIn;									\
 	Event.Target = OwnerIn;											\
 	Event.Instigator = InstigatorActorIn;							\
-	Event.SourceObject = SourceObjectIn ? SourceObjectIn : this;	\
+	Event.Source = SourceIn ? SourceIn : this;						\
 	Event.EventDataInstance.InitializeAs<EventDataTypeIn>(__VA_ARGS__)
 
 /**
@@ -34,7 +34,7 @@
 UENUM(BlueprintType, Category="Game|Systems")
 enum class ESystemicEventSubject : uint8
 {
-	SourceObject,
+	Source,
 	Instigator,
 	Target
 };
@@ -83,12 +83,12 @@ struct JOYCORE_API FSystemicEvent
 	// Target of the event, if there is one.
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
 	TWeakObjectPtr<UObject> Target = nullptr;
-	// Source object that caused the event (for general-purpose coverage beyond actors). 
+	// Source that caused the event (for general-purpose coverage beyond actors). 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
-	TWeakObjectPtr<UObject> SourceObject = nullptr;
+	TWeakObjectPtr<UObject> Source = nullptr;
 	// Instance of the EventDataStruct.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
-	TInstancedStruct<FSystemicEventData> EventDataInstance;
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta = (BaseStruct = "/Script/JoyCore.SystemicEventData"))
+	FInstancedStruct EventDataInstance;
 
 public:
 	/**
@@ -97,14 +97,32 @@ public:
 	FSystemicEvent()
 	{
 	}
-	
+
 	/**
-	 *	Accessor for the FSystemicEventData instance.
-	 *	@return Reference to the event data instance.
+	 *	Check if the event data is valid for the specified type.
+	 *	@returns True if the event data is valid for the specified type, false otherwise.
 	 */
 	template <typename T>
-	FORCEINLINE T& GetEventData()
+	FORCEINLINE bool IsValidEventDataType() const
 	{
-		return *(CastChecked<T>(EventDataInstance));
+		return(EventDataInstance.GetPtr<T>() != nullptr);
+	}
+
+	/**
+	 *	Templated accessor for the FSystemicEventData instance.
+	 *	@returns Reference to the event data instance.
+	 */
+	template <typename T>
+	FORCEINLINE T& GetEventDataMutable()
+	{
+		ensure(EventDataInstance.IsValid());
+		return EventDataInstance.GetMutable<T>();
+	}
+
+	template <typename T>
+	FORCEINLINE const T& GetEventData() const
+	{
+		ensure(EventDataInstance.IsValid());
+		return EventDataInstance.Get<T>();
 	}
 };

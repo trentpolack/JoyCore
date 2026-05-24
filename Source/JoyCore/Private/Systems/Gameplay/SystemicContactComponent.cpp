@@ -49,7 +49,7 @@ void USystemicContactComponent::HandleOverlapEnd(UPrimitiveComponent* Overlapped
 }
 
 // Emit a systemic contact event with contact-specific event data.
-bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* SourceObject, const FHitResult& HitResult, float Magnitude)
+bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, AActor* OtherActor, UObject* Source, const FHitResult& HitResult, float Magnitude)
 {
 	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner) || (OtherActor == pOwner))
@@ -59,11 +59,12 @@ bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, A
 	}
 
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT_CONSTRUCTOR_ARGLIST(event, EventTag, pOwner, OtherActor, (SourceObject ? SourceObject : this), FSystemicContactEventData, HitResult);
+	JOYCORE_POPULATE_EVENT_CONSTRUCTOR_ARGLIST(event, EventTag, pOwner, OtherActor, (Source ? Source : this), FSystemicContactEventData, HitResult);
 
-	FSystemicContactEventData& eventData = event.EventDataInstance.GetMutable<FSystemicContactEventData>();
+	FSystemicContactEventData& eventData = event.GetEventDataMutable<FSystemicContactEventData>();
 	eventData.Location = HitResult.Location;
 	eventData.Value = Magnitude;
+	eventData.HitResult = HitResult;
 
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
@@ -71,7 +72,13 @@ bool USystemicContactComponent::EmitContactEvent(const FGameplayTag& EventTag, A
 // Set the collision component and setup the event bindings (and unbind if necessary).
 void USystemicContactComponent::SetCollisionComponent(UPrimitiveComponent* Component)
 {
-	if(IsValid(CollisionComponent) && bCollisionEventsBound)
+	if(bCollisionEventsBound && (CollisionComponent == Component))
+	{
+		// Unnecessary set; the events are already bound to the correct component.
+		return;
+	}
+	
+	if(IsValid(CollisionComponent) && bCollisionEventsBound && (CollisionComponent != Component))
 	{
 		// Unbind the current events.
 		CollisionComponent->OnComponentHit.RemoveDynamic(this, &USystemicContactComponent::HandleHit);
@@ -120,7 +127,7 @@ void USystemicContactComponent::BeginPlay()
 	
 	if(!bCollisionEventsBound && IsValid(CollisionComponent))
 	{
-		// Set the collision component in order to set the event bindings.
+		// Set the collision component for its event bindings.
 		SetCollisionComponent(CollisionComponent);
 	}
 }

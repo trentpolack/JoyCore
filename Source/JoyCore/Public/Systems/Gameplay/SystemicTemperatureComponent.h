@@ -62,21 +62,21 @@ protected:
 	 *	@param TemperaturePrevious Temperature before the change.
 	 *	@param TemperatureDelta Temperature delta applied.
 	 *	@param InstigatorActor Actor responsible for the change.
-	 *	@param SourceObject Object responsible for the change.
-	 *	@return Returns true if the event is successfully emitted.
+	 *	@param Source Object responsible for the change.
+	 *	@returns Returns true if the event is successfully emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature")
-	virtual bool EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* SourceObject);
+	virtual bool EmitTemperatureEvent(float TemperatureNew, float TemperaturePrevious, float TemperatureDelta, AActor* InstigatorActor, UObject* Source);
 
 	/**
 	 *	Emit a systemic temperature state event.
 	 *	@param EventTag Gameplay tag identifying the state event.
 	 *	@param InstigatorActor Actor responsible for the state change.
-	 *	@param SourceObject Object responsible for the state change.
-	 *	@return Returns true if the event is successfully emitted.
+	 *	@param Source Object responsible for the state change.
+	 *	@returns Returns true if the event is successfully emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature", meta=(GameplayTagFilter="System.Trait.State"))
-	virtual bool EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject);
+	virtual bool EmitStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* Source);
 
 public:
 	// Broadcast when this component's temperature changes.
@@ -95,15 +95,15 @@ public:
 	 *	Set this component's temperature.
 	 *	@param TemperatureIn New temperature value.
 	 *	@param InstigatorActor Actor responsible for the change.
-	 *	@param SourceObject Object responsible for the change.
-	 *	@return The temperature after modification.
+	 *	@param Source Object responsible for the change.
+	 *	@returns The temperature after modification.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Temperature")
-	float SetTemperature(float TemperatureIn, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
+	float SetTemperature(float TemperatureIn, AActor* InstigatorActor = nullptr, UObject* Source = nullptr);
 
 	/**
 	 *	Get this component's current temperature.
-	 *	@return Current temperature value.
+	 *	@returns Current temperature value.
 	 */
 	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature")
 	float GetTemperature() const { return Temperature; }
@@ -112,22 +112,22 @@ public:
 	 *	Apply a temperature delta to this component.
 	 *	@param TemperatureDelta Temperature delta to apply.
 	 *	@param InstigatorActor Actor responsible for the change.
-	 *	@param SourceObject Object responsible for the change.
-	 *	@return New temperature value.
+	 *	@param Source Object responsible for the change.
+	 *	@returns New temperature value.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
-	float ModifyTemperature(float TemperatureDelta, AActor* InstigatorActor = nullptr, UObject* SourceObject = nullptr);
+	float ModifyTemperature(float TemperatureDelta, AActor* InstigatorActor = nullptr, UObject* Source = nullptr);
 
 	/**
 	 *	Check whether this component is currently ignited.
-	 *	@return True if ignited, false otherwise.
+	 *	@returns True if ignited, false otherwise.
 	 */
 	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature", meta=(GameplayTagFilter="System.Trait.State"))
 	bool IsIgnited() const { return(GetTraitProvider()->HasTrait(TAG_System_Trait_State_Ignited)); }
 
 	/**
 	 *	Check whether this component is currently frozen.
-	 *	@return True if frozen, false otherwise.
+	 *	@returns True if frozen, false otherwise.
 	 */
 	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature")
 	bool IsFrozen() const { return(GetTraitProvider()->HasTrait(TAG_System_Trait_State_Frozen)); }

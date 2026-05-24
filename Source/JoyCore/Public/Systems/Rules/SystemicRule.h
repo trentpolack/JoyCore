@@ -30,6 +30,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
 	FName Name = NAME_None;
 
+	// Description of this rule, providing context and purpose.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
+	FString Description = TEXT("");
+
 	// Gameplay tags of events that can trigger a reaction.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter="System.Event"))
 	FGameplayTagContainer TriggerEventTags = FGameplayTagContainer();
@@ -56,48 +60,55 @@ protected:
 
 public:
 	/**
-	 * Rule name accessor.
-	 * @return Name of this rule.
+	 * Rule Name accessor.
+	 * @returns Name of this rule.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	const FName& GetRuleName() const;
 
 	/**
+	 * Rule Description accessor.
+	 * @returns Description for this rule.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
+	const FString& GetRuleDescription() const;
+
+	/**
 	 * Get a const reference to the container of triggering event tags.
-	 * @return Container of triggering event tags.
+	 * @returns Container of triggering event tags.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules", meta=(GameplayTagFilter="System.Event"))
 	const FGameplayTagContainer& GetTriggerEventTags() const;
 
 	/**
 	 * Get a const reference to the list of conditions for this rule.
-	 * @return List of conditions for this rule.
+	 * @returns List of conditions for this rule.
 	 */
 	const TArray<TObjectPtr<USystemicCondition>>& GetConditionList() const;
 
 	/**
 	 * Get a const reference to the list of reactions for this rule.
-	 * @return List of reactions for this rule.
+	 * @returns List of reactions for this rule.
 	 */
 	const TArray<TObjectPtr<USystemicReaction>>& GetReactionList() const;
 
 	/**
 	 * Get the priority tag for this rule.
-	 * @return Priority tag for this rule.
+	 * @returns Priority tag for this rule.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	const FGameplayTag& GetPriority() const;
 	
 	/**
 	 * Get the cooldown for this rule.
-	 * @return Cooldown for this rule.
+	 * @returns Cooldown for this rule.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	float GetCooldown() const;
 
 	/**
 	 * Get the state of this rule.
-	 * @return Returns true if the rule is enabled.
+	 * @returns Returns true if the rule is enabled.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules")
 	bool GetIsEnabled() const;

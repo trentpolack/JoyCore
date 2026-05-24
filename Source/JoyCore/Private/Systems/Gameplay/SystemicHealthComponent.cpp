@@ -8,7 +8,6 @@
 
 #include "Systems/Traits/ISystemicTraitProvider.h"
 
-#include "Systems/SystemicGameplayTags.h"
 #include "Systems/SystemicWorldSubsystem.h"
 
 #include "Systems/Events/EventData/SystemicHealthEventData.h"
@@ -38,7 +37,10 @@ void USystemicHealthComponent::BeginPlay()
 	
 	// Set the alive state and ensure the response is true (indicating it wasn't already set).
 	TScriptInterface<ISystemicTraitProvider> pTraitProvider = GetTraitProvider();
-	ensure(pTraitProvider->AddTrait(TAG_System_Trait_State_Alive));
+	ensure(pTraitProvider->AddTrait(TAG_System_Trait_State_Lifecycle_Alive));
+	
+	// Broadcast the general lifecycle state change.
+	OnLifecycleChanged.Broadcast(TAG_System_Trait_State_Lifecycle_Alive, GetOwner(), this);
 	
 	// Broadcast the Spawn event.
 	OnSpawned.Broadcast(GetOwner(), this);
@@ -61,7 +63,7 @@ void USystemicHealthComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 // Engine damage response.
-void USystemicHealthComponent::HandleTakeDamage(AActor* Actor, float Damage, const UDamageType* DamageType, AController* InstigatorActor, AActor* DamageCauser)
+void USystemicHealthComponent::HandleTakeDamage(AActor* Actor, const float Damage, const UDamageType* DamageType, AController* InstigatorActor, AActor* DamageCauser)
 {
 	if(FMath::IsNearlyZero(Damage))
 	{
@@ -69,13 +71,13 @@ void USystemicHealthComponent::HandleTakeDamage(AActor* Actor, float Damage, con
 		return;
 	}
 	
-	// Get the instigator and invoke ::ModifyHealth.
-	AActor* pInstigator = IsValid(InstigatorActor) ? InstigatorActor->GetPawn() : nullptr;
+	// Get the instigator and invoke ::ModifyHealth (fall back on DamageCauser if the instigator is invalid).
+	AActor* pInstigator = IsValid(InstigatorActor) ? InstigatorActor->GetPawn() : DamageCauser;
 	ModifyHealth(-Damage, pInstigator, DamageCauser);
 }
 
 // Emit a health change event.
-bool USystemicHealthComponent::EmitHealthEvent(float HealthNew, float HealthPrevious, float HealthDelta, AActor* InstigatorActor, UObject* SourceObject)
+bool USystemicHealthComponent::EmitHealthEvent(const float HealthNew, const float HealthPrevious, const float HealthDelta, AActor* InstigatorActor, UObject* Source)
 {
 	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
@@ -86,9 +88,9 @@ bool USystemicHealthComponent::EmitHealthEvent(float HealthNew, float HealthPrev
 
 	// Populate event data.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthChanged, pOwner, InstigatorActor, SourceObject, FSystemicHealthEventData);
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthChanged, pOwner, InstigatorActor, Source, FSystemicHealthEventData);
 
-	FSystemicHealthEventData& eventData = event.EventDataInstance.GetMutable<FSystemicHealthEventData>();
+	FSystemicHealthEventData& eventData = event.GetEventDataMutable<FSystemicHealthEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.HealthNew = HealthNew;
 	eventData.HealthPrevious = HealthPrevious;
@@ -98,7 +100,7 @@ bool USystemicHealthComponent::EmitHealthEvent(float HealthNew, float HealthPrev
 }
 
 // Emit a health max change event.
-bool USystemicHealthComponent::EmitHealthMaxEvent(float HealthMaxNew, float HealthMaxPrevious, float HealthMaxDelta, AActor* InstigatorActor, UObject* SourceObject)
+bool USystemicHealthComponent::EmitHealthMaxEvent(const float HealthMaxNew, const float HealthMaxPrevious, const float HealthMaxDelta, AActor* InstigatorActor, UObject* Source)
 {
 	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
@@ -109,9 +111,9 @@ bool USystemicHealthComponent::EmitHealthMaxEvent(float HealthMaxNew, float Heal
 
 	// Populate event data.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthMaxChanged, pOwner, InstigatorActor, SourceObject, FSystemicHealthEventData);
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthMaxChanged, pOwner, InstigatorActor, Source, FSystemicHealthEventData);
 
-	FSystemicHealthEventData& eventData = event.EventDataInstance.GetMutable<FSystemicHealthEventData>();
+	FSystemicHealthEventData& eventData = event.GetEventDataMutable<FSystemicHealthEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.HealthNew = HealthMaxNew;
 	eventData.HealthPrevious = HealthMaxPrevious;
@@ -121,7 +123,7 @@ bool USystemicHealthComponent::EmitHealthMaxEvent(float HealthMaxNew, float Heal
 }
 
 // Emit a lifecycle change event.
-bool USystemicHealthComponent::EmitLifeStateEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* SourceObject)
+bool USystemicHealthComponent::EmitLifecycleEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* Source)
 {
 	AActor* pOwner = GetOwner();
 	if(!IsValid(pOwner))
@@ -132,17 +134,20 @@ bool USystemicHealthComponent::EmitLifeStateEvent(const FGameplayTag& EventTag, 
 
 	// Populate event data.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, EventTag, pOwner, InstigatorActor, SourceObject, FSystemicEventData);
+	JOYCORE_POPULATE_EVENT(event, EventTag, pOwner, InstigatorActor, Source, FSystemicEventData);
 
-	FSystemicEventData& eventData = event.EventDataInstance.GetMutable<FSystemicEventData>();
+	FSystemicEventData& eventData = event.GetEventDataMutable<FSystemicEventData>();
 	eventData.Location = pOwner->GetActorLocation();
 	eventData.Value = GetHealth();
+	
+	// Broadcast the general lifecycle state change.
+	OnLifecycleChanged.Broadcast(EventTag, InstigatorActor, Source);
 
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
 }
 
 // Set the current health.
-float USystemicHealthComponent::SetHealth(float HealthIn, AActor* InstigatorActor, UObject* SourceObject)
+float USystemicHealthComponent::SetHealth(const float HealthIn, AActor* InstigatorActor, UObject* Source)
 {
 	TScriptInterface<ISystemicTraitProvider> pTraitProvider = GetTraitProvider();
 
@@ -152,7 +157,7 @@ float USystemicHealthComponent::SetHealth(float HealthIn, AActor* InstigatorActo
 
 	// Get the delta and see if there's any need for further logic (unless in the downed state in which case it's a killing change).
 	const float healthDelta = FMath::Clamp(clampedHealthIn, 0.0f, GetHealthMax()) - healthPrevious;
-	if(!pTraitProvider->HasTrait(TAG_System_Trait_State_Downed) && (FMath::IsNearlyZero(healthDelta) || pTraitProvider->HasTrait(TAG_System_Trait_State_Dead)))
+	if(!pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Downed) && (FMath::IsNearlyZero(healthDelta) || pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Dead)))
 	{
 		// No need for additional logic; health is either unchanged or this object is already dead.
 		return Health;
@@ -160,38 +165,38 @@ float USystemicHealthComponent::SetHealth(float HealthIn, AActor* InstigatorActo
 
 	// Assign the new health and emit the health changed events. 
 	Health = clampedHealthIn;
-	EmitHealthEvent(Health, healthPrevious, healthDelta, InstigatorActor, SourceObject);
+	EmitHealthEvent(Health, healthPrevious, healthDelta, InstigatorActor, Source);
 
 	// Broadcast the change.
-	OnHealthChanged.Broadcast(healthPrevious, Health, healthDelta, InstigatorActor, SourceObject);
+	OnHealthChanged.Broadcast(healthPrevious, Health, healthDelta, InstigatorActor, Source);
 
 	// Handle health-related state logic.
-	if((Health <= 0.0f) && pTraitProvider->HasTrait(TAG_System_Trait_State_Alive))
+	if((Health <= 0.0f) && pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Alive))
 	{
-		// Remove the alive state; owner is either Downed or Dead.
-		pTraitProvider->RemoveTrait(TAG_System_Trait_State_Alive);
-
 		// Time for some death logic.
-		if(bDownedStateSupported && !pTraitProvider->HasTrait(TAG_System_Trait_State_Downed))
+		if(bDownedStateSupported && !pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Downed))
 		{
 			// The Downed interim state before Death is supported; update the state and emit the downed event.
-			pTraitProvider->AddTrait(TAG_System_Trait_State_Downed);
+			pTraitProvider->ModifyTraits(FGameplayTagContainer(TAG_System_Trait_State_Lifecycle_Downed), FGameplayTagContainer(TAG_System_Trait_State_Lifecycle_Alive));
 			
-			EmitLifeStateEvent(TAG_System_Event_Downed, InstigatorActor, SourceObject);
+			EmitLifecycleEvent(TAG_System_Event_Lifecycle_Downed, InstigatorActor, Source);
 			
 			// Broadcast the Downed event.
-			OnDowned.Broadcast(InstigatorActor, SourceObject);
+			OnDowned.Broadcast(InstigatorActor, Source);
 		}
-		else if((!bDownedStateSupported || pTraitProvider->HasTrait(TAG_System_Trait_State_Downed)) && !pTraitProvider->HasTrait(TAG_System_Trait_State_Dead))
+		else if((!bDownedStateSupported || pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Downed)) && !pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Dead))
 		{
-			// Further damage has been received while downed or the downed state is not supported; kill the owner.
-			pTraitProvider->RemoveTrait(TAG_System_Trait_State_Downed);	// In case it was downed.
-			pTraitProvider->AddTrait(TAG_System_Trait_State_Dead);		// Now mark dead.
+			// Further damage has been received while downed, or the downed state is not supported; kill the owner.
+			{
+				FGameplayTagContainer removeTags(TAG_System_Trait_State_Lifecycle_Downed);
+				removeTags.AddTag(TAG_System_Trait_State_Lifecycle_Alive);
+				pTraitProvider->ModifyTraits(FGameplayTagContainer(TAG_System_Trait_State_Lifecycle_Dead), removeTags);
+			}
 
-			EmitLifeStateEvent(TAG_System_Event_Killed, InstigatorActor, SourceObject);
+			EmitLifecycleEvent(TAG_System_Event_Lifecycle_Killed, InstigatorActor, Source);
 			
 			// Broadcast the Killed event.
-			OnKilled.Broadcast(InstigatorActor, SourceObject);
+			OnKilled.Broadcast(InstigatorActor, Source);
 			
 			if(bDestroyOwnerOnKilled)
 			{
@@ -204,27 +209,29 @@ float USystemicHealthComponent::SetHealth(float HealthIn, AActor* InstigatorActo
 				}
 			}
 		}
+		else
+		{
+			// No batch tag change operation; remove the single Alive trait.
+			pTraitProvider->RemoveTrait(TAG_System_Trait_State_Lifecycle_Alive);
+		}
 	}
-	else if((Health > 0.0f) && !pTraitProvider->HasTrait(TAG_System_Trait_State_Alive))
+	else if((Health > 0.0f) && !pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Alive))
 	{
 		// The owner is alive. Do a check to ensure that the player was downed and not dead.
-		ensure(pTraitProvider->HasTrait(TAG_System_Trait_State_Downed) && !pTraitProvider->HasTrait(TAG_System_Trait_State_Dead));
-		pTraitProvider->RemoveTrait(TAG_System_Trait_State_Downed);	// Remove the downed state.
-
-		// Add the alive state back.
-		pTraitProvider->AddTrait(TAG_System_Trait_State_Alive);
-
+		ensure(pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Downed) && !pTraitProvider->HasTrait(TAG_System_Trait_State_Lifecycle_Dead));
+		pTraitProvider->ModifyTraits(FGameplayTagContainer(TAG_System_Trait_State_Lifecycle_Alive), FGameplayTagContainer(TAG_System_Trait_State_Lifecycle_Downed));
+		
 		// Emit the revival event.
-		EmitLifeStateEvent(TAG_System_Event_Revived, InstigatorActor, SourceObject);
+		EmitLifecycleEvent(TAG_System_Event_Lifecycle_Revived, InstigatorActor, Source);
 
-		// Broadcast the revive event.
-		OnRevived.Broadcast(InstigatorActor, SourceObject);
+		// Broadcast the revival event.
+		OnRevived.Broadcast(InstigatorActor, Source);
 	}
 	
 	return Health;
 }
 
-float USystemicHealthComponent::SetHealthMax(float HealthMaxIn, AActor* InstigatorActor, UObject* SourceObject)
+float USystemicHealthComponent::SetHealthMax(float HealthMaxIn, AActor* InstigatorActor, UObject* Source)
 {
 	// Set the new maximum health value (no need for an event).
 	const float healthMaxPrevious = HealthMax;
@@ -240,19 +247,19 @@ float USystemicHealthComponent::SetHealthMax(float HealthMaxIn, AActor* Instigat
 	if(Health > HealthMax)
 	{
 		// Health needs to be modified to fit within the new maximum.
-		SetHealth(Health, InstigatorActor, SourceObject);
+		SetHealth(Health, InstigatorActor, Source);
 	}
 	
 	// Emit the health changed event.
-	EmitHealthMaxEvent(HealthMax, healthMaxPrevious, healthMaxDelta, InstigatorActor, SourceObject);
+	EmitHealthMaxEvent(HealthMax, healthMaxPrevious, healthMaxDelta, InstigatorActor, Source);
 
 	// Broadcast the change.
-	OnHealthMaxChanged.Broadcast(HealthMax, healthMaxPrevious, healthMaxDelta, InstigatorActor, SourceObject);
+	OnHealthMaxChanged.Broadcast(HealthMax, healthMaxPrevious, healthMaxDelta, InstigatorActor, Source);
 	return HealthMax;
 }
 
 // Modify and set the health.
-float USystemicHealthComponent::ModifyHealth(float HealthDelta, AActor* InstigatorActor, UObject* SourceObject)
+float USystemicHealthComponent::ModifyHealth(float HealthDelta, AActor* InstigatorActor, UObject* Source)
 {
-	return(SetHealth(GetHealth() + HealthDelta, InstigatorActor, SourceObject));
+	return(SetHealth(GetHealth() + HealthDelta, InstigatorActor, Source));
 }

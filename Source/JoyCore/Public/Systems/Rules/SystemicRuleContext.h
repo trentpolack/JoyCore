@@ -23,7 +23,7 @@ struct JOYCORE_API FSystemicRuleContext
 	TWeakObjectPtr<UObject> Target = nullptr;
 	// Source object that caused the event (for general-purpose coverage beyond actors). 
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "RuleContext|Transient")
-	TWeakObjectPtr<UObject> SourceObject = nullptr;
+	TWeakObjectPtr<UObject> Source = nullptr;
 
 	// Cache of named objects throughout the evaluation of a ruleset and reaction. 
 	UPROPERTY(BlueprintReadOnly, Transient, VisibleInstanceOnly, AdvancedDisplay, Category = "RuleContext|Transient")

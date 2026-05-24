@@ -25,12 +25,12 @@ FSystemicEvent USystemicReactionEmitEvent::CreateReactionEvent_Implementation(co
 	reactionEvent.EventTag = ReactionEventTag;
 	reactionEvent.Priority = ReactionEventPriorityTag;
 	reactionEvent.Subject = ReactionEventSubject;
-	reactionEvent.SourceObject = IsValid(pObject) ? pObject : Cast<UObject>(this);
+	reactionEvent.Source = IsValid(pObject) ? pObject : Cast<UObject>(this);
 	reactionEvent.Instigator = Event.Instigator;
 	reactionEvent.Target = USystemicCore::GetEventObjectBySubject(Event, ReactionEventSubject);
 
 	// Base level implementation can only fill in the basic data (FSystemicEventData properties).
-	reactionEvent.EventDataInstance.InitializeAsScriptStruct(ReactionEventDataStruct ? ReactionEventDataStruct : FSystemicEventData::StaticStruct());
+	reactionEvent.EventDataInstance.InitializeAs(ReactionEventDataStruct ? ReactionEventDataStruct : FSystemicEventData::StaticStruct());
 
 	const FSystemicEventData& eventData = Event.EventDataInstance.Get<FSystemicEventData>();
 	FSystemicEventData& reactionEventData = reactionEvent.EventDataInstance.GetMutable<FSystemicEventData>();

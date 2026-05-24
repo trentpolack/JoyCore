@@ -135,7 +135,7 @@ bool USystemicWorldSubsystem::EvaluateRule(USystemicRule* Rule, const FSystemicE
 	// Fill out the rule context.
 	RuleContextOut.Instigator = Event.Instigator;
 	RuleContextOut.Target = Event.Target;
-	RuleContextOut.SourceObject = Event.SourceObject;
+	RuleContextOut.Source = Event.Source;
 	
 	for(const USystemicCondition* pCondition : Rule->GetConditionList())
 	{

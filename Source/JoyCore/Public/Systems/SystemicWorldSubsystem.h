@@ -100,7 +100,7 @@ protected:
 	 * Process a systemic event.
 	 * @param Event The event to process.
 	 * @param bIgnoreRuleCooldowns Whether to ignore cooldowns when finding matching rules (defaults to false).
-	 * @return True if the event was successfully processed, false otherwise.
+	 * @returns True if the event was successfully processed, false otherwise.
 	 */
 	UFUNCTION(Category="Game|Systems")
 	virtual bool ProcessSystemicEvent(const FSystemicEvent& Event, const bool bIgnoreRuleCooldowns = false);
@@ -111,7 +111,7 @@ protected:
 	 * @param Event The event to execute the rule against.
 	 * @param Trace The trace instance to fill out while evaluating the rule.
 	 * @param RuleContextOut The rule context to fill out while evaluating the rule.
-	 * @return True if the rule was successfully evaluated, false otherwise.
+	 * @returns True if the rule was successfully evaluated, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual bool EvaluateRule(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicTrace& Trace, FSystemicRuleContext& RuleContextOut) const;
@@ -123,7 +123,7 @@ protected:
 	 * @param Event The triggering event.
 	 * @param RuleContext The rule context filled out while evaluating the rule.
 	 * @param Trace The trace instance to fill out while executing the rule's reactions.
-	 * @return True if all reactions executed successfully, false if any reaction failed to execute.
+	 * @returns True if all reactions executed successfully, false if any reaction failed to execute.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual bool ExecuteReactions(USystemicRule* Rule, const FSystemicEvent& Event, FSystemicRuleContext& RuleContext, FSystemicTrace& Trace) const;
@@ -131,7 +131,7 @@ protected:
 	/**
 	 * Find rules matching the event tag.
 	 * @param EventTag The tag of the event to find matching rules for.
-	 * @return An array of pointers to rules matching the event tag.
+	 * @returns An array of pointers to rules matching the event tag.
 	 */
 	TArray<FSystemicRuleRuntimeData*> FindMatchingRules(const FGameplayTag& EventTag);
 
@@ -139,7 +139,7 @@ public:
 	/**
 	 *	Emit an event to the systemic world subsystem.
 	 *	@param Event The event to emit.
-	 *	@return True if the event was successfully emitted.
+	 *	@returns True if the event was successfully emitted.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual bool EmitEvent(const FSystemicEvent& Event);
@@ -148,14 +148,14 @@ public:
 	 * Static version of EmitEvent. Allows for blueprint exposure without needing to get a reference to the subsystem.
 	 * @param WorldContextObj World context object pointer.
 	 * @param Event Event to emit.
-	 * @return True if the event was successfully emitted.
+	 * @returns True if the event was successfully emitted.
 	 */
 	static bool EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event);
 
 	/**
 	 * Register a Rule Asset with the subsystem (and add it to the rule cache).
 	 * @param RuleIn The Rule Asset to register.
-	 * @return Returns true if the registration was successful.
+	 * @returns Returns true if the registration was successful.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	virtual bool RegisterRule(USystemicRule* RuleIn);

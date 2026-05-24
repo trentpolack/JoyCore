@@ -7,8 +7,8 @@
 
 #include "UObject/Object.h"
 
-#include "Systems/Events/SystemicEvent.h"
 #include "Systems/SystemicTrace.h"
+#include "Systems/Events/SystemicEvent.h"
 
 #include "SystemicReaction.generated.h"
 
@@ -26,14 +26,14 @@ class JOYCORE_API USystemicReaction : public UObject
 	GENERATED_BODY()
 
 protected:
-	// Name of this Reaction; use for identification and organization. It does not affect functionality.
+	// Name of this Reaction; used for identification and organization. It does not affect functionality.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reaction|Config")
 	FName ReactionName = NAME_None;
 
 public:
 	/**
 	 * Accessor for the reaction name.
-	 * @return The name of this reaction.
+	 * @returns The name of this reaction.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reactions")
 	const FName& GetReactionName() const;
@@ -43,7 +43,7 @@ public:
 	 * @param Event Triggering event.
 	 * @param Context Cached data from the rule context.
 	 * @param Trace Trace information for debugging and logging.
-	 * @return True if the execution is complete, false if there's an error along the way.
+	 * @returns True if the execution is complete, false if there's an error along the way.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reactions")
 	virtual bool Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace);
