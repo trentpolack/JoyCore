@@ -26,12 +26,12 @@ protected:
 	FGameplayTagQuery TraitQuery;
 
 public:
-	/**
-	 *	USystemicConditionTraitQuery Constructor.
-	 */
-	USystemicConditionTraitQuery();
+	
+	// USystemicCondition.
+#if WITH_EDITOR
+	virtual void GenerateNameAndDescription() override;
+#endif
 
-	// USystemicCondition.	
 	virtual bool Evaluate(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace) const override;
 	// ~USystemicCondition.
 };

@@ -49,11 +49,6 @@ protected:
 	
 public:
 	/**
-	 *	USystemicCondition Constructor.
-	 */
-	USystemicCondition();
-	
-	/**
 	 *	Get the trait provider interface for the subject of the given event.
 	 *	@param Event Triggering event.
 	 *	@param Trace Trace information for debugging and logging.
@@ -62,6 +57,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Conditions")
 	TScriptInterface<ISystemicTraitProvider> GetSubjectTraitProvider(const FSystemicEvent& Event, FSystemicTrace& Trace) const;
 	
+#if WITH_EDITOR
+	/**
+	 * Generate and set a name and description for this condition based on its configuration.
+	 */
+	UFUNCTION(CallInEditor, Category="Condition")
+	virtual void GenerateNameAndDescription();
+#endif
+
 	/**
 	 * Evaluate this condition given the triggering event, cached data in the rule context, and built-up trace information. The base implementation will do a check to ensure the condition is enabled and the subject is valid (so it works as a basic null check).
 	 * @param Event Triggering event.

@@ -35,16 +35,19 @@ protected:
 
 public:
 	/**
-	 *	USystemicReaction Constructor.
-	 */
-	USystemicReaction();
-	
-	/**
 	 * Accessor for the reaction name.
 	 * @returns The name of this reaction.
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Reactions")
 	const FName& GetReactionName() const;
+
+#if WITH_EDITOR
+	/**
+	 * Generate and set a name for this rule based on the reaction's configuration.
+	 */
+	UFUNCTION(CallInEditor, Category="Reaction")
+	virtual void GenerateName();
+#endif
 	
 	/**
 	 * Execute this reaction from the triggering event, cached data in the rule context, and built-up trace information. The base implementation will just log that it has been executed.

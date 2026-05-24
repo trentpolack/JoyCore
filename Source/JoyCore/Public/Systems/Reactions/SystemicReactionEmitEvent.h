@@ -33,8 +33,8 @@ protected:
 	ESystemicEventSubject ReactionEventSubject = ESystemicEventSubject::Target;
 	
 	// The event data struct for the reaction's event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta = (BaseStruct = "/Script/JoyCore.FSystemicEventData"))
-	FInstancedStruct ReactionEventDataStruct;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta = (BaseStruct = "/Script/JoyCore.SystemicEventData"))
+	FInstancedStruct ReactionEventDataStruct = FInstancedStruct(FSystemicEvent::StaticStruct());
 	
 public:
 	/**
