@@ -26,7 +26,6 @@ protected:
 	FGameplayTagQuery TraitQuery;
 
 public:
-	
 	// USystemicCondition.
 #if WITH_EDITOR
 	virtual void GenerateNameAndDescription() override;

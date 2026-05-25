@@ -150,7 +150,7 @@ public:
 	 * @param Event Event to emit.
 	 * @returns True if the event was successfully emitted.
 	 */
-	static bool EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event);
+	static bool EmitEvent(const UObject* WorldContextObj, const FSystemicEvent& Event);
 
 	/**
 	 * Register a Rule Asset with the subsystem (and add it to the rule cache).

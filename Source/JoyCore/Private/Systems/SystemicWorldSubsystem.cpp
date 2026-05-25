@@ -231,7 +231,7 @@ bool USystemicWorldSubsystem::EmitEvent(const FSystemicEvent& Event)
 }
 
 // Static call to emit an event (for blueprint exposure).
-bool USystemicWorldSubsystem::EmitEvent(UObject* WorldContextObj, const FSystemicEvent& Event)
+bool USystemicWorldSubsystem::EmitEvent(const UObject* WorldContextObj, const FSystemicEvent& Event)
 {
 	if(!IsValid(WorldContextObj))
 	{
