@@ -45,11 +45,11 @@ struct FSystemicEventData
 	GENERATED_BODY()
 	
 	// Location of the event, if applicable.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "EventData")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category = "EventData")
 	FVector Location = FVector::ZeroVector;
 	
-	// General-purpose delta value associated with the event, if applicable; e.g. health lost, temperature change, etc.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "EventData")
+	// General-purpose delta value associated with the event, if applicable; e.g., health lost, temperature change, etc.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category = "EventData")
 	float Value = 1.0f;
 };
 
@@ -62,11 +62,11 @@ struct JOYCORE_API FSystemicEvent
 	GENERATED_BODY()
 	
 	// Gameplay tag associated with the event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter=TAG_System_Event))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event"))
 	FGameplayTag EventTag = FGameplayTag();
 	
 	// Priority tag for this event (unused right now, 4/5/26).
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter=TAG_System_Event_Priority))
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event.Priority"))
 	FGameplayTag Priority = TAG_System_Event_Priority_Default;
 
 	// Subject of this event.

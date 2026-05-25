@@ -22,7 +22,7 @@ class JOYCORE_API USystemicReactionAddTraits : public USystemicReaction
 
 protected:
 	// Traits to add to the event target.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter=TAG_System_Trait))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Trait"))
 	FGameplayTagContainer TraitTags = FGameplayTagContainer();
 
 public:

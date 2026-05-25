@@ -14,7 +14,7 @@
  *		Event payload used for systemic health events.
  *		Stores the previous and new health values associated with the event.
  */
-USTRUCT(BlueprintType, Category="Game|Systems|EventData")
+USTRUCT()
 struct JOYCORE_API FSystemicHealthEventData : public FSystemicEventData
 {
 	GENERATED_BODY()

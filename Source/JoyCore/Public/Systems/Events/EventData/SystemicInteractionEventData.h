@@ -14,12 +14,12 @@
  *		Event payload used for systemic interaction events.
  *		Stores the interaction name associated with the emitted systemic event.
  */
-USTRUCT(BlueprintType, Category="Game|Systems|EventData")
+USTRUCT()
 struct JOYCORE_API FSystemicInteractionEventData : public FSystemicEventData
 {
 	GENERATED_BODY()
 
 	// Name of the interaction associated with this event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Interaction")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Interaction")
 	FName InteractionName = NAME_None;
 };

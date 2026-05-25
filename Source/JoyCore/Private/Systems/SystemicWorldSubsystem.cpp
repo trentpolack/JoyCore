@@ -343,9 +343,15 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	// Load all Rule Assets.
+	// Load all Rule Assets defined in this plugin's content folder.
 	FAssetRegistryModule& assetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 	FTopLevelAssetPath ruleAssetPath = USystemicRule::StaticClass()->GetClassPathName();
+	
+	// Add the base content folder and plugin's content folder to the scan paths.
+	TArray<FString> PathsToScan;
+	PathsToScan.Add(TEXT("/Game"));
+	PathsToScan.Add(TEXT("/JoyCore"));
+	assetRegistryModule.Get().ScanPathsSynchronous(PathsToScan, true);
 	
 	// Get all Rule Assets by class.
 	TArray<FAssetData> assetData;

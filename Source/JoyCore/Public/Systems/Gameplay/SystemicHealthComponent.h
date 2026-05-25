@@ -103,7 +103,7 @@ protected:
 	 *	@param Source Object responsible for the state change.
 	 *	@returns True if the event was successfully emitted.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health", meta=(GameplayTagFilter=TAG_System_Event_Lifecycle))
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Health", meta=(GameplayTagFilter="System.Event.Lifecycle"))
 	virtual bool EmitLifecycleEvent(const FGameplayTag& EventTag, AActor* InstigatorActor, UObject* Source);
 
 public:

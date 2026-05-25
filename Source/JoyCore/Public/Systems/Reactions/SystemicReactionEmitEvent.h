@@ -21,11 +21,11 @@ class JOYCORE_API USystemicReactionEmitEvent : public USystemicReaction
 
 protected:
 	// The event tag for the reaction event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter=TAG_System_Event))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event"))
 	FGameplayTag ReactionEventTag;
 
 	// The event priority for the created event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter=TAG_System_Event_Priority))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event.Priority"))
 	FGameplayTag ReactionEventPriorityTag = TAG_System_Event_Priority_Default;
 
 	// The subject of the reaction event.

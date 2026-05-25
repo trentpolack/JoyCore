@@ -216,7 +216,6 @@ bool USystemicTraitComponent::ModifyTraits(const FGameplayTagContainer& TraitTag
 	
 	// Broadcast the relevant events.
 	BroadcastEvents(GetOwner(), GetTraits(), tagsFiltered_New, tagsFiltered_Removed);
-
 	return true;
 }
 
@@ -230,6 +229,9 @@ const FGameplayTagContainer& USystemicTraitComponent::GetTraits() const
 void USystemicTraitComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// Set the runtime traits with the default initial traits..
+	Traits.AppendTags(TraitsInitial);
 
 	if(bEmitLifecycleEvents)
 	{

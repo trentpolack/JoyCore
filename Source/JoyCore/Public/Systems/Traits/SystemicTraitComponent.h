@@ -28,10 +28,14 @@ public:
 	USystemicTraitComponent();
 	
 protected:
-	// Trait Tag Container.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Traits|Transient", meta=(GameplayTagFilter=TAG_System_Trait))
+	// Trait Tags at startup.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits|Config", meta=(GameplayTagFilter="System.Trait", DisplayName="Initial Traits"))
+	FGameplayTagContainer TraitsInitial = FGameplayTagContainer();
+	
+	// Trait Tag Container (runtime).
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Traits|Transient", meta=(GameplayTagFilter="System.Trait"))
 	FGameplayTagContainer Traits = FGameplayTagContainer();
-
+	
 	// Whether to emit object-level lifecycle events like creation/destruction (default: true).
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits|Config")
 	uint8 bEmitLifecycleEvents : 1 = true;
@@ -42,7 +46,7 @@ protected:
 	 *	@param EventTag Tag to emit.
 	 *	@returns True if the event was successfully emitted.
 	 */
-	UFUNCTION(Category="Game|Systems|Events", meta=(GameplayTagFilter=TAG_System_Event))
+	UFUNCTION(Category="Game|Systems|Events", meta=(GameplayTagFilter="System.Event"))
 	virtual bool EmitLifecycleEvent(const FGameplayTag& EventTag);
 
 	/**

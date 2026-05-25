@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/HitResult.h"
 
 #include "Systems/Events/SystemicEvent.h"
 
@@ -14,7 +15,7 @@
  *		Event payload used for systemic contact events.
  *		Stores contact surface, impulse, and bone/socket context for collision-like interactions.
  */
-USTRUCT(BlueprintType, Category="Game|Systems|EventData")
+USTRUCT()
 struct JOYCORE_API FSystemicContactEventData : public FSystemicEventData
 {
 	GENERATED_BODY()

@@ -122,14 +122,14 @@ public:
 	 *	Check whether this component is currently ignited.
 	 *	@returns True if ignited, false otherwise.
 	 */
-	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature", meta=(GameplayTagFilter=TAG_System_Trait_State))
+	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature", meta=(GameplayTagFilter="System.Trait.State"))
 	bool IsIgnited() const { return(GetTraitProvider()->HasTrait(TAG_System_Trait_State_Ignited)); }
 
 	/**
 	 *	Check whether this component is currently frozen.
 	 *	@returns True if frozen, false otherwise.
 	 */
-	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature", meta=(GameplayTagFilter=TAG_System_Trait_State))
+	UFUNCTION(BlueprintPure, Category="Game|Systems|Temperature", meta=(GameplayTagFilter="System.Trait.State"))
 	bool IsFrozen() const { return(GetTraitProvider()->HasTrait(TAG_System_Trait_State_Frozen)); }
 
 	// UActorComponent.

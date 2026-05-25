@@ -38,7 +38,7 @@ protected:
 
 protected:
 	/**
-	 *	Emit an interact event.
+	 *	Emit an interaction event.
 	 *	@param InteractionName Name of the interaction to emit.
 	 *	@param InstigatorActor Actor responsible for the change.
 	 *	@param Source Object responsible for the change.

@@ -61,7 +61,7 @@ public:
 	/**
 	 * Generate and set a name and description for this condition based on its configuration.
 	 */
-	UFUNCTION(CallInEditor, Category="Condition")
+	UFUNCTION(BlueprintCallable, CallInEditor, Category="Condition")
 	virtual void GenerateNameAndDescription();
 #endif
 

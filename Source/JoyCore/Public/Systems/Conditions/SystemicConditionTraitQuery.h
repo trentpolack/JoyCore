@@ -22,7 +22,7 @@ class JOYCORE_API USystemicConditionTraitQuery : public USystemicCondition
 
 protected:
 	// The trait query to evaluate against.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter=TAG_System_Trait))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter="System.Trait"))
 	FGameplayTagQuery TraitQuery;
 
 public:

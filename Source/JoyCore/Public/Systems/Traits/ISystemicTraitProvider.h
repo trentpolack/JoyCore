@@ -30,7 +30,7 @@ public:
 	 *	@param bEmitTraitChangedEvent Whether to broadcast the OnTraitsChanged event (default: true)
 	 *	@returns Returns true if it was successfully added.
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool AddTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent = true) = 0;
 
 	/**
@@ -39,7 +39,7 @@ public:
 	 *	@param bEmitTraitChangedEvent Whether to broadcast the OnTraitsChanged event (default: true)
 	 *	@returns Returns a gameplay tag container with only the successfully added tags.
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual const FGameplayTagContainer AddTraits(const FGameplayTagContainer& TraitTags, bool bEmitTraitChangedEvent = true) = 0;
 
 	/**
@@ -48,7 +48,7 @@ public:
 	 *	@param bEmitTraitChangedEvent Whether to broadcast the OnTraitsChanged event (default: true).
 	 *	@returns Returns true if it was successfully removed.
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool RemoveTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent = true) = 0;
 
 	/**
@@ -57,7 +57,7 @@ public:
 	 *	@param bEmitTraitChangedEvent Whether to broadcast the OnTraitsChanged event (default: true)
 	 *	@returns Returns a gameplay tag container with only the successfully removed tags.
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual const FGameplayTagContainer RemoveTraits(const FGameplayTagContainer& TraitTags, bool bEmitTraitChangedEvent = true) = 0;
 
 	/**
@@ -66,7 +66,7 @@ public:
 	 *	@param TraitTagsToRemove Container of tags to remove.
 	 *	@returns Returns true if any tags were successfully added/removed.
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool ModifyTraits(const FGameplayTagContainer& TraitTagsToAdd, const FGameplayTagContainer& TraitTagsToRemove) = 0;
 	
 	/**
@@ -74,7 +74,7 @@ public:
 	 *	@param TraitTag Trait tag to check for.
 	 *	@returns True if the provider has the specified trait tag, false otherwise. 
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool HasTrait(const FGameplayTag& TraitTag) const
 	{
 		return(GetTraits().HasTagExact(TraitTag));
@@ -85,7 +85,7 @@ public:
 	 *	@param TraitTags Container of trait tags to check for.
 	 *	@returns True if the provider has all the specified trait tags, false otherwise. 
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool HasTraits(const FGameplayTagContainer& TraitTags) const
 	{
 		return(GetTraits().HasAllExact(TraitTags));
@@ -96,7 +96,7 @@ public:
 	 *	@param TraitTagQuery Query to run against the provider's trait tags.
 	 *	@returns True if the query passes, false otherwise. 
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual bool QueryTraits(const FGameplayTagQuery& TraitTagQuery) const
 	{
 		return(GetTraits().MatchesQuery((TraitTagQuery)));
@@ -106,6 +106,6 @@ public:
 	 *	Get the tag container of the provider.
 	 *	@returns FGameplayTagContainer of the provider.
 	 */
-	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	virtual const FGameplayTagContainer& GetTraits() const = 0;
 };
