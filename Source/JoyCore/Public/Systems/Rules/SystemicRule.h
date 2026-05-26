@@ -28,15 +28,15 @@ class JOYCORE_API USystemicRule : public UPrimaryDataAsset
 	
 protected:
 	// Name of this rule, ideally unique.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (DisplayPriority="1"))
 	FName RuleName = NAME_None;
 
 	// Description of this rule, providing context and purpose.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (DisplayAfter="RuleName"))
 	FString RuleDescription = TEXT("");
 
 	// Gameplay tags of events that can trigger a reaction.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (GameplayTagFilter="System.Event"))
 	FGameplayTagContainer TriggerEventTags = FGameplayTagContainer();
 
 	// List of conditions that must all pass to trigger a reaction.
@@ -48,7 +48,7 @@ protected:
 	TArray<TObjectPtr<USystemicReaction>> ReactionList;
 
 	// Priority tag for this rule.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta=(GameplayTagFilter="System.Rule.Priority"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (GameplayTagFilter="System.Rule.Priority"))
 	FGameplayTag Priority = TAG_System_Rule_Priority_Default;
 
 	// Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
@@ -78,7 +78,7 @@ public:
 	 * Get a const reference to the container of triggering event tags.
 	 * @returns Container of triggering event tags.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules", meta=(GameplayTagFilter="System.Event"))
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Rules", meta = (GameplayTagFilter="System.Event"))
 	const FGameplayTagContainer& GetTriggerEventTags() const;
 
 	/**

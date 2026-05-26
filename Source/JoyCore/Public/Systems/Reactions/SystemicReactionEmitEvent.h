@@ -10,6 +10,9 @@
 
 #include "SystemicReactionEmitEvent.generated.h"
 
+// Declarations.
+class UScriptStruct;
+
 /**
  *	USystemicReactionEmitEvent Class Definition.
  *		This class reacts to an event by invoking a chained event.
@@ -21,21 +24,17 @@ class JOYCORE_API USystemicReactionEmitEvent : public USystemicReaction
 
 protected:
 	// The event tag for the reaction event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event", DisplayPriority="1"))
 	FGameplayTag ReactionEventTag;
 
 	// The event priority for the created event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event.Priority"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(GameplayTagFilter="System.Event.Priority", DisplayAfter="ReactionEventTag"))
 	FGameplayTag ReactionEventPriorityTag = TAG_System_Event_Priority_Default;
 
 	// The subject of the reaction event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta=(DisplayAfter="ReactionEventPriorityTag"))
 	ESystemicEventSubject ReactionEventSubject = ESystemicEventSubject::Target;
-	
-	// The event data struct for the reaction's event.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Reaction|Config", meta = (BaseStruct = "/Script/JoyCore.SystemicEventData"))
-	FInstancedStruct ReactionEventDataStruct = FInstancedStruct(FSystemicEventData::StaticStruct());
-	
+
 public:
 	/**
 	 * Blueprint native event to create and fill out an event structure; base implementation emits a generic event with ::ReactionEventTag and the event subject.

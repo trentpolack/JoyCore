@@ -13,13 +13,14 @@
  *	FSystemicInteractionEventData Structure.
  *		Event payload used for systemic interaction events.
  *		Stores the interaction name associated with the emitted systemic event.
+*		FSystemicEventData::Value is ignored for this event.
  */
-USTRUCT()
+USTRUCT(BlueprintType, Category="Game|Systems|EventData")
 struct JOYCORE_API FSystemicInteractionEventData : public FSystemicEventData
 {
 	GENERATED_BODY()
 
 	// Name of the interaction associated with this event.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Interaction")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Interaction")
 	FName InteractionName = NAME_None;
 };

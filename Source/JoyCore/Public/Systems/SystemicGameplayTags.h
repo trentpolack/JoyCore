@@ -57,7 +57,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Wet);                        // 
 // Lifecycle Event Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_LifecycleChanged);           // Object Lifecycle changed (separate from Created/Destroyed). This is a general lifecycle state change; specific Spawned/Downed/Revived/Killed events are also triggered.
 
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Lifecycle);          // Systemic Event Lifecycle parent tag.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Lifecycle);                  // Systemic Event Lifecycle parent tag.
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Lifecycle_Spawned);          // Object spawned (distinct from Created).
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Lifecycle_Downed);           // Object downed (can be revived; will trigger at the same time as Object Killed if revival is not supported).
@@ -71,7 +71,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_Contact_OverlapEnd);         // 
 
 // World State Event Tags.
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_World_TimeOfDayChanged);     // Change in Time of Day (Dawn, Day, Dusk, Night).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_World_WeatherChanged);      // Change in weather states.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_World_WeatherChanged);       // Change in weather states.
 
 /**
  * Rule Tags.

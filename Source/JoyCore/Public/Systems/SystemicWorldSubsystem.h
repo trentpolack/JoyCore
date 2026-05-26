@@ -10,6 +10,10 @@
 
 #include "SystemicWorldSubsystem.generated.h"
 
+// Macro for filling out the event map with a given tag and event struct.
+#define SYSTEMICWORLD_EVENTMAP_POPULATE(Map, NativeTag, EventStruct) \
+	Map.Add(NativeTag.GetTag(), EventStruct::StaticStruct());
+
 // Declarations.
 class USystemicRule;
 
@@ -87,15 +91,33 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rules|Transient", meta=(GameplayTagFilter="System.Event"))
 	TMap<FGameplayTag, FSystemicMappedRules> RuleMap;
 
+	// Map of event tags to event data payload structures.
+	UPROPERTY(Transient, meta=(GameplayTagFilter="System.Event", BaseStruct="/Script/JoyCore.SystemicEventData"))
+	TMap<FGameplayTag, UScriptStruct*> EventDataStructureMap;
+
 	// Queue of events to process during Tick; only used if the JoyCore.Systems.ProcessEventsImmediately console variable is set to 0 (default).
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Events|Transient")
 	TArray<FSystemicEvent> EventQueue;
 
 	// Number of events to process during ::Tick; process all events every ::Tick if set to 0.
-	UPROPERTY(BlueprintReadOnly, Config, EditAnywhere, Category="Systemic World|Config")
+	UPROPERTY(BlueprintReadOnly, Config, EditAnywhere, Category="SystemicWorld|Config")
 	int32 EventProcessCountPerTick = 10;
 
 protected:
+	/**
+	 * Method to fill out the EventDataStructureMap with FSystemicEvent-based payload types for each event tag.
+	*/
+	UFUNCTION(Category="SystemicWorld|Events")
+	virtual void InitializeEventDataStructureMap();
+
+	/**
+	 * Get the event data struct for a given event tag.
+	 * @param EventTag The event tag to get the data struct for.
+	 * @return The event data struct for the given event tag, or nullptr if not found (and ensure).
+	 */
+	UFUNCTION(BlueprintCallable, Category="SystemicWorld|Events", meta=(GameplayTagFilter="System.Event"))
+	virtual UScriptStruct* GetEventDataStructForEvent(const FGameplayTag& EventTag) const;
+
 	/**
 	 * Process a systemic event.
 	 * @param Event The event to process.
@@ -136,6 +158,28 @@ protected:
 	TArray<FSystemicRuleRuntimeData*> FindMatchingRules(const FGameplayTag& EventTag);
 
 public:
+	/**
+	 * Get the USystemicWorldSubsystem instance for the given world context object.
+	 * @param WorldContextObject The context object to get the subsystem for.
+	 * @return The SystemicWorldSubsystem instance or nullptr if not found.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems")
+	static USystemicWorldSubsystem* Get(const UObject* WorldContextObject);
+	
+	/**
+	 *	Make a systemic event with the proper payload type.
+	 *	@param EventOut The event to populate with the proper payload type.
+	 *	@param EventTag The gameplay tag representing the type of event.
+	 *	@param Priority The priority tag for the event.
+	 *	@param Subject The subject of the event.
+	 *	@param Source The source object of the event.
+	 *	@param Instigator The instigator object of the event.
+	 *	@param Target The target object of the event.
+	 *	@returns True if the event was successfully created, false otherwise.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Events")
+	virtual bool MakeSystemicEvent(FSystemicEvent& EventOut, const FGameplayTag& EventTag, const FGameplayTag& Priority, const ESystemicEventSubject Subject, UObject* Source, AActor* Instigator, UObject* Target);
+	
 	/**
 	 *	Emit an event to the systemic world subsystem.
 	 *	@param Event The event to emit.

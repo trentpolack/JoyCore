@@ -39,17 +39,21 @@ enum class ESystemicEventSubject : uint8
 	Target
 };
 
+/**
+ *	FSystemicEventData Structure.
+ *		Event payload that's used as the base for systemic event data
+ */
 USTRUCT(BlueprintType, Category="Game|Systems|EventData")
 struct FSystemicEventData
 {
 	GENERATED_BODY()
 	
 	// Location of the event, if applicable.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category = "EventData")
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Transient, Category="EventData")
 	FVector Location = FVector::ZeroVector;
 	
 	// General-purpose delta value associated with the event, if applicable; e.g., health lost, temperature change, etc.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category = "EventData")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, Category="EventData")
 	float Value = 1.0f;
 };
 
@@ -62,33 +66,34 @@ struct JOYCORE_API FSystemicEvent
 	GENERATED_BODY()
 	
 	// Gameplay tag associated with the event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient, Category="Event", meta=(GameplayTagFilter="System.Event", DisplayPriority="1"))
 	FGameplayTag EventTag = FGameplayTag();
 	
 	// Priority tag for this event (unused right now, 4/5/26).
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta=(GameplayTagFilter="System.Event.Priority"))
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient, Category="Event", meta=(GameplayTagFilter="System.Event.Priority", DisplayAfter="EventTag"))
 	FGameplayTag Priority = TAG_System_Event_Priority_Default;
 
-	// Subject of this event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
-	ESystemicEventSubject Subject = ESystemicEventSubject::Target;
-
-	// Gameplay tags providing additional event context.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
+	// Gameplay tags providing additional event context (unused right now, 5/25/26).
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Transient, Category="Event", meta=(GameplayTagFilter="System", DisplayAfter="Priority"))
 	FGameplayTagContainer ContextTags = FGameplayTagContainer();
 
+	// Subject of this event.
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient, Category="Event", meta=(DisplayAfter="ContextTags"))
+	ESystemicEventSubject Subject = ESystemicEventSubject::Target;
+	
 	// Initiator of the event.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient, Category="Event", meta=(DisplayAfter="Subject"))
 	TWeakObjectPtr<AActor> Instigator = nullptr;
 	// Target of the event, if there is one.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient, Category="Event", meta=(DisplayAfter="Subject"))
 	TWeakObjectPtr<UObject> Target = nullptr;
 	// Source that caused the event (for general-purpose coverage beyond actors). 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Transient, Category="Event", meta=(DisplayAfter="Subject"))
 	TWeakObjectPtr<UObject> Source = nullptr;
+
 	// Instance of the EventDataStruct.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category = "Event|Transient", meta = (BaseStruct = "/Script/JoyCore.SystemicEventData"))
-	FInstancedStruct EventDataInstance;
+	UPROPERTY(BlueprintReadWrite, Transient, Category="Event", meta=(BaseStruct="/Script/JoyCore.SystemicEventData"))
+	FInstancedStruct EventDataInstance = FInstancedStruct(FSystemicEventData::StaticStruct());
 
 public:
 	/**

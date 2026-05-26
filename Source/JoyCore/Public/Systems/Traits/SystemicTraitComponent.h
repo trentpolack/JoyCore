@@ -29,7 +29,7 @@ public:
 	
 protected:
 	// Trait Tags at startup.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits|Config", meta=(GameplayTagFilter="System.Trait", DisplayName="Initial Traits"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Traits|Config", meta=(GameplayTagFilter="System.Trait", DisplayName="Initial Traits", DisplayPriority="1"))
 	FGameplayTagContainer TraitsInitial = FGameplayTagContainer();
 	
 	// Trait Tag Container (runtime).

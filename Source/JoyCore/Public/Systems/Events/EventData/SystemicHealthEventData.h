@@ -12,18 +12,18 @@
 /**
  *	FSystemicHealthEventData Structure.
  *		Event payload used for systemic health events.
- *		Stores the previous and new health values associated with the event.
+ *		FSystemicEventData::Value represents the health delta.
  */
-USTRUCT()
+USTRUCT(BlueprintType, Category="Game|Systems|EventData")
 struct JOYCORE_API FSystemicHealthEventData : public FSystemicEventData
 {
 	GENERATED_BODY()
 
 	// Previous health value before the event was processed.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Health")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Health")
 	float HealthPrevious = 0.0f;
 
 	// New health value after the event was processed.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Health")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Health")
 	float HealthNew = 0.0f;
 };

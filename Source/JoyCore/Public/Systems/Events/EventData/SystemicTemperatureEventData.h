@@ -11,19 +11,19 @@
 
 /**
  *	FSystemicTemperatureEventData Structure.
- *		Event payload used for systemic temperature events.
- *		The intended temperature unit is Degrees Celsius (°C).
+ *		Event payload that's used for systemic temperature events; temperatures are in Degrees Celsius (°C).
+ *		FSystemicEventData::Value represents the temperature delta.
  */
-USTRUCT()
+USTRUCT(BlueprintType, Category="Game|Systems|EventData")
 struct JOYCORE_API FSystemicTemperatureEventData : public FSystemicEventData
 {
 	GENERATED_BODY()
-
+	
 	// Temperature value after this event was applied.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Temperature")
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Temperature")
 	float TemperatureNew = 0.0f;
 
 	// Temperature value before this event was applied.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Temperature")
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Temperature")
 	float TemperaturePrevious = 0.0f;
 };

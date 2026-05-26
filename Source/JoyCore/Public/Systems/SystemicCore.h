@@ -41,7 +41,7 @@ public:
 	 *	Get the description of the trait query.
 	 *	@returns Description of the trait query.
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game|Systems|Traits", meta=(GameplayTagFilter=TAG_System_Trait))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Game|Systems|Traits", meta=(GameplayTagFilter="System.Trait"))
 	static const FString& GetTraitQueryDescription(const FGameplayTagQuery& TraitTagQuery)
 	{
 		return(TraitTagQuery.GetDescription());

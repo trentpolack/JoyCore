@@ -3,6 +3,7 @@
 
 #include "Systems/SystemicWorldSubsystem.h"
 
+#include "Engine/Engine.h"
 #include "Engine/World.h"
 
 #include "HAL/IConsoleManager.h"
@@ -11,8 +12,16 @@
 #include "Commandlets/GatherTextFromSourceCommandlet.h"
 
 #include "Systems/SystemicCore.h"
-#include "Systems/Conditions/SystemicCondition.h"
+#include "Systems/SystemicGameplayTags.h"
+
 #include "Systems/Events/SystemicEvent.h"
+#include "Systems/Events/EventData/SystemicContactEventData.h"
+#include "Systems/Events/EventData/SystemicHealthEventData.h"
+#include "Systems/Events/EventData/SystemicInteractionEventData.h"
+#include "Systems/Events/EventData/SystemicTemperatureEventData.h"
+#include "Systems/Events/EventData/SystemicTraitChangedEventData.h"
+
+#include "Systems/Conditions/SystemicCondition.h"
 #include "Systems/Reactions/SystemicReaction.h"
 #include "Systems/Rules/SystemicRule.h"
 #include "Systems/Rules/SystemicRuleContext.h"
@@ -31,6 +40,55 @@ namespace JoyCore::Systems
 		0,
 		TEXT("Enables additional debug logging while processing Systemic Events (Verbosity: Verbose); 0 = Disabled, 1 = Enabled."),
 		ECVF_Default);
+}
+
+// Method to fill out the EventDataStructureMap with FSystemicEvent-based payload types for each event tag.
+void USystemicWorldSubsystem::InitializeEventDataStructureMap()
+{
+	// Initialize the EventDataStructureMap with event mappings (as high-level as possible).
+	//	TODO (trent, 5/25/26): I don't love this approach, but I prefer event data as a struct instead of a UObject and this is trying to make a lot of BP accommodations.
+	EventDataStructureMap.Empty();
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Created, FSystemicEvent);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Destroyed, FSystemicEvent);
+
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_TraitsChanged, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_StateChanged, FSystemicTraitChangedEventData);
+	
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Broken, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Electrified, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Frozen, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_HealthChanged, FSystemicHealthEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_HealthMaxChanged, FSystemicHealthEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Ignited, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Interacted, FSystemicInteractionEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_TemperatureChanged, FSystemicTemperatureEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Wet, FSystemicTraitChangedEventData);
+
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_LifecycleChanged, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Spawned, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Downed, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Revived, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Killed, FSystemicTraitChangedEventData);
+
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Contact_Hit, FSystemicContactEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Contact_OverlapBegin, FSystemicContactEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Contact_OverlapEnd, FSystemicContactEventData);
+	
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_World_TimeOfDayChanged, FSystemicTraitChangedEventData);
+	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_World_WeatherChanged, FSystemicTraitChangedEventData);
+}
+
+// Get the event data struct for a given event tag.
+UScriptStruct* USystemicWorldSubsystem::GetEventDataStructForEvent(const FGameplayTag& EventTag) const
+{
+	if(!EventDataStructureMap.Contains(EventTag))
+	{
+		ensure(EventDataStructureMap.Contains(EventTag));
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("No data structure mapped for SystemicEvent: %s"), *EventTag.ToString());
+		return nullptr;
+	}
+	
+	return EventDataStructureMap[EventTag];
 }
 
 // Process a systemic event by running it through all valid rules and conditions to see if it's valid.
@@ -213,6 +271,37 @@ TArray<FSystemicRuleRuntimeData*> USystemicWorldSubsystem::FindMatchingRules(con
 	return matchingRules;
 }
 
+// Get the USystemicWorldSubsystem instance for the given world context object.
+USystemicWorldSubsystem* USystemicWorldSubsystem::Get(const UObject* WorldContextObject)
+{
+	if(!IsValid(WorldContextObject))
+	{
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicWorldSubSystem::Get failed due to an invalid context object."));
+		return nullptr;		
+	}
+	
+	const UWorld* pWorld = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	USystemicWorldSubsystem* pSystemicWorldSubsystem = pWorld->GetSubsystem<USystemicWorldSubsystem>();
+	
+	bool result = IsValid(pWorld) && IsValid(pSystemicWorldSubsystem);
+	check(result);
+	return pSystemicWorldSubsystem;
+}
+
+// Make a systemic event with the proper payload type.
+bool USystemicWorldSubsystem::MakeSystemicEvent(FSystemicEvent& EventOut, const FGameplayTag& EventTag, const FGameplayTag& Priority, const ESystemicEventSubject Subject, UObject* Source, AActor* Instigator, UObject* Target)
+{
+	EventOut.EventTag = EventTag;
+	EventOut.Priority = Priority;
+	EventOut.Subject = Subject;
+	EventOut.Source = Source;
+	EventOut.Instigator = Instigator;
+	EventOut.Target = Target;
+
+	EventOut.EventDataInstance.InitializeAs(GetEventDataStructForEvent(EventTag));
+	return true;
+}
+
 // Emit (dispatch) an event for processing either immediately or in the ::Tick queue.
 bool USystemicWorldSubsystem::EmitEvent(const FSystemicEvent& Event)
 {
@@ -372,6 +461,8 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 			UE_LOG(LogJoyCoreSystems, Warning, TEXT("Invalid SystemicRuleAsset found: %s"), *asset.GetFullName());
 		}
 	}
+	
+	InitializeEventDataStructureMap();
 }
 
 // Clear out all the data.

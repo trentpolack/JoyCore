@@ -19,16 +19,22 @@ void USystemicReactionEmitEvent::CreateReactionEvent_Implementation(const FSyste
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("%s subject and reaction subject are not valid objects (ReactionEmitEvent)."), *Event.EventTag.ToString());
 	}
 	
+	// Get a reference to the systemic world to create the event.
+	USystemicWorldSubsystem* pSystemicWorld = USystemicWorldSubsystem::Get(GetWorld());
+	if(!pSystemicWorld)
+	{
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("SystemicWorldSubsystem not found in world (ReactionEmitEvent)."));
+		return;
+	}
+	
 	// Create the reaction event.
-	ReactionEventOut.EventTag = ReactionEventTag;
-	ReactionEventOut.Priority = ReactionEventPriorityTag;
-	ReactionEventOut.Subject = ReactionEventSubject;
-	ReactionEventOut.Source = IsValid(pObject) ? pObject : Cast<UObject>(this);
-	ReactionEventOut.Instigator = Event.Instigator;
-	ReactionEventOut.Target = USystemicCore::GetEventObjectBySubject(Event, ReactionEventSubject);
-
-	// Base level implementation can only fill in the basic data (FSystemicEventData properties).
-	ReactionEventOut.EventDataInstance.InitializeAs(ReactionEventDataStruct.IsValid() ? ReactionEventDataStruct.GetScriptStruct() : FSystemicEventData::StaticStruct());
+	check(pSystemicWorld->MakeSystemicEvent(ReactionEventOut, 
+		ReactionEventTag, 
+		ReactionEventPriorityTag, 
+		ReactionEventSubject, 
+		IsValid(pObject) ? pObject : Cast<UObject>(this),
+		Event.Instigator.Get(),
+		USystemicCore::GetEventObjectBySubject(Event, ReactionEventSubject)));
 
 	const FSystemicEventData& eventData = Event.EventDataInstance.Get<FSystemicEventData>();
 	FSystemicEventData& reactionEventData = ReactionEventOut.GetEventDataMutable<FSystemicEventData>();
