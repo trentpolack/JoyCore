@@ -46,40 +46,62 @@ namespace JoyCore::Systems
 void USystemicWorldSubsystem::InitializeEventDataStructureMap()
 {
 	// Initialize the EventDataStructureMap with event mappings (as high-level as possible).
-	//	TODO (trent, 5/25/26): I don't love this approach, but I prefer event data as a struct instead of a UObject and this is trying to make a lot of BP accommodations.
+	//	NOTE (trent, 5/25/26): I don't love this approach, but I prefer event data as a struct instead of a UObject and this is trying to make a lot of BP accommodations.
 	EventDataStructureMap.Empty();
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Created, FSystemicEvent);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Destroyed, FSystemicEvent);
-
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_TraitsChanged, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_StateChanged, FSystemicTraitChangedEventData);
 	
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Broken, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Electrified, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Frozen, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_HealthChanged, FSystemicHealthEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_HealthMaxChanged, FSystemicHealthEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Ignited, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Interacted, FSystemicInteractionEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_TemperatureChanged, FSystemicTemperatureEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Wet, FSystemicTraitChangedEventData);
+	// Object instance lifecycle event mappings (generic event).
+	AddEventStructMappings({
+		TAG_System_Event_Created,
+		TAG_System_Event_Destroyed
+		}, FSystemicEventData::StaticStruct());
 
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_LifecycleChanged, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Spawned, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Downed, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Revived, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Lifecycle_Killed, FSystemicTraitChangedEventData);
+	// Trait change event mappings.
+	AddEventStructMappings({
+		TAG_System_Event_TraitsChanged,
+		TAG_System_Event_StateChanged,
 
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Contact_Hit, FSystemicContactEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Contact_OverlapBegin, FSystemicContactEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_Contact_OverlapEnd, FSystemicContactEventData);
+		TAG_System_Event_Broken,
+		TAG_System_Event_Electrified,
+		TAG_System_Event_Frozen,
+		TAG_System_Event_Ignited,
+		TAG_System_Event_Wet,
+		
+		TAG_System_Event_LifecycleChanged,
+		TAG_System_Event_Lifecycle_Spawned,
+		TAG_System_Event_Lifecycle_Downed,
+		TAG_System_Event_Lifecycle_Revived,
+		TAG_System_Event_Lifecycle_Killed,
+		
+		TAG_System_Event_World_TimeOfDayChanged,
+		TAG_System_Event_World_WeatherChanged
+		}, FSystemicTraitChangedEventData::StaticStruct());
 	
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_World_TimeOfDayChanged, FSystemicTraitChangedEventData);
-	SYSTEMICWORLD_EVENTMAP_POPULATE(EventDataStructureMap, TAG_System_Event_World_WeatherChanged, FSystemicTraitChangedEventData);
+	// Health event mappings.
+	AddEventStructMappings({
+		TAG_System_Event_HealthChanged,
+		TAG_System_Event_HealthMaxChanged
+		}, FSystemicHealthEventData::StaticStruct());
+
+	// Interaction event map.
+	AddEventStructMappings({
+		TAG_System_Event_Interacted
+		}, FSystemicInteractionEventData::StaticStruct());
+
+	// Temperature change event map.
+	AddEventStructMappings({
+		TAG_System_Event_TemperatureChanged
+		}, FSystemicTemperatureEventData::StaticStruct());
+
+	// Contact event mappings.
+	AddEventStructMappings({
+		TAG_System_Event_Contact_Hit,
+		TAG_System_Event_Contact_OverlapBegin,
+		TAG_System_Event_Contact_OverlapEnd
+		}, FSystemicContactEventData::StaticStruct());
 }
 
 // Get the event data struct for a given event tag.
-UScriptStruct* USystemicWorldSubsystem::GetEventDataStructForEvent(const FGameplayTag& EventTag) const
+const UScriptStruct* USystemicWorldSubsystem::GetEventDataStructForEvent(const FGameplayTag& EventTag) const
 {
 	if(!EventDataStructureMap.Contains(EventTag))
 	{
@@ -286,6 +308,37 @@ USystemicWorldSubsystem* USystemicWorldSubsystem::Get(const UObject* WorldContex
 	bool result = IsValid(pWorld) && IsValid(pSystemicWorldSubsystem);
 	check(result);
 	return pSystemicWorldSubsystem;
+}
+
+// Blueprint-exposed method to update the Event-to-EventData map.
+bool USystemicWorldSubsystem::AddEventStructMapping(const FGameplayTag& EventTag, UPARAM(meta=(AllowedClasses="SystemicEventData")) const UScriptStruct* EventDataStruct, bool bAllowOverwrite)
+{
+	return(AddEventStructMappings({ EventTag }, EventDataStruct, bAllowOverwrite));
+}
+
+// Blueprint-exposed method to update the Event-to-EventData map.
+bool USystemicWorldSubsystem::AddEventStructMappings(const TArray<FGameplayTag>& EventTags, const UScriptStruct* EventDataStruct, bool bAllowOverwrite)
+{
+	check(IsValid(EventDataStruct));
+	
+	bool bResult = true;
+	for(const FGameplayTag& eventTag : EventTags)
+	{
+		if(!bAllowOverwrite && EventDataStructureMap.Contains(eventTag))
+		{
+			// Not allowed to overwrite an event mapping.
+			UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicWorldSubSystem::AddEventStructMappings failed due to an existing mapping for Event Tag: %s (bAllowOverrides was false)."), *eventTag.ToString());
+
+			bResult = false;
+			continue;
+		}
+		
+		// Add the mapping.
+		EventDataStructureMap.Add(eventTag, EventDataStruct);
+	}
+	
+	// Will be false if even one of the mappings fails.
+	return bResult;
 }
 
 // Make a systemic event with the proper payload type.

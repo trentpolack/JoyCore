@@ -28,35 +28,35 @@ class JOYCORE_API USystemicRule : public UPrimaryDataAsset
 	
 protected:
 	// Name of this rule, ideally unique.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (DisplayPriority="1"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta = (DisplayPriority="1"))
 	FName RuleName = NAME_None;
 
 	// Description of this rule, providing context and purpose.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (DisplayAfter="RuleName"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta = (DisplayAfter="RuleName"))
 	FString RuleDescription = TEXT("");
 
 	// Gameplay tags of events that can trigger a reaction.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (GameplayTagFilter="System.Event"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta = (GameplayTagFilter="System.Event"))
 	FGameplayTagContainer TriggerEventTags = FGameplayTagContainer();
 
 	// List of conditions that must all pass to trigger a reaction.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "Rule|Config")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "SystemicRule")
 	TArray<TObjectPtr<USystemicCondition>> ConditionList;
 
 	// List of reactions to trigger if all conditions are satisfied.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "Rule|Config")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Instanced, Category = "SystemicRule")
 	TArray<TObjectPtr<USystemicReaction>> ReactionList;
 
 	// Priority tag for this rule.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config", meta = (GameplayTagFilter="System.Rule.Priority"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta = (GameplayTagFilter="System.Rule.Priority", DisplayAfter="RuleDescription"))
 	FGameplayTag Priority = TAG_System_Rule_Priority_Default;
 
 	// Cooldown before this rule can be successfully evaluated again; defaults to 0.0f.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta=(DisplayAfter="Priority"))
 	float Cooldown = 0.0f;
 
 	// Whether this rule is enabled or not; defaults to true.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Rule|Config")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta=(DisplayAfter="Cooldown"))
 	uint8 bEnabled : 1 = true;
 
 public:

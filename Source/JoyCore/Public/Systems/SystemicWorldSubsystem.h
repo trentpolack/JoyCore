@@ -10,10 +10,6 @@
 
 #include "SystemicWorldSubsystem.generated.h"
 
-// Macro for filling out the event map with a given tag and event struct.
-#define SYSTEMICWORLD_EVENTMAP_POPULATE(Map, NativeTag, EventStruct) \
-	Map.Add(NativeTag.GetTag(), EventStruct::StaticStruct());
-
 // Declarations.
 class USystemicRule;
 
@@ -24,18 +20,19 @@ struct FSystemicRuleContext;
 /**
  *	FSystemicRuleRuntimeData Structure.
  *		Contains any runtime data associated with the linked USystemicRule asset.
+ *		NOTE (trent, 5/26/26): Along with rule mappings, this doesn't seem necessary to expose to Blueprint.
  */
-USTRUCT(Category="Game|Systems|Rules")
+USTRUCT()
 struct FSystemicRuleRuntimeData
 {
 	GENERATED_BODY()
 	
 	// Rule asset pointer.
-	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rule|Transient")
+	UPROPERTY(Transient)
 	TSoftObjectPtr<USystemicRule> Rule = nullptr;
 	
 	// Current cooldown on this rule.
-	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rule|Transient")
+	UPROPERTY(Transient)
 	float Cooldown = -1.0f;
 
 	/**
@@ -60,16 +57,17 @@ struct FSystemicRuleRuntimeData
  *	FSystemicMappedRules Structure.
  *		Workaround for not being able to directly use an array in a UPROPERTY.
  *		Contains a GameplayTag and an array of FSystemicRuleRuntimeData (rule assets in addition to any runtime data).
+ *		NOTE (trent, 5/26/26): I can't think of any reason why this would need to be exposed to Blueprint unless the use case is a whole cloth rewrite of functionality in Blueprint (which should never be necessary).
  */
-USTRUCT(BlueprintType, Category="Game|Systems|Rules")
+USTRUCT()
 struct FSystemicMappedRules
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules", meta=(GameplayTagFilter="System.Event"))
+	UPROPERTY(Transient, meta=(GameplayTagFilter="System.Event"))
 	FGameplayTag EventTag;
 
-	UPROPERTY(VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|Rules")
+	UPROPERTY(Transient)
 	TArray<FSystemicRuleRuntimeData> Rules;
 };
 
@@ -87,13 +85,13 @@ private:
 	TArray<FSystemicRuleRuntimeData*> RulesOnCooldown;
 
 protected:
-	// Map of Rule Assets that are triggered by a given event tag.
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Rules|Transient", meta=(GameplayTagFilter="System.Event"))
+	// Map of Rule Assets that are triggered by a given event tag (not directly exposed to Blueprint).
+	UPROPERTY(Transient, meta=(GameplayTagFilter="System.Event"))
 	TMap<FGameplayTag, FSystemicMappedRules> RuleMap;
 
-	// Map of event tags to event data payload structures.
+	// Map of event tags to event data payload structures (not directly exposed to Blueprint).
 	UPROPERTY(Transient, meta=(GameplayTagFilter="System.Event", BaseStruct="/Script/JoyCore.SystemicEventData"))
-	TMap<FGameplayTag, UScriptStruct*> EventDataStructureMap;
+	TMap<FGameplayTag, const UScriptStruct*> EventDataStructureMap;
 
 	// Queue of events to process during Tick; only used if the JoyCore.Systems.ProcessEventsImmediately console variable is set to 0 (default).
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Events|Transient")
@@ -111,12 +109,21 @@ protected:
 	virtual void InitializeEventDataStructureMap();
 
 	/**
+	 * Native method to update the Event-to-EventData map.
+	 * @param EventTags Gameplay tags that all map to a shared FSystemicEventData type.
+	 * @param EventDataStruct The script struct representing the event data.
+	 * @param bAllowOverwrite Whether to allow overwriting existing mappings (default: false).
+	 * @return True if the mapping was successfully added or updated, false otherwise.
+	 */
+	virtual bool AddEventStructMappings(const TArray<FGameplayTag>& EventTags, const UScriptStruct* EventDataStruct, bool bAllowOverwrite = false);
+	
+	/**
 	 * Get the event data struct for a given event tag.
 	 * @param EventTag The event tag to get the data struct for.
 	 * @return The event data struct for the given event tag, or nullptr if not found (and ensure).
 	 */
 	UFUNCTION(BlueprintCallable, Category="SystemicWorld|Events", meta=(GameplayTagFilter="System.Event"))
-	virtual UScriptStruct* GetEventDataStructForEvent(const FGameplayTag& EventTag) const;
+	virtual const UScriptStruct* GetEventDataStructForEvent(const FGameplayTag& EventTag) const;
 
 	/**
 	 * Process a systemic event.
@@ -165,7 +172,17 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems")
 	static USystemicWorldSubsystem* Get(const UObject* WorldContextObject);
-	
+
+	/**
+	 * Blueprint-exposed method to update the Event-to-EventData map.
+	 * @param EventTag Gameplay tag to map to a shared FSystemicEventData type.
+	 * @param EventDataStruct The script struct representing the event data.
+	 * @param bAllowOverwrite Whether to allow overwriting existing mappings (default: false).
+	 * @return True if the mapping was successfully added or updated, false otherwise.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Game|Systems", meta=(GameplayTagFilter="System.Event", ReturnDisplayName="Success"))
+	virtual bool AddEventStructMapping(const FGameplayTag& EventTag, UPARAM(meta=(AllowedClasses="SystemicEventData")) const UScriptStruct* EventDataStruct, bool bAllowOverwrite = false);
+
 	/**
 	 *	Make a systemic event with the proper payload type.
 	 *	@param EventOut The event to populate with the proper payload type.
@@ -177,7 +194,7 @@ public:
 	 *	@param Target The target object of the event.
 	 *	@returns True if the event was successfully created, false otherwise.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Game|Systems|Events")
+	UFUNCTION(BlueprintCallable, Category="Game|Systems|Events", meta=(ReturnDisplayName="Succeeded"))
 	virtual bool MakeSystemicEvent(FSystemicEvent& EventOut, const FGameplayTag& EventTag, const FGameplayTag& Priority, const ESystemicEventSubject Subject, UObject* Source, AActor* Instigator, UObject* Target);
 	
 	/**

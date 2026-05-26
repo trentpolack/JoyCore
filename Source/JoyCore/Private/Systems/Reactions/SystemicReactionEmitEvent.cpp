@@ -20,7 +20,7 @@ void USystemicReactionEmitEvent::CreateReactionEvent_Implementation(const FSyste
 	}
 	
 	// Get a reference to the systemic world to create the event.
-	USystemicWorldSubsystem* pSystemicWorld = USystemicWorldSubsystem::Get(GetWorld());
+	USystemicWorldSubsystem* pSystemicWorld = USystemicWorldSubsystem::Get(pObject);
 	if(!pSystemicWorld)
 	{
 		UE_LOG(LogJoyCoreSystems, Error, TEXT("SystemicWorldSubsystem not found in world (ReactionEmitEvent)."));
