@@ -27,5 +27,13 @@
 		}
 	],
 	"Plugins": [
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "StructUtils",
+			"Enabled": true
+		}
 	]
 }
