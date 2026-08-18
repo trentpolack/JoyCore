@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2026 Trent Polack. All Rights Reserved.
 // Licensed under the MIT License.
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 
 /**
  *	Context Tags.
@@ -125,14 +125,14 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_State_Lifecycle_Dead, "System.Tr
  * World State Tags.
  *   A baseline set of World State tags that can be used in a wide variety of projects.
  */
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_TimeOfDay_Dawn, "System.World.TimeOfDay.Dawn", "Dawn world state (Night to Day).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_TimeOfDay_Day, "System.World.TimeOfDay.Day", "Day world state.");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_TimeOfDay_Dusk, "System.World.TimeOfDay.Dusk", "Dusk world state (Day to Night).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_TimeOfDay_Night, "System.World.TimeOfDay.Night", "Night world state.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_TimeOfDay_Dawn, "World.TimeOfDay.Dawn", "Dawn world state (Night to Day).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_TimeOfDay_Day, "World.TimeOfDay.Day", "Day world state.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_TimeOfDay_Dusk, "World.TimeOfDay.Dusk", "Dusk world state (Day to Night).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_TimeOfDay_Night, "World.TimeOfDay.Night", "Night world state.");
 
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_Weather_Clear, "System.World.Weather.Clear", "Clear weather state (mutually exclusive with Foggy).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_Weather_Foggy, "System.World.Weather.Foggy", "Foggy weather state (mutually exclusive with Clear).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_Weather_Raining, "System.World.Weather.Raining", "Raining weather state (mutually exclusive with Snowing).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_Weather_Snowing, "System.World.Weather.Snowing", "Snowing weather state (mutually exclusive with Raining).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_Weather_Storming, "System.World.Weather.Storming", "Storming weather state (mutually exclusive with Snowing).");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_World_Weather_Windy, "System.World.Weather.Windy", "Windy weather state.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_Weather_Clear, "World.Weather.Clear", "Clear weather state (mutually exclusive with Foggy).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_Weather_Foggy, "World.Weather.Foggy", "Foggy weather state (mutually exclusive with Clear).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_Weather_Raining, "World.Weather.Raining", "Raining weather state (mutually exclusive with Snowing).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_Weather_Snowing, "World.Weather.Snowing", "Snowing weather state (mutually exclusive with Raining).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_Weather_Storming, "World.Weather.Storming", "Storming weather state (mutually exclusive with Snowing).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_World_Weather_Windy, "World.Weather.Windy", "Windy weather state.");

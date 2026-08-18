@@ -10,6 +10,8 @@
 #include "Systems/Rules/SystemicRuleContext.h"
 #include "Systems/Traits/ISystemicTraitProvider.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicReactionAddTraits)
+
 // Add traits to the event subject.
 bool USystemicReactionAddTraits::Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
 {

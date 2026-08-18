@@ -5,8 +5,6 @@
 
 #include "CoreMinimal.h"
 
-#include "Systems/SystemicGameplayTags.h"
-
 #include "Systems/Conditions/SystemicCondition.h"
 
 #include "SystemicConditionTraitQuery.generated.h"
@@ -21,7 +19,7 @@ class JOYCORE_API USystemicConditionTraitQuery : public USystemicCondition
 	GENERATED_BODY()
 
 protected:
-	// The trait query to evaluate against.
+	/** The trait query to evaluate against filtered by System.Trait gameplay tags. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Condition|Config", meta=(GameplayTagFilter="System.Trait"))
 	FGameplayTagQuery TraitQuery;
 

@@ -5,12 +5,12 @@
 
 #include "CoreMinimal.h"
 
-#include "Templates/UniquePtr.h"
 #include "StructUtils/InstancedStruct.h"
+#include "Templates/UniquePtr.h"
 
 #include "GameplayTags.h"
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 
 #include "SystemicEvent.generated.h"
 

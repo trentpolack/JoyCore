@@ -27,10 +27,15 @@ public:
 	USystemicGameplayComponentBase();
 
 protected:
+	// Instance of the Trait Provider interface.
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Traits|Transient")
 	TScriptInterface<ISystemicTraitProvider> TraitProvider = nullptr;
 	
 public:
+	/** 
+	 * Get the Trait Provider interface.
+	 * @returns The Trait Provider interface.
+	 */
 	UFUNCTION(BlueprintCallable, Category="Game|Systems|Traits")
 	TScriptInterface<ISystemicTraitProvider> GetTraitProvider() const;
 	

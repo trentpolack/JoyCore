@@ -7,6 +7,8 @@
 
 #include "Systems/Traits/ISystemicTraitProvider.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicConditionTraitQuery)
+
 #if WITH_EDITOR
 void USystemicConditionTraitQuery::GenerateNameAndDescription()
 {

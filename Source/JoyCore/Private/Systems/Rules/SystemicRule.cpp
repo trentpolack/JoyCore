@@ -3,6 +3,8 @@
 
 #include "Systems/Rules/SystemicRule.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicRule)
+
 // Rule name accessor.
 const FName& USystemicRule::GetRuleName() const
 {

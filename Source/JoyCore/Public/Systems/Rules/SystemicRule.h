@@ -9,7 +9,7 @@
 
 #include "Engine/DataAsset.h"
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 
 #include "SystemicRule.generated.h"
 
@@ -55,7 +55,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta=(DisplayAfter="Priority"))
 	float Cooldown = 0.0f;
 
-	// Whether this rule is enabled or not; defaults to true.
+	// Whether this rule is enabled; defaults to true.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SystemicRule", meta=(DisplayAfter="Cooldown"))
 	uint8 bEnabled : 1 = true;
 

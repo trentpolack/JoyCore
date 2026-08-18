@@ -5,14 +5,15 @@
 
 #include "Components/PrimitiveComponent.h"
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 #include "Systems/SystemicWorldSubsystem.h"
 
 #include "Systems/Events/EventData/SystemicContactEventData.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicContactComponent)
+
 // Constructor.
 USystemicContactComponent::USystemicContactComponent()
-: CollisionComponent(nullptr)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }

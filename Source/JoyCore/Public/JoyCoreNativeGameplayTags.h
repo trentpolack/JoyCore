@@ -6,7 +6,7 @@
 #include "NativeGameplayTags.h"
 
 /**
- *	Native Tag Declarations for Systems, Events, Rules, Conditions, and Traits.
+ *	Native Tag Declarations for the JoyCore plugin ecosystem.
  *		A general-purpose set of tags that can apply to a wide variety of projects and provide a foundation and convention for more defined in native or in the Gameplay Tag Manager.
  */
 
@@ -133,14 +133,14 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Trait_State_Lifecycle_Dead);       // 
  * World State Tags.
  *   A baseline set of World State tags that can be used in a wide variety of projects.
  */
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_TimeOfDay_Dawn);             // Dawn world state (Night to Day).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_TimeOfDay_Day);              // Day world state.
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_TimeOfDay_Dusk);             // Dusk world state (Day to Night).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_TimeOfDay_Night);            // Night world state.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_TimeOfDay_Dawn);             // Dawn world state (Night to Day).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_TimeOfDay_Day);              // Day world state.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_TimeOfDay_Dusk);             // Dusk world state (Day to Night).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_TimeOfDay_Night);            // Night world state.
 
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_Weather_Clear);              // Clear weather state (mutually exclusive with Foggy).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_Weather_Foggy);              // Foggy weather state (mutually exclusive with Clear).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_Weather_Raining);            // Raining weather state (mutually exclusive with Snowing).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_Weather_Snowing);            // Snowing weather state (mutually exclusive with Raining).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_Weather_Storming);           // Storming weather state (mutually exclusive with Snowing).
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_World_Weather_Windy);              // Windy weather state.
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_Weather_Clear);              // Clear weather state (mutually exclusive with Foggy).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_Weather_Foggy);              // Foggy weather state (mutually exclusive with Clear).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_Weather_Raining);            // Raining weather state (mutually exclusive with Snowing).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_Weather_Snowing);            // Snowing weather state (mutually exclusive with Raining).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_Weather_Storming);           // Storming weather state (mutually exclusive with Snowing).
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_World_Weather_Windy);              // Windy weather state.

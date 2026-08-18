@@ -7,6 +7,8 @@
 
 #include "Systems/Events/SystemicEvent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicReaction)
+
 // Accessor for the reaction name.
 const FName& USystemicReaction::GetReactionName() const
 {

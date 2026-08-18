@@ -5,10 +5,12 @@
 
 #include "GameFramework/Actor.h"
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 #include "Systems/SystemicWorldSubsystem.h"
 
 #include "Systems/Events/EventData/SystemicInteractionEventData.h"
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicInteractionComponent)
 
 // Constants.
 const FName USystemicInteractionComponent::InteractionNameDefault = TEXT("Interact");

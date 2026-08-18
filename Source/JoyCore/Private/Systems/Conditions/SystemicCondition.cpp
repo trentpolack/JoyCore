@@ -6,6 +6,8 @@
 #include "Systems/SystemicCore.h"
 #include "Systems/Events/SystemicEvent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicCondition)
+
 // Get the trait provider for the subject of the event, handling both actor and component-based implementations.
 TScriptInterface<ISystemicTraitProvider> USystemicCondition::GetSubjectTraitProvider(const FSystemicEvent& Event, FSystemicTrace& Trace) const
 {

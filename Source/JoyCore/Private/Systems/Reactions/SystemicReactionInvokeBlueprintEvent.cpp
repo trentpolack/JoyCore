@@ -3,6 +3,8 @@
 
 #include "Systems/Reactions/SystemicReactionInvokeBlueprintEvent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicReactionInvokeBlueprintEvent)
+
 // Execute the blueprint-implemented event as a reaction to the triggering event.
 bool USystemicReactionInvokeBlueprintEvent::Execute(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace)
 {

@@ -7,9 +7,10 @@
 
 #include "Systems/Traits/SystemicTraitComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicGameplayComponentBase)
+
 // Constructor.
 USystemicGameplayComponentBase::USystemicGameplayComponentBase()
-: TraitProvider(nullptr)
 {
 }
 

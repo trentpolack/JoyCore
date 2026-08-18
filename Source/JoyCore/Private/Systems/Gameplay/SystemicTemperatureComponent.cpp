@@ -9,6 +9,8 @@
 
 #include "Systems/Events/EventData/SystemicTemperatureEventData.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicTemperatureComponent)
+
 USystemicTemperatureComponent::USystemicTemperatureComponent()
 : Temperature(AmbientTemperature)
 {

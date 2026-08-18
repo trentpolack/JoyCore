@@ -3,7 +3,7 @@
 
 #include "Systems/SystemicCore.h"
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 
 #include "Systems/Events/SystemicEvent.h"
 #include "Systems/Events/EventData/SystemicContactEventData.h"
@@ -12,6 +12,8 @@
 #include "Systems/Events/EventData/SystemicTemperatureEventData.h"
 
 #include "Systems/Rules/SystemicRule.h"
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicCore)
 
 // Define the log category for the JoyCore systems logic.
 DEFINE_LOG_CATEGORY(LogJoyCoreSystems);

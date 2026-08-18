@@ -12,6 +12,8 @@
 
 #include "Systems/Events/EventData/SystemicHealthEventData.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicHealthComponent)
+
 USystemicHealthComponent::USystemicHealthComponent()
 : HealthMax(100.0f)
 , Health(HealthMax)

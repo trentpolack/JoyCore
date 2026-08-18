@@ -4,11 +4,14 @@
 #include "Systems/Traits/SystemicTraitComponent.h"
 
 #include "GameFramework/Actor.h"
-#include "Systems/SystemicCore.h"
 
-#include "Systems/Events/SystemicEvent.h"
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
+
+#include "Systems/SystemicCore.h"
 #include "Systems/SystemicWorldSubsystem.h"
+#include "Systems/Events/SystemicEvent.h"
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicTraitComponent)
 
 // Constructor.
 USystemicTraitComponent::USystemicTraitComponent()

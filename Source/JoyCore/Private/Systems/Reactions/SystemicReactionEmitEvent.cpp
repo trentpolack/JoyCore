@@ -9,6 +9,8 @@
 #include "Systems/SystemicWorldSubsystem.h"
 #include "Systems/Rules/SystemicRuleContext.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicReactionEmitEvent)
+
 // Base implementation for ::EmitEvent; intended to be implemented by derived classes in blueprint.
 void USystemicReactionEmitEvent::CreateReactionEvent_Implementation(const FSystemicEvent& Event, FSystemicRuleContext& Context, FSystemicTrace& Trace, FSystemicEvent& ReactionEventOut)
 {

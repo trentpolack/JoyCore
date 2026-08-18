@@ -9,10 +9,10 @@
 #include "HAL/IConsoleManager.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
-#include "Commandlets/GatherTextFromSourceCommandlet.h"
+
+#include "JoyCoreNativeGameplayTags.h"
 
 #include "Systems/SystemicCore.h"
-#include "Systems/SystemicGameplayTags.h"
 
 #include "Systems/Events/SystemicEvent.h"
 #include "Systems/Events/EventData/SystemicContactEventData.h"
@@ -25,6 +25,8 @@
 #include "Systems/Reactions/SystemicReaction.h"
 #include "Systems/Rules/SystemicRule.h"
 #include "Systems/Rules/SystemicRuleContext.h"
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicWorldSubsystem)
 
 // Setup console commands and variables.
 namespace JoyCore::Systems

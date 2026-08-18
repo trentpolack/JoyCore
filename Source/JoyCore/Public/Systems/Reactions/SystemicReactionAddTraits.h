@@ -5,8 +5,6 @@
 
 #include "CoreMinimal.h"
 
-#include "Systems/SystemicGameplayTags.h"
-
 #include "Systems/Reactions/SystemicReaction.h"
 
 #include "SystemicReactionAddTraits.generated.h"

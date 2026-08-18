@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 
-#include "Systems/SystemicGameplayTags.h"
+#include "JoyCoreNativeGameplayTags.h"
 
 #include "ISystemicTraitProvider.generated.h"
 
