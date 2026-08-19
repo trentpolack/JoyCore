@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include "World/EnvironmentManager.h"
+#include "World/WorldSimulationComponent.h"
 
 #include "Components/DirectionalLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
@@ -31,6 +32,7 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	// Initialize the root component for the directional lights.
 	SunMoonRootComponent = Init.CreateDefaultSubobject<USceneComponent>(this, TEXT("SunMoonRoot"));
 	SunMoonRootComponent->SetMobility(EComponentMobility::Type::Movable);
+	SunMoonRootComponent->SetWorldRotation(FRotator::ZeroRotator);
 	SunMoonRootComponent->SetupAttachment(RootComponent);
 
 	// Initialize the Sun and Moon directional lights.
@@ -45,7 +47,7 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	SunLightComponent->SetAtmosphereSunLight(true);
 	SunLightComponent->SetAtmosphereSunLightIndex(0);
 	SunLightComponent->SetForwardShadingPriority(1);
-	SunLightComponent->SetWorldRotation(FRotator(135.0f, 0.0f, 0.0f));
+	SunLightComponent->SetWorldRotation(FRotator(90.0f, 0.0f, 0.0f));
 	SunLightComponent->bCastCloudShadows = true;
 	SunLightComponent->bPerPixelAtmosphereTransmittance = true;
 	SunLightComponent->CloudShadowExtent = 25.0f;
@@ -57,7 +59,7 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	MoonLightComponent->SetIntensity(0.25f);
 	MoonLightComponent->SetUseTemperature(true);
 	MoonLightComponent->SetTemperature(9000.f);
-	MoonLightComponent->SetWorldRotation(FRotator(-45.0f, 0.0f, 0.0f));
+	MoonLightComponent->SetWorldRotation(FRotator(270.0f, 0.0f, 0.0f));
 	MoonLightComponent->bCastCloudShadows = true;
 	MoonLightComponent->bPerPixelAtmosphereTransmittance = true;
 	MoonLightComponent->CloudShadowExtent = 25.0f;
@@ -115,6 +117,7 @@ void AEnvironmentManager::UpdateSunAndMoon()
 	}
 	
 	// Calculate the pitch of the Sun and Moon with optional user-specified pitch offset.
+	//	TODO (trent, 8/19/26): Something's off here but it's a problem for tomorrow.
 	const float SunPitch = FMath::UnwindDegrees((-((TimeOfDay - SunRiseHour)/24.0f)*360.0f) + SunMoonPitchOffset);
 	
 	// Update the orientation of the root component for the Sun and Moon directional lights.
@@ -138,7 +141,7 @@ bool AEnvironmentManager::ShouldTickIfViewportsOnly() const
 	if(pWorld && bTickInEditor && (pWorld->WorldType == EWorldType::Editor))
 	{
 		// Only advance the time of day if ::bTickInEditor and the world is in the editor state. 
-		return true;	
+		return true;
 	}
 	
 	return false;
@@ -150,7 +153,7 @@ void AEnvironmentManager::Tick(float DeltaSeconds)
 	if(ShouldTickIfViewportsOnly())
 	{
 		// This uses the same calculation that the WorldSimulationComponent does.
-		SetTimeOfDay(FMath::Wrap<float>(TimeOfDay + (DeltaSeconds*TimeOfDayMinutesPerSecond_Editor)/60.0f, 0.0f, 24.0f));
+		SetTimeOfDay(UWorldSimulationComponent::CalculateTimeOfDay(TimeOfDay, DeltaSeconds, TimeOfDayMinutesPerSecond_Editor));
 	}
 }
 

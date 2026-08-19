@@ -93,7 +93,7 @@ public:
 	TObjectPtr<UWindDirectionalSourceComponent> WindDirectionalSourceComponent = nullptr;
 
 	// Direction the sun/moon arc faces. Change this to rotate sunrise/sunset direction in the world.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Environment|TimeOfDay", meta = (ForceUnits = "Degrees", ClampMin = "0.0", ClampMax = "360.0", UIMin = "0.0", UIMax = "360.0"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Environment|TimeOfDay", meta = (ForceUnits = "Hours", ClampMin = "0.0", ClampMax = "24.0", UIMin = "0.0", UIMax = "24.0"))
 	float SunRiseHour = 6.0f;
 
 	// Direction the sun/moon arc faces (in degrees); can be changed to modify the sunrise/sunset direction in the world.

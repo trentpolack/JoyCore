@@ -78,6 +78,16 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Environment", meta=(ForceUnits="Hours"))
 	float GetTimeOfDay() const;
 	
+	/**
+	 *	Static method to update the Time of Day based on the passed-in time of day and delta time.
+	 * @param TimeOfDayIn The current time of day.
+	 * @param DeltaSeconds The delta time.
+	 * @param MinutesPerSecondIn The number of minutes to advance the simulation per second.
+	 * @return The updated time of day.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Environment", meta=(ForceUnits="Hours"))
+	static float CalculateTimeOfDay(UPARAM(meta=(DisplayName="Time of Day", ForceUnits="Hours")) float TimeOfDayIn, UPARAM(meta=(ForceUnits="Seconds")) float DeltaSeconds, UPARAM(meta=(DisplayName="Minutes Per Second", ForceUnits="Minutes")) float MinutesPerSecondIn = 10.0f);
+	
 	// UActorComponent.
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

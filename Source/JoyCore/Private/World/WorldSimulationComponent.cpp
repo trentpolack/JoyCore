@@ -20,7 +20,7 @@ UWorldSimulationComponent::UWorldSimulationComponent()
 float UWorldSimulationComponent::UpdateTimeOfDay(float DeltaSeconds)
 {
 	// Advance the time of day with the passed-in delta time and wrap around back to 0.0 if the result exceeds 24.0; using the set method to keep responding logic in one place.
-	SetTimeOfDay(FMath::Wrap<float>(TimeOfDay + (DeltaSeconds*TimeOfDayMinutesPerSecond)/60.0f, 0.0f, 24.0f));
+	SetTimeOfDay(CalculateTimeOfDay(TimeOfDay, DeltaSeconds, TimeOfDayMinutesPerSecond));
 	
 	return(GetTimeOfDay());
 }
@@ -40,6 +40,12 @@ float UWorldSimulationComponent::GetTimeOfDay() const
 {
 	// Return the game world's current Time of Day.
 	return TimeOfDay;
+}
+
+float UWorldSimulationComponent::CalculateTimeOfDay(float TimeOfDayIn, float DeltaSeconds, float MinutesPerSecondIn)
+{
+	// Modify the time of day based on the delta time at a rate dictated by MinutesPerSecondIn.
+	return(FMath::Wrap<float>(TimeOfDayIn + (DeltaSeconds*MinutesPerSecondIn)/60.0f, 0.0f, 24.0f));
 }
 
 void UWorldSimulationComponent::BeginPlay()
