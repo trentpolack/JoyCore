@@ -45,11 +45,12 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	SunLightComponent->SetAtmosphereSunLight(true);
 	SunLightComponent->SetAtmosphereSunLightIndex(0);
 	SunLightComponent->SetForwardShadingPriority(1);
+	SunLightComponent->SetWorldRotation(FRotator(135.0f, 0.0f, 0.0f));
 	SunLightComponent->bCastCloudShadows = true;
 	SunLightComponent->bPerPixelAtmosphereTransmittance = true;
 	SunLightComponent->CloudShadowExtent = 25.0f;
 	
-	// Configure other Moon default properties; most importantly differentiating the atmospheric light's secondary index.
+	// Configure other Moon default properties (and offset by 180 degrees).
 	MoonLightComponent->SetAtmosphereSunLight(true);
 	MoonLightComponent->SetAtmosphereSunLightIndex(1);
 	MoonLightComponent->SetForwardShadingPriority(0);
@@ -99,10 +100,34 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	WindDirectionalSourceComponent->SetupAttachment(RootComponent);
 }
 
+void AEnvironmentManager::UpdateEnvironment()
+{
+	// Update the sun and moon orientation for the current time of day.
+	UpdateSunAndMoon();
+}
+
+void AEnvironmentManager::UpdateSunAndMoon()
+{
+	if(!IsValid(SunMoonRootComponent))
+	{
+		// Invalid state.
+		return;
+	}
+	
+	// Calculate the pitch of the Sun and Moon with optional user-specified pitch offset.
+	const float SunPitch = FMath::UnwindDegrees((-((TimeOfDay - SunRiseHour)/24.0f)*360.0f) + SunMoonPitchOffset);
+	
+	// Update the orientation of the root component for the Sun and Moon directional lights.
+	SunMoonRootComponent->SetRelativeRotation(FRotator(SunPitch, SunMoonYaw, 0.0f));
+}
+
 void AEnvironmentManager::SetTimeOfDay(float TimeOfDayIn)
 {
 	// Set the environment's updated Time of Day.
 	TimeOfDay = TimeOfDayIn;
+	
+	// Update the environment state.
+	UpdateEnvironment();
 }
 
 #if WITH_EDITOR
@@ -125,7 +150,7 @@ void AEnvironmentManager::Tick(float DeltaSeconds)
 	if(ShouldTickIfViewportsOnly())
 	{
 		// This uses the same calculation that the WorldSimulationComponent does.
-		SetTimeOfDay(FMath::Wrap<float>(TimeOfDay + (DeltaSeconds*TimeOfDayPreview_Editor)/60.0f, 0.0f, 24.0f));
+		SetTimeOfDay(FMath::Wrap<float>(TimeOfDay + (DeltaSeconds*TimeOfDayMinutesPerSecond_Editor)/60.0f, 0.0f, 24.0f));
 	}
 }
 

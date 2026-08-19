@@ -37,14 +37,14 @@ protected:
 	 * @return The game world's current Time of Day.
 	 */
 	UFUNCTION(Category="Environment")
-	virtual float UpdateTimeOfDay(UPARAM(meta=(ForceUnits="Seconds")) float DeltaTime);
+	virtual float UpdateTimeOfDay(UPARAM(meta=(ForceUnits="Seconds")) float DeltaSeconds);
 
 	/** 
 	 * Update Time of Day and sync the Environment Manager with it.
 	 * @param TimeOfDayIn The time elapsed since the last update (in seconds).
 	 */
 	UFUNCTION(Category="Environment")
-	void SetTimeOfDay(UPARAM(meta=(DisplayName="Time of Day",ForceUnits="Hours")) float TimeOfDayIn);
+	void SetTimeOfDay(UPARAM(meta=(DisplayName="Time of Day", ForceUnits="Hours")) float TimeOfDayIn);
 
 public:
 	// Constructor.

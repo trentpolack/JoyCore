@@ -17,10 +17,10 @@ UWorldSimulationComponent::UWorldSimulationComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-float UWorldSimulationComponent::UpdateTimeOfDay(float DeltaTime)
+float UWorldSimulationComponent::UpdateTimeOfDay(float DeltaSeconds)
 {
 	// Advance the time of day with the passed-in delta time and wrap around back to 0.0 if the result exceeds 24.0; using the set method to keep responding logic in one place.
-	SetTimeOfDay(FMath::Wrap<float>(TimeOfDay + (DeltaTime*TimeOfDayMinutesPerSecond)/60.0f, 0.0f, 24.0f));
+	SetTimeOfDay(FMath::Wrap<float>(TimeOfDay + (DeltaSeconds*TimeOfDayMinutesPerSecond)/60.0f, 0.0f, 24.0f));
 	
 	return(GetTimeOfDay());
 }
