@@ -22,15 +22,13 @@ public class JoyCore : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[]
 			{
-			}
-			);
+			});
 		
 		// Private include path list.
 		PrivateIncludePaths.AddRange(
 			new string[]
 			{
-			}
-			);
+			});
 			
 		// Public module dependency list.
 		PublicDependencyModuleNames.AddRange(
@@ -40,8 +38,7 @@ public class JoyCore : ModuleRules
 				"Engine",
 				"GameplayTags",
 				"AssetRegistry"
-			}
-			);
+			});
 			
 		// Private module dependency list.
 		PrivateDependencyModuleNames.AddRange(
@@ -52,15 +49,13 @@ public class JoyCore : ModuleRules
 				"Slate",
 				"SlateCore",
 				"GameplayTags",
-			}
-			);
+			});
 		
 		// Dynamically-loaded module list.
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
-			}
-			);
+			});
 		
 		// Add CommonUI modules and definitions (if needed).
 		if(kJoyCoreSettings_WithCommonUI)
