@@ -17,7 +17,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogJoyCoreWorldSimulation, Log, All);
  * UWorldSimulationComponent Class Definition.
  *	Manages the world state and associated game sim logic; intended to be attached to the Game Mode.
  */
-UCLASS(Blueprintable, NotPlaceable, Category="Game|World", ClassGroup=(JoyCore))
+UCLASS(Blueprintable, Category="Game|World", ClassGroup=(JoyCore), meta = (BlueprintSpawnableComponent))
 class JOYCORE_API UWorldSimulationComponent : public UActorComponent
 {
 	GENERATED_BODY()

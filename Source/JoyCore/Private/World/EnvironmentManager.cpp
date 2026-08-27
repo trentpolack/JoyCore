@@ -17,7 +17,7 @@
 AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 : Super(Init)
 {
-	// This actor only ticks in editor (if configured); otherwise its time of day should be managed by the game sim.
+	// This actor only ticks in editor (if configured); otherwise the game sim should manage its time of day.
 #if WITH_EDITOR
 	PrimaryActorTick.bCanEverTick = true;
 #else
