@@ -13,9 +13,11 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EnvironmentManager)
 
+// Constructor.
 AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 : Super(Init)
 {
+	// This actor only ticks in editor (if configured); otherwise its time of day should be managed by the game sim.
 #if WITH_EDITOR
 	PrimaryActorTick.bCanEverTick = true;
 #else
@@ -109,12 +111,14 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	WindDirectionalSourceComponent->SetupAttachment(RootComponent);
 }
 
+// Update the environment based on the specified time of day.
 void AEnvironmentManager::UpdateEnvironment()
 {
 	// Update the sun and moon orientation for the current time of day.
 	UpdateSunAndMoon();
 }
 
+// Update the sun and moon to represent the specified time of day.
 void AEnvironmentManager::UpdateSunAndMoon()
 {
 	if(!IsValid(SunMoonRootComponent))
@@ -130,6 +134,7 @@ void AEnvironmentManager::UpdateSunAndMoon()
 	SunMoonRootComponent->SetRelativeRotation(FRotator(Pitch, SunMoonYaw, 0.0f));
 }
 
+// Method to set the Time of Day to update the environment visuals.
 void AEnvironmentManager::SetTimeOfDay(float TimeOfDayIn)
 {
 	// Set the environment's updated Time of Day.
@@ -137,6 +142,15 @@ void AEnvironmentManager::SetTimeOfDay(float TimeOfDayIn)
 	
 	// Update the environment state.
 	UpdateEnvironment();
+}
+
+// Begin play.
+void AEnvironmentManager::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	// Set the initial time of day.
+	SetTimeOfDay(TimeOfDay);
 }
 
 #if WITH_EDITOR

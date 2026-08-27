@@ -26,33 +26,33 @@ class JOYCORE_API AEnvironmentManager : public AActor
 
 private:
 	// Time of day set from the game simulation; matches ::TimeOfDayPreview in-editor.
-	UPROPERTY(Transient, AdvancedDisplay, meta=(ForceUnits="Hours"))
+	UPROPERTY(Transient, AdvancedDisplay, meta = (ForceUnits="Hours"))
 	float TimeOfDay = 10.0f;
 	
 protected:
 #if WITH_EDITORONLY_DATA
 	// Editor-only property to preview the environment at the specified Time of Day ([0.0, 24.0]).
-	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Environment|Editor", meta=(ForceUnits="Hours", DisplayName="Time of Day - Preview",ClampMin = 0.0f, UIMin=0.0f, UIMax=24.0f))
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Environment|Editor", meta = (ForceUnits="Hours", DisplayName="Time of Day - Preview", ClampMin=0.0f, UIMin=0.0f, UIMax=24.0f))
 	float TimeOfDayPreview_Editor = 10.0f;
 
 	// Editor-only property to preview the environment at the specified Time of Day ([0.0, 24.0]).
-	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Environment|Editor", meta=(ForceUnits="Hours", ClampMin = 0.0f, UIMin=0.0f, UIMax=24.0f))
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Environment|Editor", meta = (ForceUnits="Hours", ClampMin=0.0f, UIMin=0.0f, UIMax=24.0f))
 	uint8 bTickInEditor : 1 = false;
 
 	// Editor-only property for specifying how fast the environment should change if ticking is enabled.
-	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Environment|Editor", meta=(EditCondition="bTickInEditor", EditConditionHides, DisplayName="Time of Day - Minutes/Second", ForceUnits="Minutes", ClampMin = 0.0f, UIMin=0.0f, UIMax=1000.0f))
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Environment|Editor", meta = (EditCondition="bTickInEditor", EditConditionHides, DisplayName="Time of Day - Minutes/Second", ForceUnits="Minutes", ClampMin=0.0f, UIMin=0.0f, UIMax=1000.0f))
 	float TimeOfDayMinutesPerSecond_Editor = 10.0f;
 #endif
 
 	/**
-	 *	Update the environment based on the specified time of day.
-	*/
+	 * Update the environment based on the specified time of day.
+	 */
 	UFUNCTION(Category = "Environment")
 	virtual void UpdateEnvironment();
 
 	/**
-	 *	Update the sun and moon to represent the specified time of day.
-	*/
+	 * Update the sun and moon to represent the specified time of day.
+	 */
 	UFUNCTION(Category = "Environment|TimeOfDay")
 	virtual void UpdateSunAndMoon();
 
@@ -111,19 +111,23 @@ public:
 	/** Constructor. */
 	AEnvironmentManager(const FObjectInitializer& Init);
 	
-	/** Method to set the Time of Day to update the environment visuals. */
+	/** 
+	 * Method to set the Time of Day to update the environment visuals.
+	 * @param TimeOfDayIn - Time of Day in degrees.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Environment")
 	virtual void SetTimeOfDay(UPARAM(meta = (DisplayName = "Time of Day")) float TimeOfDayIn);
 	
+	// AActor.
+	virtual void BeginPlay() override;
+	// ~AActor.
+	
 #if WITH_EDITOR
 	// AActor.
-	/** Allow for ticking when in the editor. */
 	virtual bool ShouldTickIfViewportsOnly() const override;
 	
-	/** Tick method when in the editor. */
 	virtual void Tick(float DeltaSeconds) override;
 	
-	/** Override the editor-only property change event. */
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	// ~AActor.
 #endif
