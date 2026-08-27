@@ -47,8 +47,12 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	SunLightComponent->SetAtmosphereSunLight(true);
 	SunLightComponent->SetAtmosphereSunLightIndex(0);
 	SunLightComponent->SetForwardShadingPriority(1);
-	SunLightComponent->SetWorldRotation(FRotator(90.0f, 0.0f, 0.0f));
+	SunLightComponent->SetTransmission(true);
+	SunLightComponent->SetCastDeepShadow(true);
+	SunLightComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
 	SunLightComponent->bCastCloudShadows = true;
+	SunLightComponent->bCastShadowsOnClouds = true;
+	SunLightComponent->bCastShadowsOnAtmosphere = true;
 	SunLightComponent->bPerPixelAtmosphereTransmittance = true;
 	SunLightComponent->CloudShadowExtent = 25.0f;
 	
@@ -58,9 +62,12 @@ AEnvironmentManager::AEnvironmentManager(const FObjectInitializer& Init)
 	MoonLightComponent->SetForwardShadingPriority(0);
 	MoonLightComponent->SetIntensity(0.25f);
 	MoonLightComponent->SetUseTemperature(true);
-	MoonLightComponent->SetTemperature(9000.f);
-	MoonLightComponent->SetWorldRotation(FRotator(270.0f, 0.0f, 0.0f));
+	MoonLightComponent->SetTemperature(9000.0f);
+	MoonLightComponent->SetTransmission(true);
+	MoonLightComponent->SetCastDeepShadow(true);
+	MoonLightComponent->SetWorldRotation(FRotator(180.0f, 0.0f, 0.0f));
 	MoonLightComponent->bCastCloudShadows = true;
+	MoonLightComponent->bCastShadowsOnAtmosphere = true;
 	MoonLightComponent->bPerPixelAtmosphereTransmittance = true;
 	MoonLightComponent->CloudShadowExtent = 25.0f;
 	
@@ -117,11 +124,10 @@ void AEnvironmentManager::UpdateSunAndMoon()
 	}
 	
 	// Calculate the pitch of the Sun and Moon with optional user-specified pitch offset.
-	//	TODO (trent, 8/19/26): Something's off here but it's a problem for tomorrow.
-	const float SunPitch = FMath::UnwindDegrees((-((TimeOfDay - SunRiseHour)/24.0f)*360.0f) + SunMoonPitchOffset);
+	const float Pitch = FMath::UnwindDegrees((-((TimeOfDay - SunRiseHour)/24.0f)*360.0f) + SunMoonPitchOffset);
 	
 	// Update the orientation of the root component for the Sun and Moon directional lights.
-	SunMoonRootComponent->SetRelativeRotation(FRotator(SunPitch, SunMoonYaw, 0.0f));
+	SunMoonRootComponent->SetRelativeRotation(FRotator(Pitch, SunMoonYaw, 0.0f));
 }
 
 void AEnvironmentManager::SetTimeOfDay(float TimeOfDayIn)
