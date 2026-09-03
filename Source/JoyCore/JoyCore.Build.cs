@@ -18,12 +18,6 @@ public class JoyCore : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		// Public include path list.
-		PublicIncludePaths.AddRange(
-			new string[]
-			{
-			});
-		
 		// Private include path list.
 		PrivateIncludePaths.AddRange(
 			new string[]

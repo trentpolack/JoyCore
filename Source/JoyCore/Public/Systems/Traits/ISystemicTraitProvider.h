@@ -6,6 +6,8 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 
+#include "JoyCoreNativeGameplayTags.h"
+
 #include "ISystemicTraitProvider.generated.h"
 
 // UHT Interface definition.
