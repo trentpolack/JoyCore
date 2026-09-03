@@ -28,7 +28,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicWorldSubsystem)
 
-// Setup console commands and variables.
+// Set up console commands and variables.
 namespace JoyCore::Systems
 {
 	static TAutoConsoleVariable<int32> CVarSystemProcessEventsImmediately(
@@ -125,7 +125,7 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 	TArray<FSystemicRuleRuntimeData*> matchingRules = FindMatchingRules(Event.EventTag);
 	if(matchingRules.IsEmpty())
 	{
-		// There isn't a strict requirement to have a rule for every event but it's useful to know when it happens (just demoted to a Verbose log).
+		// There isn't a strict requirement to have a rule for every event, but it's useful to know when it happens (just demoted to a Verbose log).
 		UE_LOG(LogJoyCoreSystems, Verbose, TEXT("No Rules defined to process SystemicEvent: %s"), *Event.EventTag.ToString());
 		return false;
 	}
@@ -147,7 +147,7 @@ bool USystemicWorldSubsystem::ProcessSystemicEvent(const FSystemicEvent& Event, 
 			continue;
 		}
 		
-		// If a rule is on cooldown then this event cannot be processed
+		// If a rule is on cooldown, then this event cannot be processed
 		if(!bIgnoreRuleCooldowns && (pRuleData->Cooldown > 0.0f))
 		{
 			trace.RuleNameAndResultList.Add(TPair<FName, bool>(pRule->GetRuleName(), false));
