@@ -93,6 +93,12 @@ bool USystemicTraitComponent::BroadcastEvents(UObject* Object, const FGameplayTa
 	return result;
 }
 
+// Get the owner name.
+const FName USystemicTraitComponent::GetOwnerName() const
+{
+	return((IsValid(GetOwner()) ? GetOwner()->GetFName() : NAME_None));
+}
+
 // Adds a trait tag to the component.
 bool USystemicTraitComponent::AddTrait(const FGameplayTag& TraitTag, bool bEmitTraitChangedEvent)
 {

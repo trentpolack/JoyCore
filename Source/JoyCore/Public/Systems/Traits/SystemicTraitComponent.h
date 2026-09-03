@@ -58,6 +58,10 @@ protected:
 	 */
 	bool BroadcastEvents(UObject* Object, const FGameplayTagContainer& TraitTags, const FGameplayTagContainer& TraitTagsNew, const FGameplayTagContainer& TraitTagsRemoved);
 
+	// ISystemicTraitComponent (protected).
+	virtual const FName GetOwnerName() const override;
+	// ~ISystemicTraitComponent (protected).
+
 public:
 	// Broadcast when this component's Traits are changed (including State changes).
 	UPROPERTY(BlueprintAssignable, Category="Game|Systems|Events")

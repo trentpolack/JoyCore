@@ -17,7 +17,6 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Context_Intensity_Max, "System.Context
  *	Event Tags.
  *		Events are used to trigger reactions based on a set of rules and conditions.
  */
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event, "System.Event", "Systemic Event parent tag.");
 
 // Event Priority Tags.
@@ -43,6 +42,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_HealthChanged, "System.Event.Hea
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_HealthMaxChanged, "System.Event.HealthMaxChanged", "Object max health changed.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Ignited, "System.Event.Ignited", "Object ignited due to spreading fire and/or autoignition by temperature.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Interacted, "System.Event.Interacted", "Object interacted with (e.g., used, picked up, etc.).");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Selected, "System.Event.Selected", "Object was \"selected\" (e.g., actor selected by player).");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_TemperatureChanged, "System.Event.TemperatureChanged", "Object temperature changed (cold/hot event).");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_Wet, "System.Event.Wet", "Object has become wet (is not waterproof).");
 
@@ -69,7 +69,6 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_World_WeatherChanged, "System.Ev
  *	Rule Tags.
  *   Rule tags provide additional information about a given rule; largely used for prioritization.
  */
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Rule, "System.Rule", "Systemic Rule parent tag.");
 
 // Rule priority tags.
@@ -86,7 +85,6 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Rule_Priority_High, "System.Rule.Prior
  *    - Top-level trait tags define properties of the object they represent.
  *    - State trait tags describe the current state of the object.
  */
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait, "System.Trait", "Systemic Trait parent tag.");
 
 // Trait Tags.
@@ -99,6 +97,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Gas, "System.Trait.Gas", "Gaseou
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Interactable, "System.Trait.Interactable", "Is interactable.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Invulnerable, "System.Trait.Invulnerable", "Cannot be damaged.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Liquid, "System.Trait.Liquid", "Liquid matter state.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Selectable, "System.Trait.Selectable", "Is selectable.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Solid, "System.Trait.Solid", "Solid matter state.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_TemperatureSource, "System.Trait.TemperatureSource", "Is a temperature source (-cold, +hot).");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Trait_Throwable, "System.Trait.Throwable", "Can be picked up and thrown.");

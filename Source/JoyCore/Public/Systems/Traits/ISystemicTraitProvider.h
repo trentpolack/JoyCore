@@ -6,8 +6,6 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 
-#include "JoyCoreNativeGameplayTags.h"
-
 #include "ISystemicTraitProvider.generated.h"
 
 // UHT Interface definition.
@@ -24,6 +22,14 @@ class JOYCORE_API ISystemicTraitProvider
 {
 	GENERATED_BODY()
 
+protected:
+	/**
+	 * Returns the name of the owner of the trait provider.
+	 * @return The name of the owner.
+	 */
+	UFUNCTION(Category = "Game|Systems")
+	virtual const FName GetOwnerName() const = 0;
+	
 public:
 	/**
 	 *	Adds a trait tag to the component.
