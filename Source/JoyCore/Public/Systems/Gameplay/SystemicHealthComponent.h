@@ -40,11 +40,11 @@ public:
 
 protected:
 	// Maximum health value used when clamping current health.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, DisplayName="Max Health", Category="Health|Config", meta=(ClampMin="0.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, DisplayName="Max Health", Category="Health|Config", meta=(ClampMin="0.0", UIMin="0.0"))
 	float HealthMax = 100.0f;
 	
 	// Current health value.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Health|Transient", meta=(ClampMin="0.0"))
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Health|Transient", meta=(ClampMin="0.0", UIMin="0.0"))
 	float Health = 0.0f;
 	
 	// Whether this component destroys its owner when health reaches zero (default: false).

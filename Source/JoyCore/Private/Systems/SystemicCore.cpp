@@ -7,9 +7,8 @@
 
 #include "Systems/Events/SystemicEvent.h"
 #include "Systems/Events/EventData/SystemicContactEventData.h"
-#include "Systems/Events/EventData/SystemicHealthEventData.h"
 #include "Systems/Events/EventData/SystemicInteractionEventData.h"
-#include "Systems/Events/EventData/SystemicTemperatureEventData.h"
+#include "Systems/Events/EventData/SystemicScalarEventData.h"
 
 #include "Systems/Rules/SystemicRule.h"
 
@@ -56,18 +55,6 @@ const FSystemicContactEventData& USystemicCore::GetContactEventData(const FSyste
 }
 
 // Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
-const FSystemicHealthEventData& USystemicCore::GetHealthEventData(const FSystemicEvent& Event)
-{
-	if(!Event.IsValidEventDataType<FSystemicHealthEventData>())
-	{
-		// Invalid event data type.
-		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::GetHealthEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
-	}
-	
-	return(Event.GetEventData<FSystemicHealthEventData>());	
-}
-
-// Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
 const FSystemicInteractionEventData& USystemicCore::GetInteractionEventData(const FSystemicEvent& Event)
 {
 	if(!Event.IsValidEventDataType<FSystemicInteractionEventData>())
@@ -80,15 +67,15 @@ const FSystemicInteractionEventData& USystemicCore::GetInteractionEventData(cons
 }
 
 // Get the event data from the passed-in Event as a FSystemicTemperatureEventData-typed struct.
-const FSystemicTemperatureEventData& USystemicCore::GetTemperatureEventData(const FSystemicEvent& Event)
+const FSystemicScalarEventData& USystemicCore::GetScalarEventData(const FSystemicEvent& Event)
 {
-	if(!Event.IsValidEventDataType<FSystemicTemperatureEventData>())
+	if(!Event.IsValidEventDataType<FSystemicScalarEventData>())
 	{
 		// Invalid event data type.
-		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::GetTemperatureEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
+		UE_LOG(LogJoyCoreSystems, Error, TEXT("USystemicCore::FSystemicScalarEventData type mismatch (event: %s)."), *Event.EventTag.ToString());
 	}
 	
-	return(Event.GetEventData<FSystemicTemperatureEventData>());
+	return(Event.GetEventData<FSystemicScalarEventData>());
 }
 
 // Get the event data from the passed-in Event as a FSystemicTraitChangedEventData-typed struct.

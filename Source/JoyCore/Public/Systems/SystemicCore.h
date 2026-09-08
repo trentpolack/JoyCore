@@ -16,9 +16,8 @@ struct FSystemicTrace;
 
 struct FSystemicEvent;
 struct FSystemicContactEventData;
-struct FSystemicHealthEventData;
 struct FSystemicInteractionEventData;
-struct FSystemicTemperatureEventData;
+struct FSystemicScalarEventData;
 struct FSystemicTraitChangedEventData;
 
 // Log declaration.
@@ -98,14 +97,6 @@ public:
 	static const FSystemicContactEventData& GetContactEventData(const FSystemicEvent& Event);
 	
 	/**
-	 * Get the event data from the passed-in Event as a FSystemicHealthEventData-typed struct.
-	 * @param Event Health Event to extract data from.
-	 * @returns Constant reference to the FSystemicHealthEventData struct.
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Health Event Data"))
-	static const FSystemicHealthEventData& GetHealthEventData(const FSystemicEvent& Event);
-
-	/**
 	 * Get the event data from the passed-in Event as a FSystemicInteractionEventData-typed struct.
 	 * @param Event Interaction Event to extract data from.
 	 * @returns Constant reference to the FSystemicInteractionEventData struct.
@@ -118,8 +109,8 @@ public:
 	 * @param Event Temperature Event to extract data from.
 	 * @returns Constant reference to the FSystemicTemperatureEventData struct.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Temperature Event Data"))
-	static const FSystemicTemperatureEventData& GetTemperatureEventData(const FSystemicEvent& Event);
+	UFUNCTION(BlueprintCallable, Category = "Game|Systems|Events", meta = (ReturnDisplayName = "Scalar Event Data"))
+	static const FSystemicScalarEventData& GetScalarEventData(const FSystemicEvent& Event);
 
 	/**
 	 * Get the event data from the passed-in Event as a FSystemicTraitChangedEventData-typed struct.

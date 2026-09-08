@@ -66,6 +66,17 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_World_TimeOfDayChanged, "System.
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Event_World_WeatherChanged, "System.Event.World.WeatherChanged", "Change in weather states.");
 
 /**
+ * Property Tags.
+ *   Various property types such as health, temperature, etc.
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Property, "System.Property", "Systemic property parent tag.");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Property_Health, "System.Property.Health", "Generic health property tag.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Property_HealthMax, "System.Property.HealthMax", "Generic maximum health property tag.");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_System_Property_Temperature, "System.Property.Temperature", "Temperature property tag.");
+
+/**
  *	Rule Tags.
  *   Rule tags provide additional information about a given rule; largely used for prioritization.
  */

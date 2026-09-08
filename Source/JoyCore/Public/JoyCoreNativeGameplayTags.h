@@ -74,6 +74,17 @@ JOYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_World_TimeOfDayChang
 JOYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Event_World_WeatherChanged);       // Change in weather states.
 
 /**
+ * Property Tags.
+ *   Various property types such as health, temperature, etc.
+ */
+JOYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Property);                         // Systemic property parent tag.
+
+JOYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Property_Health);                  // Generic health property tag.
+JOYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Property_HealthMax);               // Generic maximum health property tag.
+
+JOYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_System_Property_Temperature);             // Temperature property tag.
+
+/**
  * Rule Tags.
  *   Rule tags provide additional information about a given rule; largely used for prioritization.
  */

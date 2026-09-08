@@ -6,11 +6,12 @@
 #include "GameFramework/Actor.h"
 
 #include "Systems/SystemicWorldSubsystem.h"
-
-#include "Systems/Events/EventData/SystemicTemperatureEventData.h"
+#include "Systems/Events/SystemicEvent.h"
+#include "Systems/Events/EventData/SystemicScalarEventData.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicTemperatureComponent)
 
+// Base constructor.
 USystemicTemperatureComponent::USystemicTemperatureComponent()
 : Temperature(AmbientTemperature)
 {
@@ -83,12 +84,13 @@ bool USystemicTemperatureComponent::EmitTemperatureEvent(float TemperatureNew, f
 
 	// Setup the temperature change event.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_TemperatureChanged, pOwner, InstigatorActor, Source, FSystemicTemperatureEventData);
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_TemperatureChanged, pOwner, InstigatorActor, Source, FSystemicScalarEventData);
 
-	FSystemicTemperatureEventData& eventData = event.GetEventDataMutable<FSystemicTemperatureEventData>();
+	FSystemicScalarEventData& eventData = event.GetEventDataMutable<FSystemicScalarEventData>();
 	eventData.Location = pOwner->GetActorLocation();
-	eventData.TemperatureNew = TemperatureNew;
-	eventData.TemperaturePrevious = TemperaturePrevious;
+	eventData.ScalarTag = TAG_System_Property_Temperature;
+	eventData.ValueNew = TemperatureNew;
+	eventData.ValuePrevious = TemperaturePrevious;
 	eventData.Value = TemperatureDelta;
 	
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));

@@ -16,9 +16,8 @@
 
 #include "Systems/Events/SystemicEvent.h"
 #include "Systems/Events/EventData/SystemicContactEventData.h"
-#include "Systems/Events/EventData/SystemicHealthEventData.h"
 #include "Systems/Events/EventData/SystemicInteractionEventData.h"
-#include "Systems/Events/EventData/SystemicTemperatureEventData.h"
+#include "Systems/Events/EventData/SystemicScalarEventData.h"
 #include "Systems/Events/EventData/SystemicTraitChangedEventData.h"
 
 #include "Systems/Conditions/SystemicCondition.h"
@@ -78,21 +77,18 @@ void USystemicWorldSubsystem::InitializeEventDataStructureMap()
 		TAG_System_Event_World_WeatherChanged
 		}, FSystemicTraitChangedEventData::StaticStruct());
 	
-	// Health event mappings.
+	// Scalar event mapping; generic event data supports the needs for health, temperature, etc.
 	AddEventStructMappings({
 		TAG_System_Event_HealthChanged,
-		TAG_System_Event_HealthMaxChanged
-		}, FSystemicHealthEventData::StaticStruct());
+		TAG_System_Event_HealthMaxChanged,
+		
+		TAG_System_Event_TemperatureChanged,
+		}, FSystemicScalarEventData::StaticStruct());
 
 	// Interaction event map.
 	AddEventStructMappings({
 		TAG_System_Event_Interacted
 		}, FSystemicInteractionEventData::StaticStruct());
-
-	// Temperature change event map.
-	AddEventStructMappings({
-		TAG_System_Event_TemperatureChanged
-		}, FSystemicTemperatureEventData::StaticStruct());
 
 	// Contact event mappings.
 	AddEventStructMappings({
@@ -307,8 +303,8 @@ USystemicWorldSubsystem* USystemicWorldSubsystem::Get(const UObject* WorldContex
 	const UWorld* pWorld = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	USystemicWorldSubsystem* pSystemicWorldSubsystem = pWorld->GetSubsystem<USystemicWorldSubsystem>();
 	
-	bool result = IsValid(pWorld) && IsValid(pSystemicWorldSubsystem);
-	check(result);
+	bool bResult = IsValid(pWorld) && IsValid(pSystemicWorldSubsystem);
+	check(bResult);
 	return pSystemicWorldSubsystem;
 }
 
@@ -415,12 +411,12 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn)
 		return false;
 	}
 
-	for(const FGameplayTag& EventTag : RuleIn->GetTriggerEventTags())
+	for(const FGameplayTag& eventTag : RuleIn->GetTriggerEventTags())
 	{
 		// Find or add this rule to the rule map cache for easy access by tag.
-		FSystemicMappedRules& ruleAssets = RuleMap.FindOrAdd(EventTag);
+		FSystemicMappedRules& ruleAssets = RuleMap.FindOrAdd(eventTag);
 		
-		ruleAssets.EventTag = EventTag;
+		ruleAssets.EventTag = eventTag;
 		ruleAssets.Rules.Add(FSystemicRuleRuntimeData(RuleIn, -1.0f));
 		
 		// Sort the rule assets by priority.
@@ -429,7 +425,7 @@ bool USystemicWorldSubsystem::RegisterRule(USystemicRule* RuleIn)
 			return(USystemicCore::GetHigherPriorityRule(RuleA.Rule.Get(), RuleB.Rule.Get()) == RuleA.Rule.Get());
 		});
 
-		UE_LOG(LogJoyCoreSystems, Log, TEXT("SystemicRuleAsset added to USystemicWorldSubsystem: %s\nFull Name: %s (Event Tag: %s)."), *RuleIn->GetRuleName().ToString(), *RuleIn->GetFullName(), *EventTag.ToString());
+		UE_LOG(LogJoyCoreSystems, Log, TEXT("SystemicRuleAsset added to USystemicWorldSubsystem: %s\nFull Name: %s (Event Tag: %s)."), *RuleIn->GetRuleName().ToString(), *RuleIn->GetFullName(), *eventTag.ToString());
 	}
 	
 	return true;
@@ -475,9 +471,9 @@ void USystemicWorldSubsystem::Tick(float DeltaTime)
 		{
 			// Run through the queue of events so long as the counter is above zero or EventProcessCountPerTick equals 0 (which means process all events).
 			// Reactions may enqueue events and reallocate the queue; keep the active payload independent.
-			const FSystemicEvent Event = MoveTemp(EventQueue[0]);
+			const FSystemicEvent event = MoveTemp(EventQueue[0]);
 			EventQueue.RemoveAt(0);
-			ProcessSystemicEvent(Event);
+			ProcessSystemicEvent(event);
 
 			--eventProcessCount;
 		}
@@ -494,10 +490,10 @@ void USystemicWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	FTopLevelAssetPath ruleAssetPath = USystemicRule::StaticClass()->GetClassPathName();
 	
 	// Add the base content folder and plugin's content folder to the scan paths.
-	TArray<FString> PathsToScan;
-	PathsToScan.Add(TEXT("/Game"));
-	PathsToScan.Add(TEXT("/JoyCore"));
-	assetRegistryModule.Get().ScanPathsSynchronous(PathsToScan, true);
+	TArray<FString> pathsToScan;
+	pathsToScan.Add(TEXT("/Game"));
+	pathsToScan.Add(TEXT("/JoyCore"));
+	assetRegistryModule.Get().ScanPathsSynchronous(pathsToScan, true);
 	
 	// Get all Rule Assets by class.
 	TArray<FAssetData> assetData;

@@ -14,14 +14,14 @@ struct JOYCORE_API FSystemicScalarEventData : public FSystemicEventData
 	GENERATED_BODY()
 
 	// Exact identifier of the value that changed.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Transient|EventData|Scalar")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Scalar")
 	FGameplayTag ScalarTag = FGameplayTag::EmptyTag;
 
 	// Value before the operation.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Transient|EventData|Scalar")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Scalar")
 	float ValuePrevious = 0.0f;
 
 	// Clamped value after the operation.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Transient|EventData|Scalar")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Transient, AdvancedDisplay, Category="EventData|Scalar")
 	float ValueNew = 0.0f;
 };

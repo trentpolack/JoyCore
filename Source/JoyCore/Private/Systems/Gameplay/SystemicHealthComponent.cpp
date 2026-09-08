@@ -10,7 +10,7 @@
 
 #include "Systems/SystemicWorldSubsystem.h"
 
-#include "Systems/Events/EventData/SystemicHealthEventData.h"
+#include "Systems/Events/EventData/SystemicScalarEventData.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SystemicHealthComponent)
 
@@ -90,12 +90,13 @@ bool USystemicHealthComponent::EmitHealthEvent(const float HealthNew, const floa
 
 	// Populate event data.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthChanged, pOwner, InstigatorActor, Source, FSystemicHealthEventData);
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthChanged, pOwner, InstigatorActor, Source, FSystemicScalarEventData);
 
-	FSystemicHealthEventData& eventData = event.GetEventDataMutable<FSystemicHealthEventData>();
+	FSystemicScalarEventData& eventData = event.GetEventDataMutable<FSystemicScalarEventData>();
 	eventData.Location = pOwner->GetActorLocation();
-	eventData.HealthNew = HealthNew;
-	eventData.HealthPrevious = HealthPrevious;
+	eventData.ScalarTag = TAG_System_Property_Health;
+	eventData.ValueNew = HealthNew;
+	eventData.ValuePrevious = HealthPrevious;
 	eventData.Value = HealthDelta;
 
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));
@@ -113,12 +114,13 @@ bool USystemicHealthComponent::EmitHealthMaxEvent(const float HealthMaxNew, cons
 
 	// Populate event data.
 	FSystemicEvent event;
-	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthMaxChanged, pOwner, InstigatorActor, Source, FSystemicHealthEventData);
+	JOYCORE_POPULATE_EVENT(event, TAG_System_Event_HealthMaxChanged, pOwner, InstigatorActor, Source, FSystemicScalarEventData);
 
-	FSystemicHealthEventData& eventData = event.GetEventDataMutable<FSystemicHealthEventData>();
+	FSystemicScalarEventData& eventData = event.GetEventDataMutable<FSystemicScalarEventData>();
 	eventData.Location = pOwner->GetActorLocation();
-	eventData.HealthNew = HealthMaxNew;
-	eventData.HealthPrevious = HealthMaxPrevious;
+	eventData.ScalarTag = TAG_System_Property_HealthMax;
+	eventData.ValueNew = HealthMaxNew;
+	eventData.ValuePrevious = HealthMaxPrevious;
 	eventData.Value = HealthMaxDelta;
 
 	return(USystemicWorldSubsystem::EmitEvent(pOwner, event));

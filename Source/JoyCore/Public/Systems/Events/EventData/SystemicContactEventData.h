@@ -22,7 +22,7 @@ struct JOYCORE_API FSystemicContactEventData : public FSystemicEventData
 	GENERATED_BODY()
 
 	// Hit result from the contact event.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|EventData|Contact")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Contact")
 	FHitResult HitResult = FHitResult();
 
 	/** Basic constructor. */
