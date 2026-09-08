@@ -121,13 +121,13 @@ public:
 	FORCEINLINE T& GetEventDataMutable()
 	{
 		ensure(EventDataInstance.IsValid());
-		return EventDataInstance.GetMutable<T>();
+		return(EventDataInstance.GetMutable<T>());
 	}
 
 	template <typename T>
 	FORCEINLINE const T& GetEventData() const
 	{
 		ensure(EventDataInstance.IsValid());
-		return EventDataInstance.Get<T>();
+		return(EventDataInstance.Get<T>());
 	}
 };
