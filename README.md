@@ -8,7 +8,7 @@ This plugin is aimed at requiring no engine modifications and able to be used in
 
 ## Primary Features 
 * **Systems-Driven Architecture** (⏸️) -- One of its main features its a series of functionality and structures for creating and reacting to deep gameplay systems using data-driven events, rules, traits, and reactions.
-* **Procedural Generation Library** (future work) -- PCG functionailty to ease content-authoring burdens and provide forms of content creation non-artists can leverage.
+* **Procedural Generation Library** (🚧) -- PCG functionailty to ease content-authoring burdens and provide forms of content creation non-artists can leverage.
 * **World Simulation and Environment Manager** (🚧) -- Framework for Time of Day, Weather, and integration with the systemic subsystem.
 * **General-Purpose Tools and Utilities** (future work) -- Functionality and content that has proven helpful across just about every project I've ever worked on; this will range from handy prototype materials, light functions, encapsulated environmental functionality/behavior, a native seeded random stream for consistent PCG results, and more.
 * [...]

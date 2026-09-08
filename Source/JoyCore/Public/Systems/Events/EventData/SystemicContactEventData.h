@@ -22,13 +22,13 @@ struct JOYCORE_API FSystemicContactEventData : public FSystemicEventData
 	GENERATED_BODY()
 
 	// Hit result from the contact event.
-	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="EventData|Contact")
+	UPROPERTY(BlueprintReadWrite, VisibleInstanceOnly, Transient, AdvancedDisplay, Category="Transient|EventData|Contact")
 	FHitResult HitResult = FHitResult();
 
-	// Basic constructor.
-	FSystemicContactEventData()
-	{	}
+	/** Basic constructor. */
+	FSystemicContactEventData() = default;
 
+	/** `HitResult` instance constructor. */
 	// Constructor required to assign HitResult.
 	FSystemicContactEventData(const FHitResult& HitResultIn)
 	: HitResult(HitResultIn)

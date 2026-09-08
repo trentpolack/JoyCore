@@ -217,7 +217,7 @@ bool USystemicTraitComponent::ModifyTraits(const FGameplayTagContainer& TraitTag
 	// Add/remove traits and prevent OnTraitsChanged event from being broadcast (so this method can just broadcast a single batch op).
 	FGameplayTagContainer tagsFiltered_New(AddTraits(TraitTagsToAdd, false)), tagsFiltered_Removed(RemoveTraits(TraitTagsToRemove, false));
 	
-	if(!tagsFiltered_New.IsEmpty() || !tagsFiltered_Removed.IsEmpty())
+	if(tagsFiltered_New.IsEmpty() && tagsFiltered_Removed.IsEmpty())
 	{
 		// No traits were changed.
 		return false;

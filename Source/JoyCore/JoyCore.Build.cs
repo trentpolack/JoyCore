@@ -18,7 +18,7 @@ public class JoyCore : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		// Private include path list.
+		// Private includes path list.
 		PrivateIncludePaths.AddRange(
 			new string[]
 			{
@@ -31,7 +31,8 @@ public class JoyCore : ModuleRules
 				"Core", 
 				"Engine",
 				"GameplayTags",
-				"AssetRegistry"
+				"AssetRegistry",
+				"PCG"
 			});
 			
 		// Private module dependency list.
@@ -45,7 +46,7 @@ public class JoyCore : ModuleRules
 				"GameplayTags",
 			});
 		
-		// Dynamically-loaded module list.
+		// Dynamically loaded module list.
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{

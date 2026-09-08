@@ -474,8 +474,10 @@ void USystemicWorldSubsystem::Tick(float DeltaTime)
 		while(!EventQueue.IsEmpty() && ((eventProcessCount > 0) || (EventProcessCountPerTick == 0)))
 		{
 			// Run through the queue of events so long as the counter is above zero or EventProcessCountPerTick equals 0 (which means process all events).
-			ProcessSystemicEvent(EventQueue[0]);
+			// Reactions may enqueue events and reallocate the queue; keep the active payload independent.
+			const FSystemicEvent Event = MoveTemp(EventQueue[0]);
 			EventQueue.RemoveAt(0);
+			ProcessSystemicEvent(Event);
 
 			--eventProcessCount;
 		}

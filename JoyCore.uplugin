@@ -28,6 +28,10 @@
 	],
 	"Plugins": [
 		{
+			"Name": "PCG",
+			"Enabled": true
+		},
+		{
 			"Name": "CommonUI",
 			"Enabled": true
 		}
